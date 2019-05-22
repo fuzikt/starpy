@@ -5,7 +5,8 @@ import sys
 from metadata import MetaData
 import argparse
 
-class RenameStar():
+
+class RenameStar:
     def define_parser(self):
         self.parser = argparse.ArgumentParser(
             description="Add beamtilt class to the particles.")
@@ -16,26 +17,24 @@ class RenameStar():
     def usage(self):
         self.parser.print_help()
 
-
     def error(self, *msgs):
         self.usage()
         print("Error: " + '\n'.join(msgs))
         print(" ")
         sys.exit(2)
 
-
     def validate(self, args):
         if len(sys.argv) == 1:
-            self.error("Error: No input file given.")
+            self.error("No input file given.")
 
         if not os.path.exists(args.i):
-            self.error("Error: Input file '%s' not found."
+            self.error("Input file '%s' not found."
                        % args.i)
 
     def get_particles(self, md):
         particles = []
         for particle in md:
-                particles.append(particle)
+            particles.append(particle)
         return particles
 
     def addBeamTiltClass(self, particles):
@@ -59,7 +58,7 @@ class RenameStar():
 
         print("Reading in input star file.....")
 
-        particles=self.get_particles(md)
+        particles = self.get_particles(md)
 
         print("Total %s particles in input star file. \nAdding rlnBeamTiltClass." % str(len(particles)))
 
@@ -72,5 +71,4 @@ class RenameStar():
 
 
 if __name__ == "__main__":
-
     RenameStar().main()

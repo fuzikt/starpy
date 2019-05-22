@@ -2,20 +2,15 @@
 
 import os
 import sys
-import copy
-import operator
-from math import *
 from metadata import MetaData
-from metadata import LABELS
 import argparse
 from argparse import RawTextHelpFormatter
-from collections import OrderedDict
 
 
-class SelValueStar():
+class RemoveLabelsStar:
     def define_parser(self):
         self.parser = argparse.ArgumentParser(
-            description="Filter lines from star file upon comaprison with given value. \n Example1: Select lines from input.star where source micrograph does not eqauls to mic123456789.mrc\n select_values_star.py --i input.star --o output.star --lb rlnMicrographName --op \"!=\" --val mic123456789.mrc \n\n Example2: Select lines from input.star where tilt angles are less than 15 deg. t\n select_values_star.py --i input.star --o output.star --lb rlnAngleTilt --op \"<\" --val 15", formatter_class=RawTextHelpFormatter)
+            description="Remove other columns than particle coords.", formatter_class=RawTextHelpFormatter)
         add = self.parser.add_argument
         add('--i', help="Input STAR filename with particles.")
         add('--o', help="Output STAR filename.")
@@ -23,13 +18,11 @@ class SelValueStar():
     def usage(self):
         self.parser.print_help()
 
-
     def error(self, *msgs):
         self.usage()
-        print "Error: " + '\n'.join(msgs)
-        print " "
+        print("Error: " + '\n'.join(msgs))
+        print(" ")
         sys.exit(2)
-
 
     def validate(self, args):
         if len(sys.argv) == 1:
@@ -44,16 +37,18 @@ class SelValueStar():
         args = self.parser.parse_args()
         self.validate(args)
 
-        print "Removing columns fromstar file...."
+        print("Removing columns fromstar file....")
 
         md = MetaData(args.i)
-        md.removeLabels("rlnImageName","rlnMicrographName","rlnMagnification","rlnDetectorPixelSize","rlnCtfFigureOfMerit","rlnVoltage","rlnDefocusU","rlnDefocusV","rlnDefocusAngle","rlnSphericalAberration","rlnCtfBfactor","rlnCtfScalefactor","rlnPhaseShift","rlnAmplitudeContrast")
+        md.removeLabels("rlnImageName", "rlnMicrographName", "rlnMagnification", "rlnDetectorPixelSize",
+                        "rlnCtfFigureOfMerit", "rlnVoltage", "rlnDefocusU", "rlnDefocusV", "rlnDefocusAngle",
+                        "rlnSphericalAberration", "rlnCtfBfactor", "rlnCtfScalefactor", "rlnPhaseShift",
+                        "rlnAmplitudeContrast")
 
         md.write(args.o)
 
-        print "New star file "+args.o+" created. Have fun!"
+        print("New star file " + args.o + " created. Have fun!")
 
 
 if __name__ == "__main__":
-
-    SelValueStar().main()
+    RemoveLabelsStar().main()

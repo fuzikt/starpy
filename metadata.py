@@ -20,6 +20,7 @@
 # **************************************************************************
 
 import sys
+
 try:
     # Python 2
     from itertools import izip
@@ -28,7 +29,6 @@ except ImportError:
     izip = zip
 from collections import OrderedDict
 import copy
-
 
 LABELS = {
     'rlnVoltage': float,
@@ -75,7 +75,7 @@ LABELS = {
 }
 
 
-class Label():
+class Label:
     def __init__(self, labelName):
         self.name = labelName
         # Get the type from the LABELS dict, assume str by default
@@ -88,7 +88,7 @@ class Label():
         return self.name == str(other)
 
 
-class Item():
+class Item:
     """
     General class to store data from a row. (e.g. Particle, Micrograph, etc)
     """
@@ -104,9 +104,10 @@ class Item():
         return copy.deepcopy(self)
 
 
-class MetaData():
+class MetaData:
     """ Class to parse Relion star files
     """
+
     def __init__(self, input_star=None):
         if input_star:
             self.read(input_star)
@@ -131,7 +132,7 @@ class MetaData():
         for line in f:
             values = line.strip().split()
 
-            if not values: # empty lines
+            if not values:  # empty lines
                 continue
 
             if values[0].startswith('_rln'):  # Label line
@@ -156,7 +157,7 @@ class MetaData():
 
         # Write labels and prepare the line format for rows
         for i, l in enumerate(self._labels.values()):
-            output_file.write("_%s #%d \n" % (l.name, i+1))
+            output_file.write("_%s #%d \n" % (l.name, i + 1))
             # Retrieve the type of the label
             t = l.type
             if t is float:
@@ -239,4 +240,3 @@ class MetaData():
         """ Add new items to internal data. """
         for item in data:
             self.addItem(item)
-
