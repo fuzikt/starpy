@@ -12,7 +12,7 @@ from argparse import RawTextHelpFormatter
 class MathStar:
     def define_parser(self):
         self.parser = argparse.ArgumentParser(
-            description="Perform basic math operations on star file values. \n Example1: Add 15 deg to rlnAngleTilt. \n math_star.py --i input.star --o output.star --lb rlnAngleTilt --op \"+\" --val 15 \n\n Example2: Multiply rlnOriginX by 2\n math_star.py --i input.star --o output.star --lb rlnOriginX --op \"*\" --val 2",
+            description="Perform basic math operations on star file values. \n Example1: Add 15 deg to rlnAngleTilt. \n math_star.py --i input.star --o output.star --lb rlnAngleTilt --op \"+\" --val 15 \n\n Example2: Multiply rlnOriginX by 2\n math_star.py --i input.star --o output.star --lb rlnOriginX --op \"*\" --val 2\n\n Example3: Compute remainder of rlnAngleRot where rlnGroupNumber is 2.\n math_star.py --i input.star --o output.star --lb rlnAnlgeRot --op \"remainder\" --sellb rlnGroupNumber --selval 2",
             formatter_class=RawTextHelpFormatter)
         add = self.parser.add_argument
         add('--i', help="Input STAR filename with particles.")

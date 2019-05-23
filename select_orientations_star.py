@@ -9,7 +9,7 @@ import argparse
 class SelOrientStar:
     def define_parser(self):
         self.parser = argparse.ArgumentParser(
-            description="Limit orientations of particles in star file. Select particles depending on their rlnTilt, rlnRot, rlnPsi.")
+            description="Limit orientations of particles in star file. Select particles that are in the defined range of rlnTilt, rlnRot, rlnPsi.")
         add = self.parser.add_argument
         add('--i', help="Input STAR filename with particles.")
         add('--o', help="Output STAR filename.")

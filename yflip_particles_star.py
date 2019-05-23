@@ -152,7 +152,7 @@ def euler_from_vector(vector):
 class RotateParticlesStar:
     def define_parser(self):
         self.parser = argparse.ArgumentParser(
-            description="Perform transformation of euler angles to produce Y-flipped reconstruction. \n Example: rotate_particles_star.py --i input.star --o output.star --rot 15 --tilt 20 --psi 150",
+            description="Perform transformation of euler angles to produce Y-flipped reconstruction.",
             formatter_class=RawTextHelpFormatter)
         add = self.parser.add_argument
         add('--i', help="Input STAR filename with particles.")

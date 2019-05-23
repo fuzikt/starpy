@@ -9,7 +9,7 @@ import argparse
 class HelixCorrectStar:
     def define_parser(self):
         self.parser = argparse.ArgumentParser(
-            description="Modify star file to be compatible with helix refinement")
+            description="Modify star file to be compatible with helix refinement.")
         add = self.parser.add_argument
         add('--i', help="Input STAR filename with particles.")
         add('--o', help="Output STAR filename.")

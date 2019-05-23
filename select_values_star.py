@@ -12,7 +12,7 @@ from argparse import RawTextHelpFormatter
 class SelValueStar:
     def define_parser(self):
         self.parser = argparse.ArgumentParser(
-            description="Filter lines from star file upon comparison with given value. \n Example1: Select lines from input.star where source micrograph does not equals to mic123456789.mrc\n select_values_star.py --i input.star --o output.star --lb rlnMicrographName --op \"!=\" --val mic123456789.mrc \n\n Example2: Select lines from input.star where tilt angles are less than 15 deg. t\n select_values_star.py --i input.star --o output.star --lb rlnAngleTilt --op \"<\" --val 15",
+            description="Filter lines from star file upon comparison with given value. \n Example1: Select lines from input.star where source micrograph does not equals to mic123456789.mrc\n select_values_star.py --i input.star --o output.star --lb rlnMicrographName --op \"!=\" --val mic123456789.mrc \n\n Example2: Select lines from input.star where tilt angles are less than 15 deg.\n select_values_star.py --i input.star --o output.star --lb rlnAngleTilt --op \"<\" --val 15",
             formatter_class=RawTextHelpFormatter)
         add = self.parser.add_argument
         add('--i', help="Input STAR filename with particles.")
