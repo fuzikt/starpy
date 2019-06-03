@@ -20,13 +20,13 @@ class MathStar:
         add('--lb', type=str, default="rlnMicrographName",
             help="Label used for math operation. e.g. rlnAngleTilt, rlnDefocusU...")
         add('--op', type=str, default="=",
-            help="Operator used for comparison. Allowed: \"+\", \"-\", \"*\", \"/\",\"^\",\"abs\",\"=\",\"mod\",\"remainder\"")
+            help="Operator used for comparison. Allowed: \"+\", \"-\", \"*\", \"/\",\"^\",\"abs\",\"=\",\"mod\",\"remainder\". Use double quotes!!!")
         add('--val', type=str, default="0",
             help="Value used for math operation.")
         add('--sellb', type=str, default="None",
             help="Label used for selection. e.g. rlnAngleTilt, rlnDefocusU... Default: None")
         add('--selop', type=str, default="=",
-            help="Operator used for comparison. Allowed: \"=\", \"!=\", \">=\", \"<=\", \"<\"")
+            help="Operator used for comparison. Allowed: \"=\", \"!=\", \">=\", \"<=\", \"<\", \">\". Use double quotes!!!")
         add('--selval', type=str, default="-0",
             help="Value used for comparison. Used together with --selop parameter.")
         add('--rh', type=str, default="-0",
@@ -77,9 +77,9 @@ class MathStar:
             rangeLo = 0
 
         if (args.rh == "-0") and (args.rl == "-0") and (args.sellb !="None"):
-            if args.selop not in ["=", "!=", ">=", "<=", "<"]:
+            if args.selop not in ["=", "!=", ">=", "<=", "<", ">"]:
                 self.error(
-                    "Selection operator '%s' not allowed. Allowed operators are: \"=\", \"!=\", \">=\", \"<=\", \"<\"" % args.op)
+                    "Selection operator '%s' not allowed. Allowed operators are: \"=\", \"!=\", \">=\", \"<=\", \"<\", \">\"" % args.op)
             if args.selval == "-0":
                 self.error("No value provided for selection. Please, provide a value.")
 
@@ -87,6 +87,8 @@ class MathStar:
             if LABELS[args.sellb] == float:
                 try:
                     if (args.rh == "-0") and (args.rl == "-0"):
+                        rangeHi = 0
+                        rangeLo = 0
                         selValue = float(args.selval)
                     else:
                         rangeHi = float(args.rh)
