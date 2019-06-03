@@ -71,7 +71,12 @@ class MathStar:
         if LABELS[args.lb] == str:
             self.error("Attribute '%s' has STR value. Cannot perform math operation on STR values." % args.lb)
 
-        if (args.rh == "-0") and (args.rl == "-0"):
+        if args.sellb == "None":
+            selValue = 0
+            rangeHi = 0
+            rangeLo = 0
+
+        if (args.rh == "-0") and (args.rl == "-0") and (args.sellb !="None"):
             if args.selop not in ["=", "!=", ">=", "<=", "<"]:
                 self.error(
                     "Selection operator '%s' not allowed. Allowed operators are: \"=\", \"!=\", \">=\", \"<=\", \"<\"" % args.op)
