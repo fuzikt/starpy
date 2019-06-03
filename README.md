@@ -77,10 +77,10 @@ Perform basic math operations on star file values.
   --i         Input STAR filename with particles.
   --o         Output STAR filename.
   --lb        Label used for math operation. e.g. rlnAngleTilt, rlnDefocusU...
-  --op        Operator used for comparison. Allowed: "+", "-", "*", "/","^","abs","=","mod","remainder"
+  --op        Operator used for comparison. Allowed: "+", "-", "*", "/","^","abs","=","mod","remainder". Use double quotes!!!
   --val       Value used for math operation.
   --sellb     Label used for selection. e.g. rlnAngleTilt, rlnDefocusU... Default: None
-  --selop     Operator used for comparison. Allowed: "=", "!=", ">=", "<=", "<"
+  --selop     Operator used for comparison. Allowed: "=", "!=", ">=", "<=", "<". Use double quotes!!!
   --selval    Value used for comparison. Used together with --selop parameter.
   --rh        Selection range Hi (upper bound). Default: Disabled
   --rl        Selection range Lo (lower bound). Default: Disabled
@@ -146,10 +146,10 @@ Select particles complying with selection rule on specified label.
 ``` 
   --i      Input STAR filename with particles.
   --o      Output STAR filename. 
-  --lb     Label used for selection. e.g. rlnAngleTilt, rlnDefocusU...## binning_correct_star.py
-  --op     Operator used for comparison. Allowed: "=", "!=", ">=", "<=", "<"Correct the particles in star file by binning factor
+  --lb     Label used for selection. e.g. rlnAngleTilt, rlnDefocusU...
+  --op     Operator used for comparison. Allowed: "=", "!=", ">=", "<=", "<". Use double quotes!!!
   --val    Value used for comparison. Used together with --op parameter.
-  --rh     Range Hi (upper bound). If defined --op and -val disabled.## filter_astigmatism_star.py
+  --rh     Range Hi (upper bound). If defined --op and -val disabled.
   --rl     Range Lo (lower bound). If defined --op and -val disabled.
 ```
 
