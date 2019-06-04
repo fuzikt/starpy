@@ -41,7 +41,7 @@ class RenameStar:
         newParticles = []
         for particle in particles:
             bmtltClass = particle.rlnMicrographName.split("_")[3]
-            particle.rlnBeamTiltClass = bmtltClass
+            particle.rlnBeamTiltClass = int(bmtltClass)
             newParticles.append(particle)
         return newParticles
 

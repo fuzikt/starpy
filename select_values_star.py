@@ -20,7 +20,7 @@ class SelValueStar:
         add('--lb', type=str, default="rlnMicrographName",
             help="Label used for selection. e.g. rlnAngleTilt, rlnDefocusU...")
         add('--op', type=str, default="=",
-            help="Operator used for comparison. Allowed: \"=\", \"!=\", \">=\", \"<=\", \"<\"")
+            help="Operator used for comparison. Allowed: \"=\", \"!=\", \">=\", \"<=\", \"<\", \">\". Use double quotes!!!")
         add('--val', type=str, default="-0",
             help="Value used for comparison. Used together with --op parameter.")
         add('--rh', type=str, default="-0",
@@ -49,9 +49,9 @@ class SelValueStar:
             self.error("Label " + args.lb + " not recognized as RELION label.")
 
         if (args.rh == "-0") and (args.rl == "-0"):
-            if args.op not in ["=", "!=", ">=", "<=", "<"]:
+            if args.op not in ["=", "!=", ">=", "<=", "<", ">"]:
                 self.error(
-                    "Operator '%s' not allowed. Allowed operators are: \"=\", \"!=\", \">=\", \"<=\", \"<\"" % args.op)
+                    "Operator '%s' not allowed. Allowed operators are: \"=\", \"!=\", \">=\", \"<=\", \"<\", \">\"" % args.op)
             if args.val == "-0":
                 self.error("No value provided for comparison. Please, provide a value.")
 
