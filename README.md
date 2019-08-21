@@ -21,7 +21,6 @@ Generates heatmap of particle orientations from star file. For symmetrical parti
 Requires:
 - Matplotlib
 - Numpy
-
 ```
   --i         Input STAR filename with particles and orientations.
   --o         Output files prefix. Default: heatmap_orient
@@ -61,7 +60,6 @@ join_star.py --i1 input1.star --i2 input2.star --o output.star --lb rlnMicrograp
 Convert EMAN2 json type box files into RELION coordinate STAR file.
 Coordinates might be corrected for binning, when the particles were picked on binned micrographs.
 Boxes lying outside micrograph boundaries might be discarded.
-
 ```
   --i          Input directory with json files (EMAN2 info directory location.)
   --o          Output directory to store STAR files.
@@ -100,6 +98,13 @@ math_star.py --i input.star --o output.star --lb rlnAnlgeRot --op "remainder" --
 ## metadata.py
 Base library required bay all scripts.
 
+## remove_preferred_orient.py
+Remove particles with overrepresented orientations. Average count of particles at each orientation is calculated. Then the count of particles that are n-times SD over the average is modified by retaining the particles with the highest rlnMaxValueProbDistribution.
+```
+  --i      Input STAR filename with particles and orientations.
+  --o      Output star file. Default: output.star
+  --sd     This many times SD above the average count will be representations kept. Default: 3
+```
 ## rename_foilhole_star.py
 Deprecated - need to be rewritten
 
