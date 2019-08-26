@@ -156,6 +156,7 @@ Select particles complying with selection rule on specified label.
   --val    Value used for comparison. Used together with --op parameter.
   --rh     Range Hi (upper bound). If defined --op and -val disabled.
   --rl     Range Lo (lower bound). If defined --op and -val disabled.
+  --prctl  Percentile of values selected (e.g. 25, 50, 75). Used together with --lb parameter.
 ```
 
 Example 1: Select lines from input.star where source micrograph does not equals to mic123456789.mrc
@@ -165,6 +166,10 @@ Example 1: Select lines from input.star where source micrograph does not equals 
 Example 2: Select lines from input.star where tilt angles are less than 15 deg.
 ```
 select_values_star.py --i input.star --o output.star --lb rlnAngleTilt --op "<" --val 15
+```
+Example 3: Select particles with 75-th percentile of rlnMaxValueProbDistribution values.
+```
+select_values_star.py --i input.star --o output.star --lb rlnMaxValueProbDistribution --prctl 75
 ```
 
 ## stats_star.py

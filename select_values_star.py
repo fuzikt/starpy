@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+import math
 import os
 import sys
 import operator
@@ -27,6 +27,8 @@ class SelValueStar:
             help="Range Hi (upper bound). If defined --op and -val disabled.")
         add('--rl', type=str, default="-0",
             help="Range Lo (lower bound). If defined --op and -val disabled.")
+        add('--prctl', type=str, default="-1",
+            help="Percentile of values selected (e.g. 25, 50, 75). Used together with --lb parameter.")
 
     def usage(self):
         self.parser.print_help()
@@ -52,7 +54,7 @@ class SelValueStar:
             if args.op not in ["=", "!=", ">=", "<=", "<", ">"]:
                 self.error(
                     "Operator '%s' not allowed. Allowed operators are: \"=\", \"!=\", \">=\", \"<=\", \"<\", \">\"" % args.op)
-            if args.val == "-0":
+            if args.val == "-0" and args.prctl == "-1":
                 self.error("No value provided for comparison. Please, provide a value.")
 
         rangeSel = False
@@ -94,7 +96,14 @@ class SelValueStar:
                         "Cannot do range comparison for label '%s'. It requires STR value for comparison." % args.lb)
             except ValueError:
                 self.error("Attribute '%s' requires STR value for comparison." % args.lb)
-        return compValue, rangeHi, rangeLo, rangeSel
+        try:
+            prctl = int(args.prctl)
+            if prctl > -1 and LABELS[args.lb] == str:
+                self.error("Cannot do percentile selection on STR value label %s." % args.lb)
+        except ValueError:
+            self.error("Percentile requires integer value to be used")
+
+        return compValue, rangeHi, rangeLo, rangeSel, prctl
 
     def get_particles(self, md):
         particles = []
@@ -102,7 +111,29 @@ class SelValueStar:
             particles.append(particle)
         return particles
 
-    def selParticles(self, particles, atr, op_char, value, rangeHi, rangeLo, rangeSel):
+    def percentile(self, N, percent, key=lambda x: x):
+        """
+        Find the percentile of a list of values.
+
+        @parameter N - is a list of values. Note N MUST BE already sorted.
+        @parameter percent - a float value from 0.0 to 1.0.
+        @parameter key - optional key function to compute value from each element of N.
+
+        @return - the percentile of the values
+        """
+        if not N:
+            return None
+        k = (len(N) - 1) * percent
+        f = math.floor(k)
+        c = math.ceil(k)
+        if f == c:
+            return key(N[int(k)])
+        d0 = key(N[int(f)]) * (c - k)
+        d1 = key(N[int(c)]) * (k - f)
+
+        return d0 + d1
+
+    def selParticles(self, particles, atr, op_char, value, rangeHi, rangeLo, rangeSel, prctl):
         ops = {"=": operator.eq,
                "!=": operator.ne,
                ">": operator.gt,
@@ -113,6 +144,16 @@ class SelValueStar:
         op_func = ops[op_char]
 
         newParticles = []
+
+        if prctl > -1:
+            allValues = []
+            for particle in particles:
+                allValues.append(getattr(particle, atr))
+
+            allValues.sort()
+            value = self.percentile(allValues, prctl / 100.0)
+            op_func = ops["<="]
+            print("Selecting %s-th percentile of data. %s values less or equal %s." % (prctl, atr, value))
 
         while len(particles) > 0:
             selectedParticle = particles.pop(0)
@@ -129,11 +170,11 @@ class SelValueStar:
     def main(self):
         self.define_parser()
         args = self.parser.parse_args()
-        compValue, rangeHi, rangeLo, rangeSel = self.validate(args)
+        compValue, rangeHi, rangeLo, rangeSel, prctl = self.validate(args)
 
         if rangeSel:
             print("Selecting particles particles where %s is in range <%s, %s>." % (args.lb, rangeLo, rangeHi))
-        else:
+        elif args.prctl == "-1":
             print("Selecting particles particles where %s is %s %s." % (args.lb, args.op, compValue))
 
         md = MetaData(args.i)
@@ -144,7 +185,8 @@ class SelValueStar:
 
         particles = self.get_particles(md)
 
-        new_particles.extend(self.selParticles(particles, args.lb, args.op, compValue, rangeHi, rangeLo, rangeSel))
+        new_particles.extend(
+            self.selParticles(particles, args.lb, args.op, compValue, rangeHi, rangeLo, rangeSel, prctl))
         mdOut.addData(new_particles)
         mdOut.write(args.o)
 
