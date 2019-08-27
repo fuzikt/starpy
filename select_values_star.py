@@ -27,8 +27,10 @@ class SelValueStar:
             help="Range Hi (upper bound). If defined --op and -val disabled.")
         add('--rl', type=str, default="-0",
             help="Range Lo (lower bound). If defined --op and -val disabled.")
-        add('--prctl', type=str, default="-1",
-            help="Percentile of values selected (e.g. 25, 50, 75). Used together with --lb parameter.")
+        add('--prctl_h', type=str, default="-1",
+            help="Select particles above defined percentile of values (e.g. 25, 50, 75). Used together with --lb parameter.")
+        add('--prctl_l', type=str, default="-1",
+            help="Select particles below defined percentile of values (e.g. 25, 50, 75). Used together with --lb parameter.")
 
     def usage(self):
         self.parser.print_help()
@@ -54,7 +56,7 @@ class SelValueStar:
             if args.op not in ["=", "!=", ">=", "<=", "<", ">"]:
                 self.error(
                     "Operator '%s' not allowed. Allowed operators are: \"=\", \"!=\", \">=\", \"<=\", \"<\", \">\"" % args.op)
-            if args.val == "-0" and args.prctl == "-1":
+            if args.val == "-0" and args.prctl_l == "-1" and args.prctl_h == "-1":
                 self.error("No value provided for comparison. Please, provide a value.")
 
         rangeSel = False
@@ -96,14 +98,21 @@ class SelValueStar:
                         "Cannot do range comparison for label '%s'. It requires STR value for comparison." % args.lb)
             except ValueError:
                 self.error("Attribute '%s' requires STR value for comparison." % args.lb)
+
         try:
-            prctl = int(args.prctl)
-            if prctl > -1 and LABELS[args.lb] == str:
+            prctl_l = int(args.prctl_l)
+            prctl_h = int(args.prctl_h)
+
+            if (prctl_l > -1 or prctl_h > -1) and LABELS[args.lb] == str:
                 self.error("Cannot do percentile selection on STR value label %s." % args.lb)
+            if prctl_l > -1 and prctl_h > -1:
+                self.error("--prctl_h and --prtcl_l cannot be used simultaneously. Use only one of them")
+
         except ValueError:
             self.error("Percentile requires integer value to be used")
 
-        return compValue, rangeHi, rangeLo, rangeSel, prctl
+
+        return compValue, rangeHi, rangeLo, rangeSel, prctl_l, prctl_h
 
     def get_particles(self, md):
         particles = []
@@ -133,7 +142,7 @@ class SelValueStar:
 
         return d0 + d1
 
-    def selParticles(self, particles, atr, op_char, value, rangeHi, rangeLo, rangeSel, prctl):
+    def selParticles(self, particles, atr, op_char, value, rangeHi, rangeLo, rangeSel, prctl_l, prctl_h):
         ops = {"=": operator.eq,
                "!=": operator.ne,
                ">": operator.gt,
@@ -145,15 +154,20 @@ class SelValueStar:
 
         newParticles = []
 
-        if prctl > -1:
+        if prctl_h > -1 or prctl_l > -1:
             allValues = []
             for particle in particles:
                 allValues.append(getattr(particle, atr))
-
+            prctl = max(prctl_l, prctl_h)
             allValues.sort()
             value = self.percentile(allValues, prctl / 100.0)
-            op_func = ops["<="]
-            print("Selecting %s-th percentile of data. %s values less or equal %s." % (prctl, atr, value))
+
+            if prctl_l > -1:
+                op_func = ops["<="]
+                print("Selecting below %s-th percentile of data. %s values less or equal %s." % (prctl, atr, value))
+            if prctl_h > -1:
+                op_func = ops[">="]
+                print("Selecting above %s-th percentile of data. %s values more or equal %s." % (prctl, atr, value))
 
         while len(particles) > 0:
             selectedParticle = particles.pop(0)
@@ -170,11 +184,11 @@ class SelValueStar:
     def main(self):
         self.define_parser()
         args = self.parser.parse_args()
-        compValue, rangeHi, rangeLo, rangeSel, prctl = self.validate(args)
+        compValue, rangeHi, rangeLo, rangeSel, prctl_l, prctl_h = self.validate(args)
 
         if rangeSel:
             print("Selecting particles particles where %s is in range <%s, %s>." % (args.lb, rangeLo, rangeHi))
-        elif args.prctl == "-1":
+        elif args.prctl_l == "-1" and args.prctl_h == "-1":
             print("Selecting particles particles where %s is %s %s." % (args.lb, args.op, compValue))
 
         md = MetaData(args.i)
@@ -186,7 +200,7 @@ class SelValueStar:
         particles = self.get_particles(md)
 
         new_particles.extend(
-            self.selParticles(particles, args.lb, args.op, compValue, rangeHi, rangeLo, rangeSel, prctl))
+            self.selParticles(particles, args.lb, args.op, compValue, rangeHi, rangeLo, rangeSel, prctl_l, prctl_h))
         mdOut.addData(new_particles)
         mdOut.write(args.o)
 

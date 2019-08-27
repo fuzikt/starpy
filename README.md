@@ -149,14 +149,15 @@ Select random orientation from symmetry expanded star files. One orientation per
 ## select_values_star.py
 Select particles complying with selection rule on specified label.
 ``` 
-  --i      Input STAR filename with particles.
-  --o      Output STAR filename. 
-  --lb     Label used for selection. e.g. rlnAngleTilt, rlnDefocusU...
-  --op     Operator used for comparison. Allowed: "=", "!=", ">=", "<=", "<". Use double quotes!!!
-  --val    Value used for comparison. Used together with --op parameter.
-  --rh     Range Hi (upper bound). If defined --op and -val disabled.
-  --rl     Range Lo (lower bound). If defined --op and -val disabled.
-  --prctl  Percentile of values selected (e.g. 25, 50, 75). Used together with --lb parameter.
+  --i        Input STAR filename with particles.
+  --o        Output STAR filename. 
+  --lb       Label used for selection. e.g. rlnAngleTilt, rlnDefocusU...
+  --op       Operator used for comparison. Allowed: "=", "!=", ">=", "<=", "<". Use double quotes!!!
+  --val      Value used for comparison. Used together with --op parameter.
+  --rh       Range Hi (upper bound). If defined --op and -val disabled.
+  --rl       Range Lo (lower bound). If defined --op and -val disabled.
+  --prctl_h  Select particles above defined percentile of values (e.g. 25, 50, 75). Used together with --lb parameter
+  --prctl_l  Select particles below defined percentile of values (e.g. 25, 50, 75). Used together with --lb parameter
 ```
 
 Example 1: Select lines from input.star where source micrograph does not equals to mic123456789.mrc
@@ -167,10 +168,15 @@ Example 2: Select lines from input.star where tilt angles are less than 15 deg.
 ```
 select_values_star.py --i input.star --o output.star --lb rlnAngleTilt --op "<" --val 15
 ```
-Example 3: Select particles with 75-th percentile of rlnMaxValueProbDistribution values.
+Example 3: Select particles where rlnMaxValueProbDistribution values are above 75-th percentile.
 ```
-select_values_star.py --i input.star --o output.star --lb rlnMaxValueProbDistribution --prctl 75
+select_values_star.py --i input.star --o output.star --lb rlnMaxValueProbDistribution --prctl_h 75
 ```
+Example 4: Select particles where rlnMaxValueProbDistribution values are below 75-th percentile.
+```
+select_values_star.py --i input.star --o output.star --lb rlnMaxValueProbDistribution --prctl_l 75
+```
+
 
 ## stats_star.py
 Print basic statistics on numerical labels present in STAR file
