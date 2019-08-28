@@ -177,6 +177,13 @@ Example 4: Select particles where rlnMaxValueProbDistribution values are below 7
 select_values_star.py --i input.star --o output.star --lb rlnMaxValueProbDistribution --prctl_l 75
 ```
 
+## split_stacks.py
+Split MRC stacks listed in STAR file into separate files, and writes a new STAR file with split files info.
+```
+  --i        Input STAR filename.
+  --o_dir    Output folder.
+  --o_pref   Output image prefix.
+```
 
 ## stats_star.py
 Print basic statistics on numerical labels present in STAR file
