@@ -71,13 +71,15 @@ class RemovePrefOrientStar:
 
         # generate array of 1 deg orientation step from rot and tilt angle
         heatmap = [[0 for col in range(360)] for row in range(180)]
+        heatmappart = [[[] for col in range(360)] for row in range(180)]
 
-        for particle in particles:
+        for partpos, particle in enumerate(particles, start=0):
             if particle.rlnAngleRot <= 0:
                 angleRot = particle.rlnAngleRot + 360
             else:
                 angleRot = particle.rlnAngleRot
             heatmap[int(particle.rlnAngleTilt)][int(angleRot)] += 1
+            heatmappart[int(particle.rlnAngleTilt)][int(angleRot)].append(partpos)
 
         # calculate statistics (avg and SD)
         particleSum = 0
@@ -116,7 +118,6 @@ class RemovePrefOrientStar:
         print("Including max %s particles per orientation in the final star file." % int(orientationCountTreshold))
 
         newParticleSet = []
-        particlesForReduction = []
 
         print("Removing overepresented orientations....")
 
@@ -125,24 +126,16 @@ class RemovePrefOrientStar:
                 if heatmap[i][j] != 0:
                     if heatmap[i][j] <= int(orientationCountTreshold):
                         # add particles automatically
-                        for particle in particles:
-                            if particle.rlnAngleRot <= 0:
-                                angleRot = particle.rlnAngleRot + 360
-                            else:
-                                angleRot = particle.rlnAngleRot
-                            if int(particle.rlnAngleTilt) == i and int(angleRot) == j:
-                                newParticleSet.append(particle)
+                        for particlepos in heatmappart[i][j]:
+                            newParticleSet.append(particles[particlepos])
                     if heatmap[i][j] > int(orientationCountTreshold):
                         # add particles after reducing their count
-                        for particle in particles:
-                            if particle.rlnAngleRot <= 0:
-                                angleRot = particle.rlnAngleRot + 360
-                            else:
-                                angleRot = particle.rlnAngleRot
-                            if int(particle.rlnAngleTilt) == i and int(angleRot) == j:
-                                particlesForReduction.append(particle)
+                        particlesForReduction = []
+                        for particlepos in heatmappart[i][j]:
+                            particlesForReduction.append(particles[particlepos])
                         newParticleSet.extend(
                             self.reduceParticlesCount(particlesForReduction, int(orientationCountTreshold)))
+
             # a simple progress bar
             sys.stdout.write('\r')
             progress = int(i / 9) + 1
