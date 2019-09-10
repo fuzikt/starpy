@@ -54,16 +54,14 @@ class RemovePrefOrientStar:
         def sortSecond(val):
             return val[1]
 
-        for particle in particles:
-            particlesToSort.append([particle.rlnImageName, particle.rlnMaxValueProbDistribution])
+        for partPos, particle in enumerate(particles, start=0):
+            particlesToSort.append([partPos, particle.rlnMaxValueProbDistribution])
 
         particlesToSort.sort(key=sortSecond, reverse=True)
 
         for i in range(maxCount):
             selectedParticle = particlesToSort.pop(0)
-            for particle in particles:
-                if particle.rlnImageName == selectedParticle:
-                    sortedParticles.append(particle)
+            sortedParticles.append(particles[selectedParticle[0]])
 
         return sortedParticles
 
