@@ -8,6 +8,20 @@ Add beamtilt class to the particles. Script adds rlnBeamTiltClass extracted from
   --o    Output STAR filename.
 ```
 
+## assign_column_star.py
+Add label (col_lb) to Input1 and assigns values to it from Input2 where the label (comp_lb) of Input2 matches Input1
+```        
+--i1        Input1 STAR filename.
+--i2        Input2 STAR filename.
+--o         Output STAR filename.
+--col_lb    Label of the new column assigned to Input1; Default: rlnDefocusU
+--comp_lb   Compare label used for Input1 and Input2 for value assignment. Default:rlnMicrographName
+```
+Example 1: Assign values of DefocusU from input2.star as a column to input1.star where the value of column rlnMicrographName matches in both inputs. 
+``` 
+assign_column_star.py --i1 input1.star --i2 input2.star --o output.star --col_lb rlnDefocusU --comp_lb rlnMicrographName
+```
+
 ## extract_particles_coords_star.py
 Remove other columns than particle coords from star file.
 ```
