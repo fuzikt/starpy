@@ -106,7 +106,7 @@ class RemovePrefOrientStar:
         for i in range(180):
             for j in range(360):
                 if heatmap[i][j] != 0:
-                    sigmaSum += (heatmap[i][j] - averageParticleCount) ^ 2
+                    sigmaSum += (heatmap[i][j] - averageParticleCount) ** 2
         particleSdev = math.sqrt(sigmaSum / (n - 1))
 
         print("SD of the average count %.03f" % particleSdev)
