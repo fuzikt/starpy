@@ -30,7 +30,7 @@ Remove other columns than particle coords from star file.
 ```
 
 ## heatmap_orient_star.py
-Generates heatmap of particle orientations from star file. For symmetrical particles, first make symmetry expand of the star file (relion_particle_symmetry_expand).
+Generates heatmap of particle orientations from star file. Cartesian and mollweide representations are generated. For symmetrical particles, first make symmetry expand of the star file (relion_particle_symmetry_expand).
 
 Requires:
 - Matplotlib
@@ -38,6 +38,7 @@ Requires:
 ```
   --i         Input STAR filename with particles and orientations.
   --o         Output files prefix. Default: heatmap_orient
+  --show      Only shows the resulting heatmap. Does not store any output file.
   --format    Output format. Available formats: png, svg, jpg, tif. Default: png
   --vmin      Min values represented on color bar. Default: -1 (auto)
   --vmax      Max values represented on color bar. Default: -1 (auto)

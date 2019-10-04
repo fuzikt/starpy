@@ -15,6 +15,8 @@ class HeatmapStar:
         add = self.parser.add_argument
         add('--i', help="Input STAR filename with particles and orientations.")
         add('--o', type=str, default="heatmap_orient", help="Output files prefix. Default: heatmap_orient")
+        add('--show', action='store_true',
+             help="Only shows the resulting heatmap. Does not store any output file.")
         add('--format', type=str, default="png",
             help="Output format. Available formats: png, svg, jpg, tif. Default: png")
         add('--vmin', type=float, default=-1,
@@ -70,7 +72,7 @@ class HeatmapStar:
 
         heatmap = self.makeHeatMap(particles, heatmap)
 
-        plt.imshow(heatmap)
+        # plt.imshow(heatmap)
 
         if args.vmin == -1:
             min = None
@@ -81,21 +83,61 @@ class HeatmapStar:
         else:
             max = args.vmax
 
+        fig_cart = plt.figure(figsize=(10, 8), dpi=80)
+        ax_cart = fig_cart.add_subplot(111)
         plt.pcolor(heatmap, cmap=plt.cm.jet, vmin=min, vmax=max)
-        plt.colorbar(orientation='horizontal', label="# of particles")
-
+        cbar_cart = plt.colorbar(orientation='horizontal', label="# of particles")
+        cbar_cart.ax.tick_params(labelsize=14)
+        cbar_cart.set_label(label="# of particles", fontsize=14)
         plt.yticks(np.arange(0, 181, step=45))
         plt.xticks(np.arange(0, 361, step=45))
-        plt.tick_params(direction='out', bottom='on', top='off', left='on', right='off')
-        plt.xlabel('phi (rot angle)')
-        plt.ylabel('theta (tilt angle)')
+        plt.tick_params(axis="x", labelsize=14)
+        plt.tick_params(axis="y", labelsize=14)
+        ax_cart.set_ylim(180, 0)
+        xlabels = ['$0^\circ$', '$45^\circ$', '$90^\circ$', '$135^\circ$', '$180^\circ$',
+                   '$225^\circ$', '$270^\circ$', '$315^\circ$', '$360^\circ$']
+        ylabels = ['$0^\circ$', '$45^\circ$', '$90^\circ$', '$135^\circ$',
+                   '$180^\circ$']
+        ax_cart.set_xticklabels(xlabels, fontsize=14)
+        ax_cart.set_yticklabels(ylabels, fontsize=14)
+        plt.tick_params(direction='out', bottom=True, top=False, left=True, right=False)
+        plt.xlabel('phi (rot angle)', fontsize=14)
+        plt.ylabel('theta (tilt angle)', fontsize=14)
 
-        plt.savefig(args.o + "." + args.format, format=args.format)
 
-        np.savetxt(args.o + ".dat", heatmap, delimiter=' ', fmt='%1i')
 
-        print("File %s.dat was created..." % args.o)
-        print("File %s.%s was created..." % (args.o, args.format))
+        # make mollweide projection plot
+        fig_moll = plt.figure(figsize=(10, 8), dpi=80, )
+        ax_moll = fig_moll.add_subplot(111, projection='mollweide')
+        lon = np.linspace(-np.pi, np.pi, 360)
+        lat = np.linspace(-np.pi / 2., np.pi / 2., 180)
+        xlabels = ['$30^\circ$', '$60^\circ$', '$90^\circ$', '$120^\circ$', '$150^\circ$',
+                   '$180^\circ$', '$210^\circ$', '$240^\circ$', '$270^\circ$', '$300^\circ$', '$330^\circ$', ]
+        ylabels = ['$165^\circ$', '$150^\circ$', '$135^\circ$', '$120^\circ$',
+                   '$105^\circ$', '$90^\circ$', '$75^\circ$', '$60^\circ$',
+                   '$45^\circ$', '$30^\circ$', '$15^\circ$']
+        ax_moll.set_xticklabels(xlabels, fontsize=14, color="white")
+        ax_moll.set_yticklabels(ylabels, fontsize=14)
+
+        plt.xlabel('phi (rot angle)', fontsize=14)
+        plt.ylabel('theta (tilt angle)', fontsize=14)
+        Lon, Lat = np.meshgrid(lon, lat)
+
+        im = ax_moll.pcolormesh(Lon, Lat, np.flip(heatmap, 0), cmap=plt.cm.jet, vmin=min, vmax=max)
+        cbar = fig_moll.colorbar(im, orientation='horizontal', label="# of particles")
+        cbar.ax.tick_params(labelsize=14)
+        cbar.set_label(label="# of particles", fontsize=14)
+
+        if args.show:
+            plt.show()
+        else:
+            fig_cart.savefig(args.o + "." + args.format, format=args.format)
+            fig_moll.savefig(args.o + "_mollweide." + args.format, format=args.format)
+            np.savetxt(args.o + ".dat", heatmap, delimiter=' ', fmt='%1i')
+
+            print("File %s.dat was created..." % args.o)
+            print("File %s.%s was created..." % (args.o, args.format))
+            print("File %s_mollweide.%s was created..." % (args.o, args.format))
         print("Finished. Have fun!")
 
 
