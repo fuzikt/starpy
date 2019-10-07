@@ -65,7 +65,7 @@ class RemovePrefOrientStar:
 
         return sortedParticles
 
-    def removePrefOrient(self, particles):
+    def removePrefOrient(self, particles,xSD):
 
         # generate array of 1 deg orientation step from rot and tilt angle
         heatmap = [[0 for col in range(360)] for row in range(180)]
@@ -111,7 +111,7 @@ class RemovePrefOrientStar:
 
         print("SD of the average count %.03f" % particleSdev)
 
-        orientationCountTreshold = averageParticleCount + 3 * particleSdev
+        orientationCountTreshold = averageParticleCount + xSD * particleSdev
 
         print("Including max %s particles per orientation in the final star file." % int(orientationCountTreshold))
 
@@ -161,7 +161,7 @@ class RemovePrefOrientStar:
 
         new_particles = []
 
-        new_particles.extend(self.removePrefOrient(particles))
+        new_particles.extend(self.removePrefOrient(particles, args.sd))
 
         mdOut.addData(new_particles)
         mdOut.write(args.o)
