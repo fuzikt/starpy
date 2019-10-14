@@ -39,6 +39,8 @@ Requires:
   --i         Input STAR filename with particles and orientations.
   --o         Output files prefix. Default: heatmap_orient
   --show      Only shows the resulting heatmap. Does not store any output file.
+  --white_bg  Set background of the heatmap to white. (i.e. zero values represented by white)
+  --black_bg  Set background of the heatmap to black . (i.e. zero values represented by black)
   --format    Output format. Available formats: png, svg, jpg, tif. Default: png
   --vmin      Min values represented on color bar. Default: -1 (auto)
   --vmax      Max values represented on color bar. Default: -1 (auto)

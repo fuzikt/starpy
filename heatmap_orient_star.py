@@ -16,7 +16,12 @@ class HeatmapStar:
         add('--i', help="Input STAR filename with particles and orientations.")
         add('--o', type=str, default="heatmap_orient", help="Output files prefix. Default: heatmap_orient")
         add('--show', action='store_true',
-             help="Only shows the resulting heatmap. Does not store any output file.")
+            help="Only shows the resulting heatmap. Does not store any output file.")
+        add('--white_bg', action='store_true',
+            help="Set background of the heatmap to white. (i.e. zero values represented by white)")
+        add('--black_bg', action='store_true',
+            help="Set background of the heatmap to black. (i.e. zero values represented by black)")
+
         add('--format', type=str, default="png",
             help="Output format. Available formats: png, svg, jpg, tif. Default: png")
         add('--vmin', type=float, default=-1,
@@ -72,7 +77,6 @@ class HeatmapStar:
 
         heatmap = self.makeHeatMap(particles, heatmap)
 
-        # plt.imshow(heatmap)
 
         if args.vmin == -1:
             min = None
@@ -83,9 +87,19 @@ class HeatmapStar:
         else:
             max = args.vmax
 
+        jetcmap = plt.cm.jet
+
+        if args.white_bg or args.black_bg:
+            heatmap = np.array(heatmap)
+            heatmap = np.ma.masked_where(heatmap == 0, heatmap)
+            if args.white_bg:
+                jetcmap.set_bad(color='white')
+            else:
+                jetcmap.set_bad(color='black')
+
         fig_cart = plt.figure(figsize=(10, 8), dpi=80)
         ax_cart = fig_cart.add_subplot(111)
-        plt.pcolor(heatmap, cmap=plt.cm.jet, vmin=min, vmax=max)
+        plt.pcolormesh(heatmap, cmap=plt.cm.jet, vmin=min, vmax=max)
         cbar_cart = plt.colorbar(orientation='horizontal', label="# of particles")
         cbar_cart.ax.tick_params(labelsize=14)
         cbar_cart.set_label(label="# of particles", fontsize=14)
@@ -103,8 +117,6 @@ class HeatmapStar:
         plt.tick_params(direction='out', bottom=True, top=False, left=True, right=False)
         plt.xlabel('phi (rot angle)', fontsize=14)
         plt.ylabel('theta (tilt angle)', fontsize=14)
-
-
 
         # make mollweide projection plot
         fig_moll = plt.figure(figsize=(10, 8), dpi=80, )
