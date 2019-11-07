@@ -77,7 +77,7 @@ class AssignLabelStar:
         i2labels = md2.getLabels()
 
         if args.col_lb in i1labels:
-            self.error("Column %s is already in Input1 star file. Please remove it first..." % args.comp_lb)
+            self.error("Column %s is already in Input1 star file. Please remove it first..." % args.col_lb)
         if args.col_lb not in i2labels:
             self.error("Column %s is not present in Input2 star file." % args.comp_lb)
         if args.comp_lb not in i1labels:
@@ -119,4 +119,4 @@ class AssignLabelStar:
 
 
 if __name__ == "__main__":
-    JoinStar().main()
+    AssignLabelStar().main()
