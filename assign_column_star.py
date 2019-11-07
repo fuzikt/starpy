@@ -79,7 +79,7 @@ class AssignLabelStar:
         if args.col_lb in i1labels:
             self.error("Column %s is already in Input1 star file. Please remove it first..." % args.col_lb)
         if args.col_lb not in i2labels:
-            self.error("Column %s is not present in Input2 star file." % args.comp_lb)
+            self.error("Column %s is not present in Input2 star file." % args.col_lb)
         if args.comp_lb not in i1labels:
             self.error("Column %s is not present in Input1 star file." % args.comp_lb)
         if args.comp_lb not in i2labels:
