@@ -134,6 +134,14 @@ math_star.py --i input.star --o output.star --lb rlnAnlgeRot --op "remainder" --
 ## metadata.py
 Base library required bay all scripts.
 
+## particles_star_to_box.py
+Extracts coordinates from particles STAR file and saves as per micrograph box files.
+```
+--i         Input STAR filename with particles.
+--o         Output directory where the box files will be stored.
+--box_size  Box size. Default: 256
+```
+
 ## remove_preferred_orient.py
 Remove particles with overrepresented orientations. Average count of particles at each orientation is calculated. Then the count of particles that are n-times SD over the average is modified by retaining the particles with the highest rlnMaxValueProbDistribution.
 ```
