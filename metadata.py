@@ -500,12 +500,12 @@ class MetaData:
 
     def setLabels(self, **kwargs):
         """ Add (or set) labels with a given value. """
-        for key, value in kwargs.iteritems():
+        for key, value in kwargs.items():
             if key not in self._labels:
                 self._addLabel(labelName=key)
 
         for item in self._data:
-            for key, value in kwargs.iteritems():
+            for key, value in kwargs.items():
                 self._setItemValue(item, self._labels[key], value)
 
     def _iterLabels(self, labels):
