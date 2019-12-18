@@ -18,7 +18,7 @@ class RemovePrefOrientStar:
         add = self.parser.add_argument
         add('--i', help="Input STAR filename with particles and orientations.")
         add('--o', type=str, default="output.star", help="Output star file. Default: output.star")
-        add('--sd', type=float, default=-3,
+        add('--sd', type=float, default=3,
             help="This many times SD above the average count will be representations kept. Default: 3")
 
     def usage(self):
