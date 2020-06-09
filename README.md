@@ -48,6 +48,25 @@ conda install scikit-learn
 conda install matplotlib
 ```
 
+## create_beamtiltclass_from_mdoc.py
+Clusters beam-shifts extracted from serialem mdoc files into beam-tilt classes.
+```
+--i         Input mdoc directory
+--o         Output star file. If empty no file generated generated
+--o_shifts  Output file with extracted beam-shifts and cluster numbers. If empty no file generated generated
+--clusters  Number of clusters the beam-shifts should be divided in. (default: 1)
+--elbow     Number of max clusters used in Elbow method optimal cluster number determination. (default: 0)
+--max_iter  Expert option: Maximum number of iterations of the k-means algorithm for a single run. (default: 300)
+--n_init    Expert option: Number of time the k-means algorithm will be run with different centroid seeds. (default: 10)
+```
+Requires specific conda environment. Install:
+```
+conda create -n beamtiltclass-env
+conda activate beamtiltclass-env
+conda install scikit-learn
+conda install matplotlib
+```
+
 ## heatmap_orient_star.py
 Generates heatmap of particle orientations from star file. Cartesian and mollweide representations are generated. For symmetrical particles, first make symmetry expand of the star file (relion_particle_symmetry_expand).
 
