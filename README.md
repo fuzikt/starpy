@@ -1,7 +1,12 @@
 # starpy
 Python scripts for easy RELION STAR file manipulation. Base library file metadata.py needed by all scripts.
 
+**!!! Scripts are now RELION 3.1 compatible !!!**
+
+Backward compatible with RELION <=3.0 format star files! 
+
 ## add_beamtiltclass_star.py
+! only Relion <=3.0 format star files !
 Add beamtilt class to the particles. Script adds rlnBeamTiltClass extracted from the micrograph name (in FoilHoleXXXX.mrc FEI format).
 ```
   --i    Input STAR filename.
@@ -30,6 +35,7 @@ Remove other columns than particle coords from star file.
 ```
 
 ## create_beamtiltclass_from_xml.py
+! only Relion <=3.0 format star files !
 Clusters beam-shifts extracted from xml files into beam-tilt classes.
 ```
 --i         Input XML directory
@@ -49,6 +55,7 @@ conda install matplotlib
 ```
 
 ## create_beamtiltclass_from_mdoc.py
+! only Relion <=3.0 format star files !
 Clusters beam-shifts extracted from serialem mdoc files into beam-tilt classes.
 ```
 --i         Input mdoc directory

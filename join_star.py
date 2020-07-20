@@ -105,6 +105,12 @@ class JoinStar:
                             md1.setLabels(**dic)
 
             mdOut = MetaData()
+
+            if md1.version == "3.1":
+                mdOut.version = "3.1"
+                mdOut.addOpticsLabels(md1.getOpticsLabels())
+                mdOut.addOpticsData(md1._data_optics)
+
             mdOut.addLabels(md1.getLabels())
             particles1 = self.get_particles(md1)
             particles2 = self.get_particles(md2)
@@ -133,6 +139,12 @@ class JoinStar:
                 if getattr(particle, args.lb) in selectedValues:
                     intersectParticles.append(particle)
             mdOut = MetaData()
+
+            if md1.version == "3.1":
+                mdOut.version = "3.1"
+                mdOut.addOpticsLabels(md1.getOpticsLabels())
+                mdOut.addOpticsData(md1._data_optics)
+
             mdOut.addLabels(md1.getLabels())
             mdOut.addData(intersectParticles)
             print("%s particles were selected..." % str(len(intersectParticles)))
@@ -158,6 +170,12 @@ class JoinStar:
                 if getattr(particle, args.lb) not in selectedValues:
                     exceptParticles.append(particle)
             mdOut = MetaData()
+
+            if md1.version == "3.1":
+                mdOut.version = "3.1"
+                mdOut.addOpticsLabels(md1.getOpticsLabels())
+                mdOut.addOpticsData(md1._data_optics)
+
             mdOut.addLabels(md1.getLabels())
             mdOut.addData(exceptParticles)
             print("%s particles were selected..." % str(len(exceptParticles)))

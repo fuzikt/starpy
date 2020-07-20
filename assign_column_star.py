@@ -103,6 +103,12 @@ class AssignLabelStar:
 
 
         mdOut = MetaData()
+
+        if md.version == "3.1":
+            mdOut.version = "3.1"
+            mdOut.addOpticsLabels(md.getOpticsLabels())
+            mdOut.addOpticsData(md._data_optics)
+
         mdOut.addLabels(md1.getLabels())
 
         particles1 = self.get_particles(md1)

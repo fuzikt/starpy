@@ -276,6 +276,12 @@ class RotateParticlesStar:
         ilabels = md.getLabels()
 
         mdOut = MetaData()
+
+        if md.version == "3.1":
+            mdOut.version = "3.1"
+            mdOut.addOpticsLabels(md.getOpticsLabels())
+            mdOut.addOpticsData(md._data_optics)
+
         mdOut.addLabels(md.getLabels())
 
         new_particles = []
