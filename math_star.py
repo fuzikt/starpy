@@ -133,13 +133,24 @@ class MathStar:
 
     def mathParticles(self, particles, atr, op_char, value, sel_op_char, sel_atr, sel_value, rangeHi, rangeLo,
                       rangeSel):
-        ops = {"+": operator.add,
-               "-": operator.sub,
-               "*": operator.mul,
-               "/": operator.div,
-               "^": operator.pow,
-               "abs": operator.abs,
-               "mod": operator.mod}
+        try:
+            # Python2
+            ops = {"+": operator.add,
+                   "-": operator.sub,
+                   "*": operator.mul,
+                   "/": operator.div,
+                   "^": operator.pow,
+                   "abs": operator.abs,
+                   "mod": operator.mod}
+        except AttributeError:
+            # Python3
+            ops = {"+": operator.add,
+                   "-": operator.sub,
+                   "*": operator.mul,
+                   "/": operator.truediv,
+                   "^": operator.pow,
+                   "abs": operator.abs,
+                   "mod": operator.mod}
 
         sel_ops = {"=": operator.eq,
                    "!=": operator.ne,
