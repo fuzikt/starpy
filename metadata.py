@@ -1,5 +1,5 @@
 # **************************************************************************
-# * Authors:  Tibor Füzik
+# * Authors:  Tibor Fuzik
 # * Authors:  J. M. de la Rosa Trevin (delarosatrevin@gmail.com)
 # *
 # * This program is free software; you can redistribute it and/or modify
