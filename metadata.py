@@ -804,7 +804,7 @@ class MetaData:
         """ Set internal data with new items. """
         self._data_particles = data
 
-    def setData(self, data):
+    def setOpticsData(self, data):
         """ Set internal data with new items. """
         self._data_optics = data
 
