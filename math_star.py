@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import sys
@@ -221,15 +221,21 @@ class MathStar:
         if args.lb not in ilabels:
             self.error("No label " + args.lb + " found in Input file.")
 
-        mdOut = MetaData()
-        mdOut.addLabels(md.getLabels())
-
         new_particles = []
 
         particles = self.get_particles(md)
         new_particles.extend(
             self.mathParticles(particles, args.lb, args.op, compValue, args.selop, args.sellb, selValue, rangeHi,
                                rangeLo, rangeSel))
+
+        mdOut = MetaData()
+
+        if md.version == "3.1":
+            mdOut.version = "3.1"
+            mdOut.addOpticsLabels(md.getOpticsLabels())
+            mdOut.addOpticsData(md._data_optics)
+
+        mdOut.addLabels(md.getLabels())
         mdOut.addData(new_particles)
         mdOut.write(args.o)
 
