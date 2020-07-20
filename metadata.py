@@ -169,7 +169,7 @@ LABELS = {
     'rlnEnabled': bool,  # Not used in RELION, only included for backward compatibility with XMIPP selfiles
     'rlnEnergyLoss': float,  # Energy loss': in eV)
     'rlnEstimatedResolution': float,  # Estimated resolution': in A) for a reference
-    'rlnEvenZernike': float,  # Coefficients for the symmetrical Zernike polynomials
+    'rlnEvenZernike': str,  # Coefficients for the symmetrical Zernike polynomials
     'rlnExperimentalDataStarFile': str,  # STAR file with metadata for the experimental images
     'rlnExtReconsDataImag': str,
     # Name of the map with the imaginary components of the input data array for the external reconstruction program
@@ -372,7 +372,7 @@ LABELS = {
     # Number of iterations that have passed without large changes in orientation and class assignments
     'rlnNumberOfIterWithoutResolutionGain': int,  # Number of iterations that have passed without a gain in resolution
     'rlnNumberOfIterations': int,  # Maximum number of iterations to be performed
-    'rlnOddZernike': float,  # Coefficients for the antisymmetrical Zernike polynomials
+    'rlnOddZernike': str,  # Coefficients for the antisymmetrical Zernike polynomials
     'rlnOffsetRange': float,  # Search range for the origin offsets': in Angstroms)
     'rlnOffsetRangeOriginal': float,  # Original search range for the origin offsets': in Angstroms)
     'rlnOffsetStep': float,  # Step size for the searches in the origin offsets': in Angstroms)
