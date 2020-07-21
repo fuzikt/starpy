@@ -1,5 +1,5 @@
 # **************************************************************************
-# * Authors:  Tibor Fuzik
+# * Authors:  Tibor Fuzik (tibor.fuzik@ceitec.mnuni.cz)
 # * Authors:  J. M. de la Rosa Trevin (delarosatrevin@gmail.com)
 # *
 # * This program is free software; you can redistribute it and/or modify
@@ -597,19 +597,20 @@ class MetaData:
             self.clear()
 
     def clear(self):
-        self._labels = OrderedDict()
-        self._Opticslabels = OrderedDict()
-        self._data_particles = []
-        self._data_optics = []
+        for attribute in dir(self):
+            if "data_" in attribute and "_labels" not in attribute:
+                setattr(self, attribute + "_labels", OrderedDict())
+                setattr(self, attribute, [])
+
+    def addDataTable(self, dataTableName):
+        setattr(self, dataTableName + "_labels", OrderedDict())
+        setattr(self, dataTableName, [])
 
     def _setItemValue(self, item, label, value):
         setattr(item, label.name, label.type(value))
 
-    def _addLabel(self, labelName):
-        self._labels[labelName] = Label(labelName)
-
-    def _addOpticsLabel(self, labelName):
-        self._Opticslabels[labelName] = Label(labelName)
+    def _addLabel(self, dataTableName, labelName):
+        getattr(self, dataTableName + "_labels")[labelName] = Label(labelName)
 
     def read(self, input_star):
         self.clear()
@@ -624,93 +625,55 @@ class MetaData:
             if "#" in values[0]:
                 continue
 
-            if values[0] == "data_optics":
-                optics_datablock = True
-                self.version = "3.1"
-                continue
-
-            if values[0] == "data_particles":
-                optics_datablock = False
+            if "data_" in values[0]:
+                if values[0] == "data_optics":
+                    self.version = "3.1"
+                self.addDataTable(values[0])
+                currentTableRead = values[0]
                 found_label = False
-                continue
-
-            if values[0] == "data_":
-                optics_datablock = False
-                self.version = "3"
                 continue
 
             if values[0].startswith('_rln'):  # Label line
                 # Skip leading underscore in label name
-                if optics_datablock == True:
-                    self._addOpticsLabel(labelName=values[0][1:])
-                else:
-                    self._addLabel(labelName=values[0][1:])
+                self._addLabel(currentTableRead, labelName=values[0][1:])
                 found_label = True
 
             elif found_label:  # Read data lines after at least one label
                 # Iterate in pairs (zipping) over labels and values in the row
                 item = Item()
                 # Dynamically set values, using label type (str by default)
-                if optics_datablock == True:
-                    for label, value in izip(self._Opticslabels.values(), values):
-                        self._setItemValue(item, label, value)
-                    self._data_optics.append(item)
-                else:
-                    for label, value in izip(self._labels.values(), values):
-                        self._setItemValue(item, label, value)
-                    self._data_particles.append(item)
+
+                for label, value in izip(getattr(self, currentTableRead + "_labels").values(), values):
+                    self._setItemValue(item, label, value)
+                getattr(self, currentTableRead).append(item)
 
         f.close()
 
     def _write(self, output_file):
-        line_format = ""
-
-        if self.version == "3.1":
-            # write optics group header and data
-            output_file.write("\n# version 30001\n\ndata_optics\n\nloop_\n")
-            # Write labels and prepare the line format for rows
-            for i, l in enumerate(self._Opticslabels.values()):
-                output_file.write("_%s #%d \n" % (l.name, i + 1))
-                # Retrieve the type of the label
-                t = l.type
-                if t is float:
-                    line_format += "%%(%s)f \t" % l.name
-                elif t is int:
-                    line_format += "%%(%s)d \t" % l.name
-                else:
-                    line_format += "%%(%s)s \t" % l.name
-
-            line_format += '\n'
-
-            for item in self._data_optics:
-                output_file.write(line_format % item.__dict__)
-
-            # write data header
-            output_file.write("\n# version 30001\n\ndata_particles\n\nloop_\n")
-
-        if self.version == "3":
-            output_file.write("\ndata_\n\nloop_\n")
-
-        line_format = ""
-
         # Write labels and prepare the line format for rows
-        for i, l in enumerate(self._labels.values()):
-            output_file.write("_%s #%d \n" % (l.name, i + 1))
-            # Retrieve the type of the label
-            t = l.type
-            if t is float:
-                line_format += "%%(%s)f \t" % l.name
-            elif t is int:
-                line_format += "%%(%s)d \t" % l.name
-            else:
-                line_format += "%%(%s)s \t" % l.name
+        for attribute in dir(self):
+            if "data_" in attribute and "_labels" not in attribute:
+                line_format = ""
+                if self.version == "3.1":
+                    output_file.write("\n# version 30001\n\n%s\n\nloop_\n" % attribute)
+                else:
+                    output_file.write("\n\n%s\n\nloop_\n" % attribute)
 
-        line_format += '\n'
+                for i, l in enumerate(getattr(self, attribute + "_labels").values()):
+                    output_file.write("_%s #%d \n" % (l.name, i + 1))
+                    # Retrieve the type of the label
+                    t = l.type
+                    if t is float:
+                        line_format += "%%(%s)f \t" % l.name
+                    elif t is int:
+                        line_format += "%%(%s)d \t" % l.name
+                    else:
+                        line_format += "%%(%s)s \t" % l.name
 
-        for item in self._data_particles:
-            output_file.write(line_format % item.__dict__)
+                line_format += '\n'
 
-        output_file.write('\n')
+                for item in getattr(self, attribute):
+                    output_file.write(line_format % item.__dict__)
 
     def write(self, output_star):
         output_file = open(output_star, 'w')
@@ -720,41 +683,28 @@ class MetaData:
     def printStar(self):
         self._write(sys.stdout)
 
-    def size(self):
-        return len(self._data_particles)
+    def size(self, dataTableName):
+        return len(getattr(self, dataTableName))
 
     def __len__(self):
         return self.size()
 
     def __iter__(self):
-        for item in self._data_particles:
+        for item in self.data_particles:
             yield item
 
-    def getLabels(self):
-        return [l.name for l in self._labels.values()]
+    def getLabels(self, dataTableName="data_particles"):
+        return [l.name for l in getattr(self, dataTableName + "_labels").values()]
 
-    def getOpticsLabels(self):
-        return [l.name for l in self._Opticslabels.values()]
-
-    def setLabels(self, **kwargs):
+    def setLabels(self, dataTableName, **kwargs):
         """ Add (or set) labels with a given value. """
         for key, value in kwargs.items():
-            if key not in self._labels:
-                self._addLabel(labelName=key)
+            if key not in getattr(self, dataTableName + "_labels"):
+                getattr(self, dataTableName + "_labels")._addLabel(labelName=key)
 
-        for item in self._data_particles:
+        for item in getattr(self, dataTableName):
             for key, value in kwargs.items():
-                self._setItemValue(item, self._labels[key], value)
-
-    def setOpticsLabels(self, **kwargs):
-        """ Add (or set) labels with a given value. """
-        for key, value in kwargs.items():
-            if key not in self._Opticslabels:
-                self._addOpticsLabel(labelName=key)
-
-        for item in self._data_optics:
-            for key, value in kwargs.items():
-                self._setItemValue(item, self._Opticslabels[key], value)
+                self._setItemValue(item, getattr(self, dataTableName + "_labels")[key], value)
 
     def _iterLabels(self, labels):
         """ Just a small trick to accept normal lists or *args
@@ -766,54 +716,28 @@ class MetaData:
             else:
                 yield l1
 
-    def addLabels(self, *labels):
+    def addLabels(self, dataTableName, *labels):
         """
         Register labes in the metadata, but not add the values to the rows
         """
         for l in self._iterLabels(labels):
-            if l not in self._labels.keys():
-                self._addLabel(l)
+            if l not in getattr(self, dataTableName + "_labels").keys():
+                self._addLabel(dataTableName, l)
 
-    def addOpticsLabels(self, *labels):
-        """
-        Register labes in the metadata, but not add the values to the rows
-        """
+    def removeLabels(self, dataTableName, *labels):
         for l in self._iterLabels(labels):
-            if l not in self._Opticslabels.keys():
-                self._addOpticsLabel(l)
+            if l in getattr(self, dataTableName + "_labels"):
+                del getattr(self, dataTableName + "_labels")[l]
 
-    def removeLabels(self, *labels):
-        for l in self._iterLabels(labels):
-            if l in self._labels:
-                del self._labels[l]
-
-    def removeOpticsLabels(self, *labels):
-        for l in self._iterLabels(labels):
-            if l in self._Opticslabels:
-                del self._Opticslabels[l]
-
-    def addItem(self, item):
+    def addItem(self, dataTableName, item):
         """ Add a new item to the MetaData. """
-        self._data_particles.append(item)
+        getattr(self, dataTableName).append(item)
 
-    def addOpticsItem(self, item):
-        """ Add a new item to the MetaData. """
-        self._data_optics.append(item)
-
-    def setData(self, data):
+    def setData(self, dataTableName, data):
         """ Set internal data with new items. """
-        self._data_particles = data
+        setattr(self, dataTableName, data)
 
-    def setOpticsData(self, data):
-        """ Set internal data with new items. """
-        self._data_optics = data
-
-    def addData(self, data):
+    def addData(self, dataTableName, data):
         """ Add new items to internal data. """
         for item in data:
-            self.addItem(item)
-
-    def addOpticsData(self, data):
-        """ Add new items to internal data. """
-        for item in data:
-            self.addOpticsItem(item)
+            self.addItem(dataTableName, item)
