@@ -62,8 +62,12 @@ class JoinStar:
         # UNION
         if args.op == "union":
             # check if both stars contains same labels
-            i1labels = md1.getLabels("data_particles")
-            i2labels = md2.getLabels("data_particles")
+            if md1.version == "3.1":
+                i1labels = md1.getLabels("data_particles")
+                i2labels = md2.getLabels("data_particles")
+            else:
+                i1labels = md1.getLabels("data_")
+                i2labels = md2.getLabels("data_")
             if len(i1labels) != len(i2labels):
                 if len(i1labels) > len(i2labels):
                     print("WARNING: Input2 does not contain all the labels of Input1.")
@@ -106,25 +110,32 @@ class JoinStar:
 
             mdOut = MetaData()
 
-            if md.version == "3.1":
+            if md1.version == "3.1":
                 mdOut.version = "3.1"
                 mdOut.addDataTable("data_optics")
-                mdOut.addLabels("data_optics", md.getLabels("data_optics"))
-                mdOut.addData("data_optics", getattr(md, "data_optics"))
+                mdOut.addLabels("data_optics", md1.getLabels("data_optics"))
+                mdOut.addData("data_optics", getattr(md1, "data_optics"))
+                particleTableName = "data_particles"
+            else:
+                particleTableName = "data_"
 
-            mdOut.addDataTable("data_particles")
-            mdOut.addLabels("data_particles", md1.getLabels("data_particles"))
+            mdOut.addDataTable(particleTableName)
+            mdOut.addLabels(particleTableName, md1.getLabels(particleTableName))
             particles1 = self.get_particles(md1)
             particles2 = self.get_particles(md2)
-            mdOut.addData("data_particles", particles1)
-            mdOut.addData("data_particles", particles2)
+            mdOut.addData(particleTableName, particles1)
+            mdOut.addData(particleTableName, particles2)
             print("%s particles were selected..." % str((len(particles1) + len(particles2))))
         # INTERSECT
         if args.op == "intersect":
             # create intersect unique values
-            ilabels1 = md1.getLabels("data_particles")
-            ilabels2 = md2.getLabels("data_particles")
-            if (args.lb not in ilabels1) or (args.lb not in ilabels2):
+            if md1.version == "3.1":
+                i1labels = md1.getLabels("data_particles")
+                i2labels = md2.getLabels("data_particles")
+            else:
+                i1labels = md1.getLabels("data_")
+                i2labels = md2.getLabels("data_")
+            if (args.lb not in i1labels) or (args.lb not in i2labels):
                 self.error("No label %s found in Input1 or Input2 file." % args.lb)
 
             particles1 = self.get_particles(md1)
@@ -142,22 +153,30 @@ class JoinStar:
                     intersectParticles.append(particle)
             mdOut = MetaData()
 
-            if md.version == "3.1":
+            if md1.version == "3.1":
                 mdOut.version = "3.1"
                 mdOut.addDataTable("data_optics")
-                mdOut.addLabels("data_optics", md.getLabels("data_optics"))
-                mdOut.addData("data_optics", getattr(md, "data_optics"))
+                mdOut.addLabels("data_optics", md1.getLabels("data_optics"))
+                mdOut.addData("data_optics", getattr(md1, "data_optics"))
+                particleTableName = "data_particles"
+            else:
+                particleTableName = "data_"
 
-            mdOut.addDataTable("data_particles")
-            mdOut.addLabels("data_particles", md1.getLabels("data_particles"))
-            mdOut.addData("data_particles", intersectParticles)
+            mdOut.addDataTable(particleTableName)
+            mdOut.addLabels(particleTableName, md1.getLabels(particleTableName))
+            mdOut.addData(particleTableName, intersectParticles)
+
             print("%s particles were selected..." % str(len(intersectParticles)))
         # EXCEPT
         if args.op == "except":
             # create unique values for except
-            ilabels1 = md1.getLabels("data_particles")
-            ilabels2 = md2.getLabels("data_particles")
-            if (args.lb not in ilabels1) or (args.lb not in ilabels2):
+            if md1.version == "3.1":
+                i1labels = md1.getLabels("data_particles")
+                i2labels = md2.getLabels("data_particles")
+            else:
+                i1labels = md1.getLabels("data_")
+                i2labels = md2.getLabels("data_")
+            if (args.lb not in i1labels) or (args.lb not in i2labels):
                 self.error("No label %s found in Input1 or Input2 file." % args.lb)
 
             particles1 = self.get_particles(md1)
@@ -175,15 +194,19 @@ class JoinStar:
                     exceptParticles.append(particle)
             mdOut = MetaData()
 
-            if md.version == "3.1":
+            if md1.version == "3.1":
                 mdOut.version = "3.1"
                 mdOut.addDataTable("data_optics")
-                mdOut.addLabels("data_optics", md.getLabels("data_optics"))
-                mdOut.addData("data_optics", getattr(md, "data_optics"))
+                mdOut.addLabels("data_optics", md1.getLabels("data_optics"))
+                mdOut.addData("data_optics", getattr(md1, "data_optics"))
+                particleTableName = "data_particles"
+            else:
+                particleTableName = "data_"
 
-            mdOut.addDataTable("data_particles")
-            mdOut.addLabels("data_particles", md1.getLabels("data_particles"))
-            mdOut.addData("data_particles", exceptParticles)
+            mdOut.addDataTable(particleTableName)
+            mdOut.addLabels(particleTableName, md1.getLabels(particleTableName))
+            mdOut.addData(particleTableName, exceptParticles)
+
             print("%s particles were selected..." % str(len(exceptParticles)))
 
         mdOut.write(args.o)

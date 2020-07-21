@@ -73,8 +73,12 @@ class AssignLabelStar:
         md1 = MetaData(args.i1)
         md2 = MetaData(args.i2)
 
-        i1labels = md1.getLabels()
-        i2labels = md2.getLabels()
+        if md1.version == "3.1":
+            i1labels = md1.getLabels("data_particles")
+            i2labels = md2.getLabels("data_particles")
+        else:
+            i1labels = md1.getLabels("data_")
+            i2labels = md2.getLabels("data_")
 
         if args.col_lb in i1labels:
             self.error("Column %s is already in Input1 star file. Please remove it first..." % args.col_lb)
@@ -89,35 +93,38 @@ class AssignLabelStar:
             # add label with default values 0.0
             print("Adding label %s to Input1 data with default value 0.0." % args.col_lb)
             dic = {args.col_lb: 0.0}
-            md1.setLabels("data_particles",**dic)
+            md1.setLabels("data_particles", **dic)
         if LABELS[args.col_lb] == int:
             # add label with default values 0
             print("Adding label %s to Input1 data with default value 0." % args.col_lb)
             dic = {args.col_lb: 0}
-            md1.setLabels("data_particles",**dic)
+            md1.setLabels("data_particles", **dic)
         if LABELS[args.col_lb] == str:
             # add label with default values "dummy"
             print("Adding label %s to Input1 data with default value \"dummy\"" % args.col_lb)
             dic = {args.col_lb: "dummy"}
-            md1.setLabels("data_particles",**dic)
-
-
-        mdOut = MetaData()
-
-        if md.version == "3.1":
-            mdOut.version = "3.1"
-            mdOut.addDataTable("data_optics")
-            mdOut.addLabels("data_optics", md.getLabels("data_optics"))
-            mdOut.addData("data_optics", getattr(md,"data_optics"))
-
-        mdOut.addDataTable("data_particles")
-        mdOut.addLabels("data_particles",md1.getLabels())
+            md1.setLabels("data_particles", **dic)
 
         particles1 = self.get_particles(md1)
         particles2 = self.get_particles(md2)
 
-        print("Assigning values for Input1 label %s where the %s of Input2 matches Input1" % (args.col_lb, args.comp_lb))
-        mdOut.addData("data_particles", self.assign_column(particles1, particles2, args.col_lb, args.comp_lb))
+        print(
+            "Assigning values for Input1 label %s where the %s of Input2 matches Input1" % (args.col_lb, args.comp_lb))
+
+        mdOut = MetaData()
+
+        if md1.version == "3.1":
+            mdOut.version = "3.1"
+            mdOut.addDataTable("data_optics")
+            mdOut.addLabels("data_optics", md1.getLabels("data_optics"))
+            mdOut.addData("data_optics", getattr(md1, "data_optics"))
+            particleTableName = "data_particles"
+        else:
+            particleTableName = "data_"
+
+        mdOut.addDataTable(particleTableName)
+        mdOut.addLabels(particleTableName, md1.getLabels(particleTableName))
+        mdOut.addData(particleTableName, self.assign_column(particles1, particles2, args.col_lb, args.comp_lb))
 
         print("%s particles were processed..." % str((len(particles1) + len(particles2))))
 

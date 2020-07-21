@@ -65,7 +65,7 @@ class RemovePrefOrientStar:
 
         return sortedParticles
 
-    def removePrefOrient(self, particles,xSD):
+    def removePrefOrient(self, particles, xSD):
 
         # generate array of 1 deg orientation step from rot and tilt angle
         heatmap = [[0 for col in range(360)] for row in range(180)]
@@ -156,22 +156,24 @@ class RemovePrefOrientStar:
 
         particles = self.get_particles(md)
 
+        new_particles = []
+
+        new_particles.extend(self.removePrefOrient(particles, args.sd))
+
         mdOut = MetaData()
 
         if md.version == "3.1":
             mdOut.version = "3.1"
             mdOut.addDataTable("data_optics")
             mdOut.addLabels("data_optics", md.getLabels("data_optics"))
-            mdOut.addData("data_optics", getattr(md,"data_optics"))
+            mdOut.addData("data_optics", getattr(md, "data_optics"))
+            particleTableName = "data_particles"
+        else:
+            particleTableName = "data_"
 
-        mdOut.addDataTable("data_particles")
-        mdOut.addLabels("data_particles", md.getLabels("data_particles"))
-
-        new_particles = []
-
-        new_particles.extend(self.removePrefOrient(particles, args.sd))
-
-        mdOut.addData("data_particles", new_particles)
+        mdOut.addDataTable(particleTableName)
+        mdOut.addLabels(particleTableName, md.getLabels(particleTableName))
+        mdOut.addData(particleTableName, new_particles)
         mdOut.write(args.o)
 
         print("File %s was created..." % args.o)

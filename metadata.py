@@ -657,7 +657,7 @@ class MetaData:
                 if self.version == "3.1":
                     output_file.write("\n# version 30001\n\n%s\n\nloop_\n" % attribute)
                 else:
-                    output_file.write("\n\n%s\n\nloop_\n" % attribute)
+                    output_file.write("\n%s\n\nloop_\n" % attribute)
 
                 for i, l in enumerate(getattr(self, attribute + "_labels").values()):
                     output_file.write("_%s #%d \n" % (l.name, i + 1))
@@ -690,8 +690,12 @@ class MetaData:
         return self.size()
 
     def __iter__(self):
-        for item in self.data_particles:
-            yield item
+        if hasattr(self, "data_particles"):
+            for item in self.data_particles:
+                yield item
+        else:
+            for item in self.data_:
+                yield item
 
     def getLabels(self, dataTableName="data_particles"):
         return [l.name for l in getattr(self, dataTableName + "_labels").values()]

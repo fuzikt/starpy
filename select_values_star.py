@@ -111,7 +111,6 @@ class SelValueStar:
         except ValueError:
             self.error("Percentile requires integer value to be used")
 
-
         return compValue, rangeHi, rangeLo, rangeSel, prctl_l, prctl_h
 
     def get_particles(self, md):
@@ -192,16 +191,6 @@ class SelValueStar:
             print("Selecting particles particles where %s is %s %s." % (args.lb, args.op, compValue))
 
         md = MetaData(args.i)
-        mdOut = MetaData()
-
-        if md.version == "3.1":
-            mdOut.version = "3.1"
-            mdOut.addDataTable("data_optics")
-            mdOut.addLabels("data_optics", md.getLabels("data_optics"))
-            mdOut.addData("data_optics", getattr(md,"data_optics"))
-
-        mdOut.addDataTable("data_particles")
-        mdOut.addLabels("data_particles", md.getLabels("data_particles"))
 
         new_particles = []
 
@@ -209,7 +198,21 @@ class SelValueStar:
 
         new_particles.extend(
             self.selParticles(particles, args.lb, args.op, compValue, rangeHi, rangeLo, rangeSel, prctl_l, prctl_h))
-        mdOut.addData("data_particles", new_particles)
+
+        mdOut = MetaData()
+        if md.version == "3.1":
+            mdOut.version = "3.1"
+            mdOut.addDataTable("data_optics")
+            mdOut.addLabels("data_optics", md.getLabels("data_optics"))
+            mdOut.addData("data_optics", getattr(md, "data_optics"))
+            particleTableName = "data_particles"
+        else:
+            particleTableName = "data_"
+
+        mdOut.addDataTable(particleTableName)
+        mdOut.addLabels(particleTableName, md.getLabels(particleTableName))
+        mdOut.addData(particleTableName, new_particles)
+
         mdOut.write(args.o)
 
         print("New star file %s created. Have fun!" % args.o)

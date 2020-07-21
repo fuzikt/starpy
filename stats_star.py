@@ -84,7 +84,10 @@ class StatsStar:
         md = MetaData(args.i)
 
         if args.lb == "ALL":
-            iLabels = md.getLabels("data_particles")
+            if md.version == "3.1":
+                iLabels = md.getLabels("data_particles")
+            else:
+                iLabels = md.getLabels("data_")
         else:
             iLabels = args.lb.split(" ")
 

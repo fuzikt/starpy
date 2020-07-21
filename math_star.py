@@ -76,7 +76,7 @@ class MathStar:
             rangeHi = 0
             rangeLo = 0
 
-        if (args.rh == "-0") and (args.rl == "-0") and (args.sellb !="None"):
+        if (args.rh == "-0") and (args.rl == "-0") and (args.sellb != "None"):
             if args.selop not in ["=", "!=", ">=", "<=", "<", ">"]:
                 self.error(
                     "Selection operator '%s' not allowed. Allowed operators are: \"=\", \"!=\", \">=\", \"<=\", \"<\", \">\"" % args.op)
@@ -217,7 +217,11 @@ class MathStar:
 
         md = MetaData(args.i)
 
-        ilabels = md.getLabels()
+        if md.version == "3.1":
+            ilabels = md.getLabels("data_particles")
+        else:
+            ilabels = md.getLabels("data_")
+
         if args.lb not in ilabels:
             self.error("No label " + args.lb + " found in Input file.")
 
@@ -234,11 +238,14 @@ class MathStar:
             mdOut.version = "3.1"
             mdOut.addDataTable("data_optics")
             mdOut.addLabels("data_optics", md.getLabels("data_optics"))
-            mdOut.addData("data_optics", getattr(md,"data_optics"))
+            mdOut.addData("data_optics", getattr(md, "data_optics"))
+            particleTableName = "data_particles"
+        else:
+            particleTableName = "data_"
 
-        mdOut.addDataTable("data_particles")
-        mdOut.addLabels("data_particles", md.getLabels("data_particles"))
-        mdOut.addData("data_particles", new_particles)
+        mdOut.addDataTable(particleTableName)
+        mdOut.addLabels(particleTableName, md.getLabels(particleTableName))
+        mdOut.addData(particleTableName, new_particles)
         mdOut.write(args.o)
 
         print("New star file %s created. Have fun!" % args.o)

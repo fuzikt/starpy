@@ -63,7 +63,11 @@ class SelAstgStar:
         print("Selecting particles/micrographs from star file...")
 
         md = MetaData(args.i)
-        ilabels = md.getLabels("data_particles")
+
+        if md.version == "3.1":
+            ilabels = md.getLabels("data_particles")
+        else:
+            ilabels = md.getLabels("data_")
 
         if ("rlnDefocusU" not in ilabels) or ("rlnDefocusV" not in ilabels):
             self.error("No labels rlnDefocusU or rlnDefocusV found in Input file.")
@@ -73,21 +77,24 @@ class SelAstgStar:
 
         mdOut = MetaData()
 
-        if md.version == "3.1":
-            mdOut.version = "3.1"
-            mdOut.addDataTable("data_optics")
-            mdOut.addLabels("data_optics", md.getLabels("data_optics"))
-            mdOut.addData("data_optics", getattr(md,"data_optics"))
-
-        mdOut.addDataTable("data_particles")
-        mdOut.addLabels("data_particles", md.getLabels("data_particles"))
-
         new_particles = []
 
         particles = self.get_particles(md)
 
         new_particles.extend(self.selParticles(particles, args.astg, args.res,))
-        mdOut.addData("data_particles", new_particles)
+
+        if md.version == "3.1":
+            mdOut.version = "3.1"
+            mdOut.addDataTable("data_optics")
+            mdOut.addLabels("data_optics", md.getLabels("data_optics"))
+            mdOut.addData("data_optics", getattr(md, "data_optics"))
+            particleTableName = "data_particles"
+        else:
+            particleTableName = "data_"
+
+        mdOut.addDataTable(particleTableName)
+        mdOut.addLabels(particleTableName, md.getLabels(particleTableName))
+        mdOut.addData(particleTableName, new_particles)
         mdOut.write(args.o)
 
         print("New star file %s created. Have fun!" % args.o)

@@ -65,15 +65,6 @@ class RandSymStar:
         self.validate(args)
 
         md = MetaData(args.i)
-        mdOut = MetaData()
-
-        if md.version == "3.1":
-            mdOut.version = "3.1"
-            mdOut.addOpticsLabels("data_optics", md.getOpticsLabels())
-            mdOut.addOpticsData("data_optics", md._data_optics)
-
-        mdOut.addDataTable("data_particles")
-        mdOut.addLabels("data_particles", md.getLabels("data_particles"))
 
         new_particles = []
 
@@ -86,7 +77,19 @@ class RandSymStar:
 
         new_particles.extend(self.randParticles(particles))
 
-        mdOut.addData("data_particles", new_particles)
+        mdOut = MetaData()
+        if md.version == "3.1":
+            mdOut.version = "3.1"
+            mdOut.addOpticsLabels("data_optics", md.getOpticsLabels())
+            mdOut.addOpticsData("data_optics", md._data_optics)
+            particleTableName = "data_particles"
+        else:
+            particleTableName = "data_"
+
+        mdOut.addDataTable(particleTableName)
+        mdOut.addLabels(particleTableName, md.getLabels(particleTableName))
+        mdOut.addData(particleTableName, new_particles)
+
         mdOut.write(args.o)
 
         print("New star file %s created. Have fun!" % args.o)

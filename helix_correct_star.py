@@ -56,7 +56,11 @@ class HelixCorrectStar:
 
         md = MetaData(args.i)
 
-        ilabels = md.getLabels("data_particles")
+        if md.version == "3.1":
+            ilabels = md.getLabels("data_particles")
+        else:
+            ilabels = md.getLabels("data_")
+
         if 'rlnAnglePsiFlipRatio' not in ilabels:
             md.addLabels(['rlnAnglePsiFlipRatio'])
         if 'rlnHelicalTubeID' not in ilabels:
@@ -70,16 +74,19 @@ class HelixCorrectStar:
             mdOut.version = "3.1"
             mdOut.addDataTable("data_optics")
             mdOut.addLabels("data_optics", md.getLabels("data_optics"))
-            mdOut.addData("data_optics", getattr(md,"data_optics"))
+            mdOut.addData("data_optics", getattr(md, "data_optics"))
+            particleTableName = "data_particles"
+        else:
+            particleTableName = "data_"
 
-        mdOut.addDataTable("data_particles")
-        mdOut.addLabels("data_particles", md.getLabels("data_particles"))
+        mdOut.addDataTable(particleTableName)
+        mdOut.addLabels(particleTableName, md.getLabels(particleTableName))
 
         particles = self.get_particles(md)
 
         self.helixParticles(particles)
 
-        mdOut.addData("data_particles", particles)
+        mdOut.addData(particleTableName, particles)
         mdOut.write(args.o)
 
         print("New star file %s created. Have fun!" % args.o)

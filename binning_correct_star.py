@@ -66,16 +66,6 @@ class BinCorrectStar:
         print("Binning correct input star file. Using binning factor %s." % str(args.bin_factor))
 
         md = MetaData(args.i)
-        mdOut = MetaData()
-
-        if md.version == "3.1":
-            mdOut.version = "3.1"
-            mdOut.addDataTable("data_optics")
-            mdOut.addLabels("data_optics", md.getLabels("data_optics"))
-            mdOut.addData("data_optics", getattr(md,"data_optics"))
-
-        mdOut.addDataTable("data_particles")
-        mdOut.addLabels("data_particles", md.getLabels())
 
         new_particles = []
 
@@ -96,7 +86,20 @@ class BinCorrectStar:
         new_particles.extend(
             self.binParticles(particles, args.bin_factor, correctOrigin, correctApix, args.suf_orig, args.suf_new))
 
-        mdOut.addData("data_particles", new_particles)
+        mdOut = MetaData()
+        if md.version == "3.1":
+            mdOut.version = "3.1"
+            mdOut.addDataTable("data_optics")
+            mdOut.addLabels("data_optics", md.getLabels("data_optics"))
+            mdOut.addData("data_optics", getattr(md, "data_optics"))
+            particleTableName = "data_particles"
+        else:
+            particleTableName = "data_"
+
+        mdOut.addDataTable(particleTableName)
+        mdOut.addLabels(particleTableName, md.getLabels(particleTableName))
+        mdOut.addData(particleTableName, new_particles)
+
         mdOut.write(args.o)
 
         print("New star file %s created. Have fun!" % args.o)

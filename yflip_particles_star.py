@@ -210,23 +210,27 @@ class RotateParticlesStar:
 
         md = MetaData(args.i)
 
+        new_particles = []
+
+        particles = self.get_particles(md)
+
+        new_particles.extend(self.yflipParticles(particles))
+
         mdOut = MetaData()
 
         if md.version == "3.1":
             mdOut.version = "3.1"
             mdOut.addDataTable("data_optics")
             mdOut.addLabels("data_optics", md.getLabels("data_optics"))
-            mdOut.addData("data_optics", getattr(md,"data_optics"))
+            mdOut.addData("data_optics", getattr(md, "data_optics"))
+            particleTableName = "data_particles"
+        else:
+            particleTableName = "data_"
 
-        mdOut.addDataTable("data_particles")
-        mdOut.addLabels("data_particles", md.getLabels("data_particles"))
+        mdOut.addDataTable(particleTableName)
+        mdOut.addLabels(particleTableName, md.getLabels(particleTableName))
+        mdOut.addData(particleTableName, new_particles)
 
-        new_particles = []
-
-        particles = self.get_particles(md)
-
-        new_particles.extend(self.yflipParticles(particles))
-        mdOut.addData("data_particles", new_particles)
         mdOut.write(args.o)
 
         print("New star file %s created. Have fun!" % args.o)

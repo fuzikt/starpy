@@ -63,9 +63,9 @@ class RenameStar:
         self.addBeamTiltClass(particles)
 
         mdOut = MetaData()
-        mdOut.addDataTable("data_particles")
-        mdOut.addLabels("data_particles", md.getLabels("data_particles"))
-        mdOut.addData("data_particles", particles)
+        mdOut.addDataTable("data_")
+        mdOut.addLabels("data_", md.getLabels("data_"))
+        mdOut.addData("data_", particles)
         mdOut.write(args.o)
 
         print("New star file %s created. Have fun!" % args.o)
