@@ -69,10 +69,11 @@ class RandSymStar:
 
         if md.version == "3.1":
             mdOut.version = "3.1"
-            mdOut.addOpticsLabels(md.getOpticsLabels())
-            mdOut.addOpticsData(md._data_optics)
+            mdOut.addOpticsLabels("data_optics", md.getOpticsLabels())
+            mdOut.addOpticsData("data_optics", md._data_optics)
 
-        mdOut.addLabels(md.getLabels())
+        mdOut.addDataTable("data_particles")
+        mdOut.addLabels("data_particles", md.getLabels("data_particles"))
 
         new_particles = []
 
@@ -85,7 +86,7 @@ class RandSymStar:
 
         new_particles.extend(self.randParticles(particles))
 
-        mdOut.addData(new_particles)
+        mdOut.addData("data_particles", new_particles)
         mdOut.write(args.o)
 
         print("New star file %s created. Have fun!" % args.o)

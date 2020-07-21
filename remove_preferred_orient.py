@@ -160,16 +160,18 @@ class RemovePrefOrientStar:
 
         if md.version == "3.1":
             mdOut.version = "3.1"
-            mdOut.addOpticsLabels(md.getOpticsLabels())
-            mdOut.addOpticsData(md._data_optics)
+            mdOut.addDataTable("data_optics")
+            mdOut.addLabels("data_optics", md.getLabels("data_optics"))
+            mdOut.addData("data_optics", getattr(md,"data_optics"))
 
-        mdOut.addLabels(md.getLabels())
+        mdOut.addDataTable("data_particles")
+        mdOut.addLabels("data_particles", md.getLabels("data_particles"))
 
         new_particles = []
 
         new_particles.extend(self.removePrefOrient(particles, args.sd))
 
-        mdOut.addData(new_particles)
+        mdOut.addData("data_particles", new_particles)
         mdOut.write(args.o)
 
         print("File %s was created..." % args.o)

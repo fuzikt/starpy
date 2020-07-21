@@ -52,9 +52,7 @@ class RenameStar:
         self.validate(args)
 
         md = MetaData(args.i)
-        md.addLabels("rlnBeamTiltClass")
-        mdOut = MetaData()
-        mdOut.addLabels(md.getLabels())
+        md.addLabels("data_particles", "rlnBeamTiltClass")
 
         print("Reading in input star file.....")
 
@@ -64,7 +62,10 @@ class RenameStar:
 
         self.addBeamTiltClass(particles)
 
-        mdOut.addData(particles)
+        mdOut = MetaData()
+        mdOut.addDataTable("data_particles")
+        mdOut.addLabels("data_particles", md.getLabels("data_particles"))
+        mdOut.addData("data_particles", particles)
         mdOut.write(args.o)
 
         print("New star file %s created. Have fun!" % args.o)

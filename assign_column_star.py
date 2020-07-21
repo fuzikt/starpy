@@ -89,33 +89,35 @@ class AssignLabelStar:
             # add label with default values 0.0
             print("Adding label %s to Input1 data with default value 0.0." % args.col_lb)
             dic = {args.col_lb: 0.0}
-            md1.setLabels(**dic)
+            md1.setLabels("data_particles",**dic)
         if LABELS[args.col_lb] == int:
             # add label with default values 0
             print("Adding label %s to Input1 data with default value 0." % args.col_lb)
             dic = {args.col_lb: 0}
-            md1.setLabels(**dic)
+            md1.setLabels("data_particles",**dic)
         if LABELS[args.col_lb] == str:
             # add label with default values "dummy"
             print("Adding label %s to Input1 data with default value \"dummy\"" % args.col_lb)
             dic = {args.col_lb: "dummy"}
-            md1.setLabels(**dic)
+            md1.setLabels("data_particles",**dic)
 
 
         mdOut = MetaData()
 
         if md.version == "3.1":
             mdOut.version = "3.1"
-            mdOut.addOpticsLabels(md.getOpticsLabels())
-            mdOut.addOpticsData(md._data_optics)
+            mdOut.addDataTable("data_optics")
+            mdOut.addLabels("data_optics", md.getLabels("data_optics"))
+            mdOut.addData("data_optics", getattr(md,"data_optics"))
 
-        mdOut.addLabels(md1.getLabels())
+        mdOut.addDataTable("data_particles")
+        mdOut.addLabels("data_particles",md1.getLabels())
 
         particles1 = self.get_particles(md1)
         particles2 = self.get_particles(md2)
 
         print("Assigning values for Input1 label %s where the %s of Input2 matches Input1" % (args.col_lb, args.comp_lb))
-        mdOut.addData(self.assign_column(particles1, particles2, args.col_lb, args.comp_lb))
+        mdOut.addData("data_particles", self.assign_column(particles1, particles2, args.col_lb, args.comp_lb))
 
         print("%s particles were processed..." % str((len(particles1) + len(particles2))))
 

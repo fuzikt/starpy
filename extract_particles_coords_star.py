@@ -40,7 +40,7 @@ class RemoveLabelsStar:
         print("Removing columns fromstar file....")
 
         md = MetaData(args.i)
-        md.removeLabels("rlnImageName", "rlnMicrographName", "rlnMagnification", "rlnDetectorPixelSize",
+        md.removeLabels("data_particles", "rlnImageName", "rlnMicrographName", "rlnMagnification", "rlnDetectorPixelSize",
                         "rlnCtfFigureOfMerit", "rlnVoltage", "rlnDefocusU", "rlnDefocusV", "rlnDefocusAngle",
                         "rlnSphericalAberration", "rlnCtfBfactor", "rlnCtfScalefactor", "rlnPhaseShift",
                         "rlnAmplitudeContrast")

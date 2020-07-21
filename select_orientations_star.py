@@ -73,10 +73,12 @@ class SelOrientStar:
 
         if md.version == "3.1":
             mdOut.version = "3.1"
-            mdOut.addOpticsLabels(md.getOpticsLabels())
-            mdOut.addOpticsData(md._data_optics)
+            mdOut.addDataTable("data_optics")
+            mdOut.addLabels("data_optics", md.getLabels("data_optics"))
+            mdOut.addData("data_optics", getattr(md,"data_optics"))
 
-        mdOut.addLabels(md.getLabels())
+        mdOut.addDataTable("data_particles")
+        mdOut.addLabels("data_particles", md.getLabels("data_particles"))
 
         new_particles = []
 
@@ -85,7 +87,7 @@ class SelOrientStar:
         new_particles.extend(
             self.selParticles(particles, args.rot_min, args.rot_max, args.tilt_min, args.tilt_max, args.psi_min,
                               args.psi_max))
-        mdOut.addData(new_particles)
+        mdOut.addData("data_particles", new_particles)
         mdOut.write(args.o)
 
         print("New star file %s created. Have fun!" % args.o)

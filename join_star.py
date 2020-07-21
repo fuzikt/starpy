@@ -62,8 +62,8 @@ class JoinStar:
         # UNION
         if args.op == "union":
             # check if both stars contains same labels
-            i1labels = md1.getLabels()
-            i2labels = md2.getLabels()
+            i1labels = md1.getLabels("data_particles")
+            i2labels = md2.getLabels("data_particles")
             if len(i1labels) != len(i2labels):
                 if len(i1labels) > len(i2labels):
                     print("WARNING: Input2 does not contain all the labels of Input1.")
@@ -73,17 +73,17 @@ class JoinStar:
                             # add label with default values 0.0
                             print("Adding label %s to Input2 data with default value 0.0." % label)
                             dic = {label: 0.0}
-                            md2.setLabels(**dic)
+                            md2.setLabels("data_particles", **dic)
                         if LABELS[label] == int:
                             # add label with default values 0
                             print("Adding label %s to Input2 data with default value 0." % label)
                             dic = {label: 0}
-                            md2.setLabels(**dic)
+                            md2.setLabels("data_particles", **dic)
                         if LABELS[label] == str:
                             # add label with default values "dummy"
                             print("Adding label %s to Input2 data with default value \"dummy\"" % label)
                             dic = {label: "dummy"}
-                            md2.setLabels(**dic)
+                            md2.setLabels("data_particles", **dic)
                 if len(i1labels) < len(i2labels):
                     print("WARNING: Input1 does not contain all the labels of Input2.")
                     missingLabels = [Labels for Labels in i2labels if Labels not in i1labels]
@@ -92,36 +92,38 @@ class JoinStar:
                             # add label with default values 0.0
                             print("Adding label %s to Input1 data with default value 0.0." % label)
                             dic = {label: 0.0}
-                            md1.setLabels(**dic)
+                            md1.setLabels("data_particles", **dic)
                         if LABELS[label] == int:
                             # add label with default values 0
                             print("Adding label %s to Input1 data with default value 0." % label)
                             dic = {label: 0}
-                            md1.setLabels(**dic)
+                            md1.setLabels("data_particles", **dic)
                         if LABELS[label] == str:
                             # add label with default values "dummy"
                             print("Adding label %s to Input1 data with default value \"dummy\"" % label)
                             dic = {label: "dummy"}
-                            md1.setLabels(**dic)
+                            md1.setLabels("data_particles", **dic)
 
             mdOut = MetaData()
 
-            if md1.version == "3.1":
+            if md.version == "3.1":
                 mdOut.version = "3.1"
-                mdOut.addOpticsLabels(md1.getOpticsLabels())
-                mdOut.addOpticsData(md1._data_optics)
+                mdOut.addDataTable("data_optics")
+                mdOut.addLabels("data_optics", md.getLabels("data_optics"))
+                mdOut.addData("data_optics", getattr(md, "data_optics"))
 
-            mdOut.addLabels(md1.getLabels())
+            mdOut.addDataTable("data_particles")
+            mdOut.addLabels("data_particles", md1.getLabels("data_particles"))
             particles1 = self.get_particles(md1)
             particles2 = self.get_particles(md2)
-            mdOut.addData(particles1)
-            mdOut.addData(particles2)
+            mdOut.addData("data_particles", particles1)
+            mdOut.addData("data_particles", particles2)
             print("%s particles were selected..." % str((len(particles1) + len(particles2))))
         # INTERSECT
         if args.op == "intersect":
             # create intersect unique values
-            ilabels1 = md1.getLabels()
-            ilabels2 = md2.getLabels()
+            ilabels1 = md1.getLabels("data_particles")
+            ilabels2 = md2.getLabels("data_particles")
             if (args.lb not in ilabels1) or (args.lb not in ilabels2):
                 self.error("No label %s found in Input1 or Input2 file." % args.lb)
 
@@ -140,19 +142,21 @@ class JoinStar:
                     intersectParticles.append(particle)
             mdOut = MetaData()
 
-            if md1.version == "3.1":
+            if md.version == "3.1":
                 mdOut.version = "3.1"
-                mdOut.addOpticsLabels(md1.getOpticsLabels())
-                mdOut.addOpticsData(md1._data_optics)
+                mdOut.addDataTable("data_optics")
+                mdOut.addLabels("data_optics", md.getLabels("data_optics"))
+                mdOut.addData("data_optics", getattr(md, "data_optics"))
 
-            mdOut.addLabels(md1.getLabels())
-            mdOut.addData(intersectParticles)
+            mdOut.addDataTable("data_particles")
+            mdOut.addLabels("data_particles", md1.getLabels("data_particles"))
+            mdOut.addData("data_particles", intersectParticles)
             print("%s particles were selected..." % str(len(intersectParticles)))
         # EXCEPT
         if args.op == "except":
             # create unique values for except
-            ilabels1 = md1.getLabels()
-            ilabels2 = md2.getLabels()
+            ilabels1 = md1.getLabels("data_particles")
+            ilabels2 = md2.getLabels("data_particles")
             if (args.lb not in ilabels1) or (args.lb not in ilabels2):
                 self.error("No label %s found in Input1 or Input2 file." % args.lb)
 
@@ -171,13 +175,15 @@ class JoinStar:
                     exceptParticles.append(particle)
             mdOut = MetaData()
 
-            if md1.version == "3.1":
+            if md.version == "3.1":
                 mdOut.version = "3.1"
-                mdOut.addOpticsLabels(md1.getOpticsLabels())
-                mdOut.addOpticsData(md1._data_optics)
+                mdOut.addDataTable("data_optics")
+                mdOut.addLabels("data_optics", md.getLabels("data_optics"))
+                mdOut.addData("data_optics", getattr(md, "data_optics"))
 
-            mdOut.addLabels(md1.getLabels())
-            mdOut.addData(exceptParticles)
+            mdOut.addDataTable("data_particles")
+            mdOut.addLabels("data_particles", md1.getLabels("data_particles"))
+            mdOut.addData("data_particles", exceptParticles)
             print("%s particles were selected..." % str(len(exceptParticles)))
 
         mdOut.write(args.o)
