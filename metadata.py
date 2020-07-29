@@ -687,7 +687,12 @@ class MetaData:
         return len(getattr(self, dataTableName))
 
     def __len__(self):
-        return self.size()
+        if hasattr(self, "data_particles"):
+            return self.size("data_particles")
+        elif hasattr(self, "data_"):
+            return self.size("data_")
+        else:
+            return 0
 
     def __iter__(self):
         if hasattr(self, "data_particles"):
