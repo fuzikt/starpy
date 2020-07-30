@@ -709,7 +709,7 @@ class MetaData:
         """ Add (or set) labels with a given value. """
         for key, value in kwargs.items():
             if key not in getattr(self, dataTableName + "_labels").keys():
-                getattr(self, dataTableName + "_labels")._addLabel(labelName=key)
+                self._addLabel(dataTableName, key)
 
         for item in getattr(self, dataTableName):
             for key, value in kwargs.items():
