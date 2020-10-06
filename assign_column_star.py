@@ -93,17 +93,19 @@ class AssignLabelStar:
             # add label with default values 0.0
             print("Adding label %s to Input1 data with default value 0.0." % args.col_lb)
             dic = {args.col_lb: 0.0}
-            md1.setLabels("data_particles", **dic)
         if LABELS[args.col_lb] == int:
             # add label with default values 0
             print("Adding label %s to Input1 data with default value 0." % args.col_lb)
             dic = {args.col_lb: 0}
-            md1.setLabels("data_particles", **dic)
         if LABELS[args.col_lb] == str:
             # add label with default values "dummy"
             print("Adding label %s to Input1 data with default value \"dummy\"" % args.col_lb)
             dic = {args.col_lb: "dummy"}
+
+        if md1.version == "3.1":
             md1.setLabels("data_particles", **dic)
+        else:
+            md1.setLabels("data_", **dic)
 
         particles1 = self.get_particles(md1)
         particles2 = self.get_particles(md2)
