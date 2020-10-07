@@ -71,13 +71,16 @@ def elbowMethod(maxClusters, inputArray, maxIter, nInit):
 def kmeansClustering(nClusters, inputArray, maxIter, nInit):
     kmeans = KMeans(n_clusters=nClusters, init='k-means++', max_iter=maxIter, n_init=nInit, random_state=0)
     pred_y = kmeans.fit_predict(inputArray)
+    # make cluster numbering start form 1 not 0
+    pred_y_1 = [x + 1 for x in pred_y]
+    # plot the clustering
     plt.title('Beam-shifts distribution clustering')
     plt.xlabel('Beam-shift X')
     plt.ylabel('Beam-shift Y')
     plt.scatter(inputArray[:, 0], inputArray[:, 1])
     plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], s=300, c='red')
     plt.show()
-    return pred_y
+    return pred_y_1
 
 
 def saveClusteredShifts(fileName, inputArray, clusterIDs):

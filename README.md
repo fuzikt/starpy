@@ -158,7 +158,7 @@ Example 3: Compute remainder of rlnAngleRot where rlnGroupNumber is 2.
 math_star.py --i input.star --o output.star --lb rlnAnlgeRot --op "remainder" --sellb rlnGroupNumber --selval 2 
 ```
 ## metadata.py
-Base library required bay all scripts.
+Base library required by all scripts.
 
 ## particles_star_to_box.py
 Extracts coordinates from particles STAR file and saves as per micrograph box files.
