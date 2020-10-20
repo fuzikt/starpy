@@ -164,11 +164,11 @@ class RotateParticlesStar:
         add('--psi', type=str, default="0",
             help="Psi Euler angle. Default 0")
         add('--x', type=str, default="0",
-            help="Shift along X axis. Default 0")
+            help="Shift along X axis. Default 0 (in px for Relion 3.0; in Angstrom for Relion 3.1)")
         add('--y', type=str, default="0",
-            help="Shift along Y axis. Default 0")
+            help="Shift along Y axis. Default 0 (in px for Relion 3.0; in Angstrom for Relion 3.1)")
         add('--z', type=str, default="0",
-            help="Shift along Z axis. Default 0")
+            help="Shift along Z axis. Default 0 (in px for Relion 3.0; in Angstrom for Relion 3.1)")
 
     def usage(self):
         self.parser.print_help()
@@ -236,7 +236,7 @@ class RotateParticlesStar:
             particles.append(particle)
         return particles
 
-    def rotateParticles(self, particles, rot, tilt, psi, x, y, z):
+    def rotateParticles(self, particles, rot, tilt, psi, x, y, z, version):
 
         newParticles = []
         for particle in copy.deepcopy(particles):
@@ -256,8 +256,12 @@ class RotateParticlesStar:
             particle.rlnAnglePsi = degrees(psiNew)
 
             d = sqrt(x ** 2 + y ** 2 + z ** 2)
-            particle.rlnOriginX = -m_shift.m[0][2] * d + particle.rlnOriginX
-            particle.rlnOriginY = -m_shift.m[1][2] * d + particle.rlnOriginY
+            if version == "3.1":
+                particle.rlnOriginXAngst = -m_shift.m[0][2] * d + particle.rlnOriginXAngst
+                particle.rlnOriginYAngst = -m_shift.m[1][2] * d + particle.rlnOriginYAngst
+            else:
+                particle.rlnOriginX = -m_shift.m[0][2] * d + particle.rlnOriginX
+                particle.rlnOriginY = -m_shift.m[1][2] * d + particle.rlnOriginY
 
             newParticles.append(particle)
         print("Processed " + str(len(newParticles)) + " particles.")
@@ -277,7 +281,7 @@ class RotateParticlesStar:
 
         particles = self.get_particles(md)
 
-        new_particles.extend(self.rotateParticles(particles, rotValue, tiltValue, psiValue, xValue, yValue, zValue))
+        new_particles.extend(self.rotateParticles(particles, rotValue, tiltValue, psiValue, xValue, yValue, zValue, md.version))
         mdOut = MetaData()
 
         if md.version == "3.1":
