@@ -73,6 +73,11 @@ conda activate beamtiltclass-env
 conda install scikit-learn
 conda install matplotlib
 ```
+## get_absolute_apix.py
+Calculates the absolute apix for the optics groups according to https://www3.mrc-lmb.cam.ac.uk/relion/index.php/Pixel_size_issues
+```
+  --i         Input STAR filename 
+```
 
 ## heatmap_orient_star.py
 Generates heatmap of particle orientations from star file. Cartesian and mollweide representations are generated. For symmetrical particles, first make symmetry expand of the star file (relion_particle_symmetry_expand).
