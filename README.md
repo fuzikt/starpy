@@ -73,6 +73,49 @@ conda activate beamtiltclass-env
 conda install scikit-learn
 conda install matplotlib
 ```
+
+## create_opticgroups_from_xml.py
+! only Relion >=3.1 format star files !
+Clusters beam-shifts extracted from xml files into optic groups.
+```
+--i         Input XML directory
+--istar     Input particles star file.
+--o         Output star file. If empty no file generated generated
+--o_shifts  Output file with extracted beam-shifts and cluster numbers. If empty no file generated generated
+--clusters  Number of clusters the beam-shifts should be divided in. (default: 1)
+--elbow     Number of max clusters used in Elbow method optimal cluster number determination. (default: 0)
+--max_iter  Expert option: Maximum number of iterations of the k-means algorithm for a single run. (default: 300)
+--n_init    Expert option: Number of time the k-means algorithm will be run with different centroid seeds. (default: 10)
+```
+Requires specific conda environment. Install:
+```
+conda create -n beamtiltclass-env
+conda activate beamtiltclass-env
+conda install scikit-learn
+conda install matplotlib
+```
+
+## create_beamtiltclass_from_mdoc.py
+! only Relion >=3.1 format star files !
+Clusters beam-shifts extracted from serialem mdoc files into optic groups.
+```
+--i         Input mdoc directory
+--istar     Input particles star file.
+--o         Output star file. If empty no file generated generated
+--o_shifts  Output file with extracted beam-shifts and cluster numbers. If empty no file generated generated
+--clusters  Number of clusters the beam-shifts should be divided in. (default: 1)
+--elbow     Number of max clusters used in Elbow method optimal cluster number determination. (default: 0)
+--max_iter  Expert option: Maximum number of iterations of the k-means algorithm for a single run. (default: 300)
+--n_init    Expert option: Number of time the k-means algorithm will be run with different centroid seeds. (default: 10)
+```
+Requires specific conda environment. Install:
+```
+conda create -n beamtiltclass-env
+conda activate beamtiltclass-env
+conda install scikit-learn
+conda install matplotlib
+```
+
 ## get_absolute_apix.py
 Calculates the absolute apix for the optics groups according to https://www3.mrc-lmb.cam.ac.uk/relion/index.php/Pixel_size_issues
 ```
