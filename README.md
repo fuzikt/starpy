@@ -95,7 +95,7 @@ conda install scikit-learn
 conda install matplotlib
 ```
 
-## create_beamtiltclass_from_mdoc.py
+## create_opticgroups_from_mdoc.py
 ! only Relion >=3.1 format star files !
 Clusters beam-shifts extracted from serialem mdoc files into optic groups.
 ```
