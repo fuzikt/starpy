@@ -80,8 +80,9 @@ class RandSymStar:
         mdOut = MetaData()
         if md.version == "3.1":
             mdOut.version = "3.1"
-            mdOut.addOpticsLabels("data_optics", md.getOpticsLabels())
-            mdOut.addOpticsData("data_optics", md._data_optics)
+            mdOut.addDataTable("data_optics")
+            mdOut.addLabels("data_optics", md.getLabels("data_optics"))
+            mdOut.addData("data_optics", getattr(md, "data_optics"))
             particleTableName = "data_particles"
         else:
             particleTableName = "data_"
