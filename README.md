@@ -216,6 +216,13 @@ Extracts coordinates from particles STAR file and saves as per micrograph box fi
 --box_size  Box size. Default: 256
 ```
 
+## rel31_to_rel30_star.py
+Converts particle star from RELION 3.1 format to RELION 3.0 format.
+```
+  --i    Input STAR filename (RELON 3.1 format).
+  --o    Output STAR filename. 
+```
+
 ## remove_preferred_orient.py
 Remove particles with overrepresented orientations. Average count of particles at each orientation is calculated. Then the count of particles that are n-times SD over the average is modified by retaining the particles with the highest rlnMaxValueProbDistribution.
 ```
