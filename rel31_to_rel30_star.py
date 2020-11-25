@@ -50,7 +50,7 @@ class Rel31ToRel30Star:
             particle.rlnVoltage=optic_groups[particle.rlnOpticsGroup-1].rlnVoltage
             particle.rlnSphericalAberration=optic_groups[particle.rlnOpticsGroup - 1].rlnSphericalAberration
             particle.rlnAmplitudeContrast=optic_groups[particle.rlnOpticsGroup - 1].rlnAmplitudeContrast
-            particle.rlnAmplitudeContrast=particle.rlnMagnification=10000
+            particle.rlnMagnification=10000
             particle.rlnDetectorPixelSize=optic_groups[particle.rlnOpticsGroup - 1].rlnImagePixelSize
             particle.rlnOriginX = particle.rlnOriginXAngst / optic_groups[particle.rlnOpticsGroup - 1].rlnImagePixelSize
             particle.rlnOriginY = particle.rlnOriginYAngst / optic_groups[particle.rlnOpticsGroup - 1].rlnImagePixelSize
@@ -90,7 +90,7 @@ class Rel31ToRel30Star:
         mdOut.addDataTable(particleTableName)
         mdOut.addLabels(particleTableName, md.getLabels("data_particles"))
 
-        mdOut.addLabels(particleTableName,['rlnVoltage', 'rlnSphericalAberration', 'rlnAmplitudeContrast', 'rlnDetectorPixelSize', 'rlnOriginX', 'rlnOriginY', 'rlnBeamTiltClass'])
+        mdOut.addLabels(particleTableName,['rlnVoltage', 'rlnSphericalAberration', 'rlnAmplitudeContrast', 'rlnMagnification', 'rlnDetectorPixelSize', 'rlnOriginX', 'rlnOriginY', 'rlnBeamTiltClass'])
         mdOut.removeLabels("data_", ['rlnOpticsGroup', 'rlnOriginXAngst', 'rlnOriginYAngst'])
 
         mdOut.addData(particleTableName, new_particles)
