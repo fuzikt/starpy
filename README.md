@@ -73,9 +73,19 @@ conda activate beamtiltclass-env
 conda install scikit-learn
 conda install matplotlib
 ```
+## create_opticgroups_from_filename.py
+! only Relion >=3.1 format star files !
+
+Creates optic groups according to acquisition position identifier (number) in the FoilHole_XXX_Data_YYY_ZZZ_AAA_BBB-CCC.mrc filename of the micrograph.
+```
+--i           Input STAR filename.
+--o,          Output STAR filename.
+--word_count  Position of the acquisition position identifier in the FoilHole_XXX_Data_YYY_ZZZ.mrc filename. Default: 4 (th word).")
+```
 
 ## create_opticgroups_from_xml.py
 ! only Relion >=3.1 format star files !
+
 Clusters beam-shifts extracted from xml files into optic groups.
 ```
 --i         Input XML directory
@@ -97,6 +107,7 @@ conda install matplotlib
 
 ## create_opticgroups_from_mdoc.py
 ! only Relion >=3.1 format star files !
+
 Clusters beam-shifts extracted from serialem mdoc files into optic groups.
 ```
 --i         Input mdoc directory
