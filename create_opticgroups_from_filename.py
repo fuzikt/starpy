@@ -7,14 +7,14 @@ from metadata import MetaData
 import argparse
 
 
-class RenameStar:
+class CreateOpticGroupsFromFilenameStar:
     def define_parser(self):
         self.parser = argparse.ArgumentParser(
-            description="Add opticsGroup to the particles from file name.")
+            description="Add opticsGroups to the particles from micrograph file name.")
         add = self.parser.add_argument
         add('--i', help="Input STAR filename.")
         add('--o', help="Output STAR filename.")
-        add('--word_count', type=int, default="4", help="Position of the acquisition position identifier in the FoilHole_XXX_XXX_XXX filename. Default: 4 (th word).")
+        add('--word_count', type=int, default="4", help="Position of the acquisition position identifier in the FoilHole_XXX_Data_YYY_ZZZ.mrc filename. Default: 4 (th word).")
 
     def usage(self):
         self.parser.print_help()
@@ -72,11 +72,11 @@ class RenameStar:
         particles = self.get_particles(md)
         print("Total %s particles in input star file. \nAdding rlnOpticsGroup." % str(len(particles)))
 
-        # create optics groups
+        new_particles, opticsGroupsNames = self.addOpticGroupsToParticles(particles, args.word_count)
+
+        # create new optics groups
         opticGroup = md.data_optics[0]
         opticsGroups = []
-
-        new_particles, opticsGroupsNames = self.addOpticGroupsToParticles(particles, args.word_count)
 
         for opticGroupNr, opticGroupName in enumerate(opticsGroupsNames):
             newOpticGroup = deepcopy(opticGroup)
@@ -94,4 +94,4 @@ class RenameStar:
 
 
 if __name__ == "__main__":
-    RenameStar().main()
+    CreateOpticGroupsFromFilenameStar().main()
