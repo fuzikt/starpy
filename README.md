@@ -275,6 +275,18 @@ Limit orientations of particles in STAR file. Select particles that are in the d
   --psi_max     Minimum psi angle.
 ```
 
+## select_maxlike_sym_copy_ptcls.py
+Select one orientation per particle from 3D classified symmetry expanded star files according to the greatest value of rlnMaxValueProbDistribution.
+
+```
+  --i    Input STAR filename with particles.
+  --o    Output STAR filename. 
+```
+Example: You created a C5 symmetry expanded star file that was 3D classified into 5 classes. You select the best looking class, which should in theory contain 1/5 of the particles from the symmetry expanded star. Because the classification is not perfect there are multiple redundant (symmetry) copies of some of the particles present in the selected class. To filter out only a single copy (unique) of every particle you can use this script, which will chose the particle with the greatest value of rlnMaxValueProbDistribution.
+```
+select_maxlike_sym_copy_ptcls.py --i selected_class.star --o selected_class_unique.star
+```
+
 ## select_rand_sym_copy_ptcls.py
 Select random orientation from symmetry expanded star files. One orientation per particle.
 ```
@@ -340,6 +352,12 @@ Example 3: Print out statistics on rlnAngleTilt, rlnAngleRot and rlnAnglePsi
 ./stats_star.py --i input.star --lb "rlnAngleTilt rlnAngleRot rlnAnglePsi"
 ```
 
+## xflip_particles_star.py
+Perform transformation of euler angles to produce X-flipped reconstruction. The resulting map is the same as if "--invert_hand" is applied on the map in relion_image_handler.
+```
+  --i    Input STAR filename with particles.
+  --o    Output STAR filename. 
+```
 ## yflip_particles_star.py
 Perform transformation of euler angles to produce Y-flipped reconstruction.
 ```
