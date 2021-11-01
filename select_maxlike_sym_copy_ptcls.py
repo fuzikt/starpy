@@ -7,10 +7,10 @@ from metadata import MetaData
 import argparse
 
 
-class RandSymStar:
+class selMaxProbSymStar:
     def define_parser(self):
         self.parser = argparse.ArgumentParser(
-            description="Select random orientation from symmetry expanded star files. One orientation per particle.")
+            description="Select one orientation per particle from symmetry expanded star files according to the greatest value of rlnMaxValueProbDistribution.")
         add = self.parser.add_argument
         add('--i', help="Input STAR filename with particles.")
         add('--o', help="Output STAR filename.")
@@ -45,11 +45,10 @@ class RandSymStar:
                 maxLikeParticle.rlnMaxValueProbDistribution = particle.rlnMaxValueProbDistribution
         return maxLikeParticle
 
-    def randParticles(self, particles):
+    def selMostProbableParticles(self, particles):
         i = 1
         newParticles = []
         symmCopies = []
-        firstRound = 1
         # read in symmetry copies of particle
         while len(particles) > 0:
             symmCopies.append(particles.pop(0))
@@ -57,12 +56,9 @@ class RandSymStar:
                 while symmCopies[0].rlnImageName == particles[0].rlnImageName:
                     symmCopies.append(particles.pop(0))
                     if len(particles) == 0: break
-            if firstRound == 1:
-                print("Detected " + str(len(symmCopies)) + "-fold symmetry.")
-                firstRound = 0
             newParticles.append(self.maxLikeParticle(symmCopies))
             symmCopies = []
-        print("Selected " + str(len(newParticles)) + " random particles from their symmetry copies.")
+        print("Selected " + str(len(newParticles)) + " particles from the original star file.")
         return newParticles
 
     def main(self):
@@ -79,10 +75,10 @@ class RandSymStar:
 
         particles = self.get_particles(md)
 
-        print("Total %s particles in input star file. \nSelecting random particles from their symmetry copies." % str(
+        print("Total %s particles in input star file. \nSelecting one orientation per particle according to the greatest value of rlnMaxValueProbDistribution." % str(
             len(particles)))
 
-        new_particles.extend(self.randParticles(particles))
+        new_particles.extend(self.selMostProbableParticles(particles))
 
         mdOut = MetaData()
         if md.version == "3.1":
@@ -104,4 +100,4 @@ class RandSymStar:
 
 
 if __name__ == "__main__":
-    RandSymStar().main()
+    selMaxProbSymStar().main()
