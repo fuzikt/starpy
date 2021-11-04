@@ -275,7 +275,7 @@ Limit orientations of particles in STAR file. Select particles that are in the d
   --psi_max     Minimum psi angle.
 ```
 
-## select_maxlike_sym_copy_ptcls.py
+## select_maxprob_sym_copy_ptcls.py
 Select one orientation per particle from 3D classified symmetry expanded star files according to the greatest value of rlnMaxValueProbDistribution.
 
 ```
@@ -284,7 +284,7 @@ Select one orientation per particle from 3D classified symmetry expanded star fi
 ```
 Example: You created a C5 symmetry expanded star file that was 3D classified into 5 classes. You select the best looking class, which should in theory contain 1/5 of the particles from the symmetry expanded star. Because the classification is not perfect there are multiple redundant (symmetry) copies of some of the particles present in the selected class. To filter out only a single copy (unique) of every particle you can use this script, which will chose the particle with the greatest value of rlnMaxValueProbDistribution.
 ```
-select_maxlike_sym_copy_ptcls.py --i selected_class.star --o selected_class_unique.star
+select_maxprob_sym_copy_ptcls.py --i selected_class.star --o selected_class_unique.star
 ```
 
 ## select_rand_sym_copy_ptcls.py
