@@ -4,6 +4,7 @@ import os
 import sys
 import random
 from metadata import MetaData
+import copy
 import argparse
 
 
@@ -38,7 +39,7 @@ class selMaxProbSymStar:
             particles.append(particle)
         return particles
 
-    def maxLikeParticle(self, symCopies):
+    def maxProbParticle(self, symCopies):
         maxLikeParticle = symCopies[0]
         for particle in symCopies:
             if particle.rlnMaxValueProbDistribution > maxLikeParticle.rlnMaxValueProbDistribution:
@@ -53,10 +54,13 @@ class selMaxProbSymStar:
         while len(particles) > 0:
             symmCopies.append(particles.pop(0))
             if len(particles) != 0:
-                while symmCopies[0].rlnImageName == particles[0].rlnImageName:
-                    symmCopies.append(particles.pop(0))
-                    if len(particles) == 0: break
-            newParticles.append(self.maxLikeParticle(symmCopies))
+                particlePos = 0
+                while particlePos < len(particles):
+                    if symmCopies[0].rlnImageName == particles[particlePos].rlnImageName:
+                        symmCopies.append(particles.pop(particlePos))
+                        particlePos -= 1
+                    particlePos += 1
+            newParticles.append(self.maxProbParticle(symmCopies))
             symmCopies = []
         print("Selected " + str(len(newParticles)) + " particles from the original star file.")
         return newParticles
