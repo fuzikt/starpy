@@ -325,6 +325,34 @@ Example 4: Select particles where rlnMaxValueProbDistribution values are below 7
 select_values_star.py --i input.star --o output.star --lb rlnMaxValueProbDistribution --prctl_l 75
 ```
 
+## split_particles_to_micrographs.py
+Converts particle MRC stacks into separate MRC files and generate micrograph star file for them. In comparison to split_stacks.py, it is easier to keep track of the original particle in the resulting star file.
+```
+  --i        Input STAR filename.
+  --o        Output prefix.
+```
+
+Example:
+```
+# Let's assume you have following input.star file:
+_rlnImageName
+_rlnMicrographName
+1@particles/mic123682.mrcs Micrographs/mic123682.mrc
+6@particles/mic123682.mrcs Micrographs/mic123682.mrc
+2@particles/mic777772.mrcs Micrographs/mic777772.mrc
+
+# running the following command
+split_particles_to_micrographs.py --i input.star --o splitParticles
+
+# will create a directory named splitParticles and a file splitParticles.star which will look like this:
+_rlnMicrographName
+splitParticles/mic123682_1.mrc
+splitParticles/mic123682_6.mrc
+splitParticles/mic777772_2.mrc
+
+# Note: All other labels except rlnImageName remains in the output file preserved
+```
+
 ## split_stacks.py
 Split MRC stacks listed in STAR file into separate files, and writes a new STAR file with split files info.
 ```
