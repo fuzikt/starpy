@@ -68,6 +68,9 @@ class CreateOpticGroupsFromFilenameStar:
         mdOut.addDataTable("data_particles")
         mdOut.addLabels("data_particles", md.getLabels("data_particles"))
 
+        if "rlnOpticsGroup" not in md.getLabels("data_particles"):
+            mdOut.addLabels("data_particles",  "rlnOpticsGroup")
+
         print("Reading in input star file.....")
         particles = self.get_particles(md)
         print("Total %s particles in input star file. \nAdding rlnOpticsGroup." % str(len(particles)))
