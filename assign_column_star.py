@@ -80,32 +80,12 @@ class AssignLabelStar:
             i1labels = md1.getLabels("data_")
             i2labels = md2.getLabels("data_")
 
-        if args.col_lb in i1labels:
-            self.error("Column %s is already in Input1 star file. Please remove it first..." % args.col_lb)
         if args.col_lb not in i2labels:
             self.error("Column %s is not present in Input2 star file." % args.col_lb)
         if args.comp_lb not in i1labels:
             self.error("Column %s is not present in Input1 star file." % args.comp_lb)
         if args.comp_lb not in i2labels:
             self.error("Column %s is not present in Input2 star file." % args.comp_lb)
-
-        if LABELS[args.col_lb] == float:
-            # add label with default values 0.0
-            print("Adding label %s to Input1 data with default value 0.0." % args.col_lb)
-            dic = {args.col_lb: 0.0}
-        if LABELS[args.col_lb] == int:
-            # add label with default values 0
-            print("Adding label %s to Input1 data with default value 0." % args.col_lb)
-            dic = {args.col_lb: 0}
-        if LABELS[args.col_lb] == str:
-            # add label with default values "dummy"
-            print("Adding label %s to Input1 data with default value \"dummy\"" % args.col_lb)
-            dic = {args.col_lb: "dummy"}
-
-        if md1.version == "3.1":
-            md1.setLabels("data_particles", **dic)
-        else:
-            md1.setLabels("data_", **dic)
 
         particles1 = self.get_particles(md1)
         particles2 = self.get_particles(md2)
@@ -125,10 +105,13 @@ class AssignLabelStar:
             particleTableName = "data_"
 
         mdOut.addDataTable(particleTableName)
-        mdOut.addLabels(particleTableName, md1.getLabels(particleTableName))
+        mdOut.addLabels(particleTableName, i1labels)
+        if args.col_lb not in i1labels:
+            mdOut.addLabels(particleTableName, args.col_lb)
+
         mdOut.addData(particleTableName, self.assign_column(particles1, particles2, args.col_lb, args.comp_lb))
 
-        print("%s particles were processed..." % str((len(particles1) + len(particles2))))
+        print("%s particles were processed..." % str((len(particles1))))
 
         mdOut.write(args.o)
 
