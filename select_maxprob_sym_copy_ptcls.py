@@ -43,7 +43,7 @@ class selMaxProbSymStar:
         maxLikeParticle = symCopies[0]
         for particle in symCopies:
             if particle.rlnMaxValueProbDistribution > maxLikeParticle.rlnMaxValueProbDistribution:
-                maxLikeParticle.rlnMaxValueProbDistribution = particle.rlnMaxValueProbDistribution
+                maxLikeParticle = particle
         return maxLikeParticle
 
     def selMostProbableParticles(self, particles):
