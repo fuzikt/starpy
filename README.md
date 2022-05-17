@@ -227,6 +227,14 @@ Extracts coordinates from particles STAR file and saves as per micrograph box fi
 --box_size  Box size. Default: 256
 ```
 
+## particles_star_to_coords_star.py 
+Extracts coordinates from particles STAR file and saves as per micrograph
+coords star files.
+```
+--i         Input STAR filename with particles.
+--o         Output directory where the coords files will be stored.
+```
+
 ## rel31_to_rel30_star.py
 Converts particle star from RELION 3.1 format to RELION 3.0 format.
 ```
