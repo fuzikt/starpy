@@ -187,46 +187,40 @@ class RotateParticlesStar:
             self.error("Input file '%s' not found."
                        % args.i)
 
-        global rotValue
-        global tiltValue
-        global psiValue
-        global xValue
-        global yValue
-        global zValue
-        rotValue = 0.0
-        tiltValue = 0.0
-        psiValue = 0.0
-        xValue = 0.0
-        yValue = 0.0
-        zValue = 0.0
+        self.rotValue = 0.0
+        self.tiltValue = 0.0
+        self.psiValue = 0.0
+        self.xValue = 0.0
+        self.yValue = 0.0
+        self.zValue = 0.0
 
         try:
-            rotValue = float(args.rot)
+            self.rotValue = float(args.rot)
         except ValueError:
             self.error("Attribute '%s' requires FLOAT value for operation." % args.rot)
 
         try:
-            tiltValue = float(args.tilt)
+            self.tiltValue = float(args.tilt)
         except ValueError:
             self.error("Attribute '%s' requires FLOAT value for operation." % args.tilt)
 
         try:
-            psiValue = float(args.psi)
+            self.psiValue = float(args.psi)
         except ValueError:
             self.error("Attribute '%s' requires FLOAT value for operation." % args.psi)
 
         try:
-            xValue = float(args.x)
+            self.xValue = float(args.x)
         except ValueError:
             self.error("Attribute '%s' requires FLOAT value for operation." % args.x)
 
         try:
-            yValue = float(args.y)
+            self.yValue = float(args.y)
         except ValueError:
             self.error("Attribute '%s' requires FLOAT value for operation." % args.y)
 
         try:
-            zValue = float(args.z)
+            self.zValue = float(args.z)
         except ValueError:
             self.error("Attribute '%s' requires FLOAT value for operation." % args.z)
 
@@ -259,9 +253,13 @@ class RotateParticlesStar:
             if version == "3.1":
                 particle.rlnOriginXAngst = -m_shift.m[0][2] * d + particle.rlnOriginXAngst
                 particle.rlnOriginYAngst = -m_shift.m[1][2] * d + particle.rlnOriginYAngst
+                if hasattr(particle, 'rlnOriginZAngst'):
+                    particle.rlnOriginZAngst = -m_shift.m[2][2] * d + particle.rlnOriginZAngst
             else:
                 particle.rlnOriginX = -m_shift.m[0][2] * d + particle.rlnOriginX
                 particle.rlnOriginY = -m_shift.m[1][2] * d + particle.rlnOriginY
+                if hasattr(particle, 'rlnOriginZ'):
+                    particle.rlnOriginZ = -m_shift.m[2][2] * d + particle.rlnOriginZ
 
             newParticles.append(particle)
         print("Processed " + str(len(newParticles)) + " particles.")
@@ -281,7 +279,7 @@ class RotateParticlesStar:
 
         particles = self.get_particles(md)
 
-        new_particles.extend(self.rotateParticles(particles, rotValue, tiltValue, psiValue, xValue, yValue, zValue, md.version))
+        new_particles.extend(self.rotateParticles(particles, self.rotValue, self.tiltValue, self.psiValue, self.xValue, self.yValue, self.zValue, md.version))
         mdOut = MetaData()
 
         if md.version == "3.1":
