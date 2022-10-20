@@ -18,6 +18,8 @@ class StatsStar:
         add('--o', help="Output STAR filename.")
         add('--lb', type=str, default="ALL",
             help="Labels used for statistics (Default: ALL). Multiple labels can be used enclosed in double quotes. (e.g. \"rlnAngleTilt rlnAngleRot\")")
+        add('--data', type=str, default="data_particles",
+            help="Data table from star file to be used (Default: data_particles).")
 
     def usage(self):
         self.parser.print_help()
@@ -36,13 +38,13 @@ class StatsStar:
             self.error("Input file '%s' not found."
                        % args.i)
 
-    def get_particles(self, md):
-        particles = []
-        for particle in md:
-            particles.append(particle)
-        return particles
+    def get_records(self, md, dataTable):
+        records = []
+        for record in getattr(md, dataTable):
+            records.append(record)
+        return records
 
-    def statsOnParticles(self, particles, iLabels):
+    def statsOnRecords(self, records, iLabels):
 
         def average(values):
             return sum(values) / len(values)
@@ -56,7 +58,7 @@ class StatsStar:
                 print("WARNING: Label %s not recognized as RELION label!" % iLabel)
             else:
                 if (LABELS[iLabel] == float) or (LABELS[iLabel] == int):
-                    labelValues = [getattr(x, iLabel) for x in particles]
+                    labelValues = [getattr(x, iLabel) for x in records]
                     if LABELS[iLabel] == float:
                         labelStats.append([iLabel, '%.2f' % (min(labelValues),), '%.2f' % (max(labelValues),),
                                            '%.2f' % (average(labelValues),)])
@@ -71,7 +73,7 @@ class StatsStar:
         for row in labelStats:
             print("  ".join((val.ljust(width) for val, width in zip(row, widths))))
         print("------------------------------------------------------")
-        print("%s records in star file." % str(len(particles)))
+        print("%s records in star file." % str(len(records)))
         print("%s numerical labels and %s non-numerical labels found." % (len(iLabels) - nonNumLabel, nonNumLabel))
 
         return
@@ -83,17 +85,19 @@ class StatsStar:
 
         md = MetaData(args.i)
 
+        dataTable = args.data
+
         if args.lb == "ALL":
             if md.version == "3.1":
-                iLabels = md.getLabels("data_particles")
+                iLabels = md.getLabels(dataTable)
             else:
                 iLabels = md.getLabels("data_")
         else:
             iLabels = args.lb.split(" ")
 
-        particles = self.get_particles(md)
+        records = self.get_records(md, dataTable)
 
-        self.statsOnParticles(particles, iLabels)
+        self.statsOnRecords(records, iLabels)
 
 
 if __name__ == "__main__":
