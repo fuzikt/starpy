@@ -626,7 +626,9 @@ class MetaData:
                 continue
 
             if "data_" in values[0]:
-                if values[0] == "data_optics":
+                if values[0] == "data_":
+                    self.version = "3"
+                else:
                     self.version = "3.1"
                 self.addDataTable(values[0])
                 currentTableRead = values[0]
