@@ -3,6 +3,7 @@
 import os
 import sys
 import operator
+from copy import deepcopy
 from metadata import MetaData
 from metadata import LABELS
 import argparse
@@ -17,6 +18,8 @@ class MathStar:
         add = self.parser.add_argument
         add('--i', help="Input STAR filename with particles.")
         add('--o', help="Output STAR filename.")
+        add('--data', type=str, default="data_particles",
+            help="Data table from star file to be used (Default: data_particles).")
         add('--lb', type=str, default="rlnMicrographName",
             help="Label used for math operation. e.g. rlnAngleTilt, rlnDefocusU...")
         add('--op', type=str, default="=",
@@ -125,9 +128,9 @@ class MathStar:
                     self.error("Attribute '%s' requires STR value for comparison." % args.sellb)
         return compValue, selValue, rangeHi, rangeLo, rangeSel
 
-    def get_particles(self, md):
+    def get_particles(self, md, dataTableName):
         particles = []
-        for particle in md:
+        for particle in getattr(md, dataTableName):
             particles.append(particle)
         return particles
 
@@ -217,35 +220,34 @@ class MathStar:
 
         md = MetaData(args.i)
 
+        dataTableName = args.data
+
         if md.version == "3.1":
-            ilabels = md.getLabels("data_particles")
+            ilabels = md.getLabels(dataTableName)
         else:
             ilabels = md.getLabels("data_")
+            dataTableName = "data_"
 
         if args.lb not in ilabels:
             self.error("No label " + args.lb + " found in Input file.")
 
         new_particles = []
 
-        particles = self.get_particles(md)
+        particles = self.get_particles(md, dataTableName)
         new_particles.extend(
             self.mathParticles(particles, args.lb, args.op, compValue, args.selop, args.sellb, selValue, rangeHi,
                                rangeLo, rangeSel))
 
-        mdOut = MetaData()
-
         if md.version == "3.1":
-            mdOut.version = "3.1"
-            mdOut.addDataTable("data_optics")
-            mdOut.addLabels("data_optics", md.getLabels("data_optics"))
-            mdOut.addData("data_optics", getattr(md, "data_optics"))
-            particleTableName = "data_particles"
+            mdOut = deepcopy(md)
+            mdOut.removeDataTable(dataTableName)
         else:
-            particleTableName = "data_"
+            mdOut = MetaData()
+            dataTableName = "data_"
 
-        mdOut.addDataTable(particleTableName)
-        mdOut.addLabels(particleTableName, md.getLabels(particleTableName))
-        mdOut.addData(particleTableName, new_particles)
+        mdOut.addDataTable(dataTableName)
+        mdOut.addLabels(dataTableName, md.getLabels(dataTableName))
+        mdOut.addData(dataTableName, new_particles)
         mdOut.write(args.o)
 
         print("New star file %s created. Have fun!" % args.o)

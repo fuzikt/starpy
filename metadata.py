@@ -606,6 +606,9 @@ class MetaData:
         setattr(self, dataTableName + "_labels", OrderedDict())
         setattr(self, dataTableName, [])
 
+    def removeDataTable(self, dataTableName):
+        delattr(self,dataTableName)
+
     def _setItemValue(self, item, label, value):
         setattr(item, label.name, label.type(value))
 

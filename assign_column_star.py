@@ -2,6 +2,7 @@
 
 import os
 import sys
+from copy import deepcopy
 from metadata import MetaData
 from metadata import LABELS
 import argparse
@@ -17,6 +18,8 @@ class AssignLabelStar:
         add('--i1', help="Input1 STAR filename.")
         add('--i2', help="Input2 STAR filename.")
         add('--o', help="Output STAR filename.")
+        add('--data', type=str, default="data_particles",
+            help="Data table from star file to be used (Default: data_particles).")
         add('--col_lb', type=str, default="rlnDefocusU",
             help="Label of the new column assigned to Input1; Default: rlnDefocusU")
         add('--comp_lb', type=str, default="rlnMicrographName",
@@ -46,9 +49,9 @@ class AssignLabelStar:
         if not os.path.exists(args.i2):
             self.error("Input2 file '%s' not found." % args.i)
 
-    def get_particles(self, md):
+    def get_particles(self, md, dataTableName):
         particles = []
-        for particle in md:
+        for particle in getattr(md, dataTableName):
             particles.append(particle)
         return particles
 
@@ -73,12 +76,15 @@ class AssignLabelStar:
         md1 = MetaData(args.i1)
         md2 = MetaData(args.i2)
 
+        dataTableName = args.data
+
         if md1.version == "3.1":
-            i1labels = md1.getLabels("data_particles")
-            i2labels = md2.getLabels("data_particles")
+            i1labels = md1.getLabels(dataTableName)
+            i2labels = md2.getLabels(dataTableName)
         else:
             i1labels = md1.getLabels("data_")
             i2labels = md2.getLabels("data_")
+            dataTableName = "data_"
 
         if args.col_lb not in i2labels:
             self.error("Column %s is not present in Input2 star file." % args.col_lb)
@@ -87,29 +93,25 @@ class AssignLabelStar:
         if args.comp_lb not in i2labels:
             self.error("Column %s is not present in Input2 star file." % args.comp_lb)
 
-        particles1 = self.get_particles(md1)
-        particles2 = self.get_particles(md2)
+        particles1 = self.get_particles(md1, dataTableName)
+        particles2 = self.get_particles(md2, dataTableName)
 
         print(
             "Assigning values for Input1 label %s where the %s of Input2 matches Input1" % (args.col_lb, args.comp_lb))
 
-        mdOut = MetaData()
-
         if md1.version == "3.1":
-            mdOut.version = "3.1"
-            mdOut.addDataTable("data_optics")
-            mdOut.addLabels("data_optics", md1.getLabels("data_optics"))
-            mdOut.addData("data_optics", getattr(md1, "data_optics"))
-            particleTableName = "data_particles"
+            mdOut = deepcopy(md1)
+            mdOut.removeDataTable(dataTableName)
         else:
-            particleTableName = "data_"
+            mdOut = MetaData()
+            dataTableName = "data_"
 
-        mdOut.addDataTable(particleTableName)
-        mdOut.addLabels(particleTableName, i1labels)
+        mdOut.addDataTable(dataTableName)
+        mdOut.addLabels(dataTableName, i1labels)
         if args.col_lb not in i1labels:
-            mdOut.addLabels(particleTableName, args.col_lb)
+            mdOut.addLabels(dataTableName, args.col_lb)
 
-        mdOut.addData(particleTableName, self.assign_column(particles1, particles2, args.col_lb, args.comp_lb))
+        mdOut.addData(dataTableName, self.assign_column(particles1, particles2, args.col_lb, args.comp_lb))
 
         print("%s particles were processed..." % str((len(particles1))))
 

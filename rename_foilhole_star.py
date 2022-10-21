@@ -2,6 +2,7 @@
 
 import os
 import sys
+from copy import deepcopy
 from metadata import MetaData
 import argparse
 
@@ -14,6 +15,8 @@ class RenameStar:
         add('--i', help="Input STAR filename.")
         add('--o', help="Output STAR filename.")
         add('--mic_dir', type=str, default="Micrographs", help="Micrographs directory. Default: Micrographs")
+        add('--data', type=str, default="data_particles",
+            help="Data table from star file to be used (Default: data_particles).")
 
     def usage(self):
         self.parser.print_help()
@@ -32,9 +35,9 @@ class RenameStar:
             self.error("Input file '%s' not found."
                        % args.i)
 
-    def get_micrographs(self, md):
+    def get_micrographs(self, md, dataTableName):
         micrographs = []
-        for micrograph in md:
+        for micrograph in getattr(md, dataTableName):
             micrographs.append(micrograph)
         return micrographs
 
@@ -62,27 +65,26 @@ class RenameStar:
 
         md = MetaData(args.i)
 
+        dataTableName = args.data
+
         print("Reading in input star file.....")
 
-        micrographs = self.get_micrographs(md)
+        micrographs = self.get_micrographs(md, dataTableName)
 
         print("Total %s micrographs in input star file. \nRenaming to micXXX convention." % str(len(micrographs)))
 
         self.renameMicrographs(micrographs, args.mic_dir)
 
-        mdOut = MetaData()
         if md.version == "3.1":
-            mdOut.version = "3.1"
-            mdOut.addDataTable("data_optics")
-            mdOut.addLabels("data_optics", md.getLabels("data_optics"))
-            mdOut.addData("data_optics", getattr(md, "data_optics"))
-            particleTableName = "data_particles"
+            mdOut = deepcopy(md)
+            mdOut.removeDataTable(dataTableName)
         else:
-            particleTableName = "data_"
+            mdOut = MetaData()
+            dataTableName = "data_"
 
-        mdOut.addDataTable(particleTableName)
-        mdOut.addLabels(particleTableName, md.getLabels(particleTableName))
-        mdOut.addData(particleTableName, micrographs)
+        mdOut.addDataTable(dataTableName)
+        mdOut.addLabels(dataTableName, md.getLabels(dataTableName))
+        mdOut.addData(dataTableName, micrographs)
 
         mdOut.write(args.o)
 

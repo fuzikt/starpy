@@ -2,6 +2,7 @@
 
 import os
 import sys
+from copy import deepcopy
 from metadata import MetaData
 import argparse
 
@@ -17,6 +18,8 @@ class SelAstgStar:
             help="Max astigmatism in Angstroms. Default: 1000")
         add('--res', type=float, default=0,
             help="Minimum resolution in Angstroms. Default: 0 (off)")
+        add('--data', type=str, default="data_particles",
+            help="Data table from star file to be used (Default: data_particles).")
 
     def usage(self):
         self.parser.print_help()
@@ -35,9 +38,9 @@ class SelAstgStar:
             self.error("Input file '%s' not found."
                        % args.i)
 
-    def get_particles(self, md):
+    def get_particles(self, md, dataTableName):
         particles = []
-        for particle in md:
+        for particle in getattr(md, dataTableName):
             particles.append(particle)
         return particles
 
@@ -64,10 +67,13 @@ class SelAstgStar:
 
         md = MetaData(args.i)
 
+        dataTableName = args.data
+
         if md.version == "3.1":
-            ilabels = md.getLabels("data_particles")
+            ilabels = md.getLabels(dataTableName)
         else:
             ilabels = md.getLabels("data_")
+            dataTableName = "data_"
 
         if ("rlnDefocusU" not in ilabels) or ("rlnDefocusV" not in ilabels):
             self.error("No labels rlnDefocusU or rlnDefocusV found in Input file.")
@@ -75,26 +81,22 @@ class SelAstgStar:
             print("No label rlnFinalResolution found in input file. Switching off resolution filtering...")
             args.res = 0
 
-        mdOut = MetaData()
-
         new_particles = []
 
-        particles = self.get_particles(md)
+        particles = self.get_particles(md, dataTableName)
 
         new_particles.extend(self.selParticles(particles, args.astg, args.res,))
 
         if md.version == "3.1":
-            mdOut.version = "3.1"
-            mdOut.addDataTable("data_optics")
-            mdOut.addLabels("data_optics", md.getLabels("data_optics"))
-            mdOut.addData("data_optics", getattr(md, "data_optics"))
-            particleTableName = "data_particles"
+            mdOut = deepcopy(md)
+            mdOut.removeDataTable(dataTableName)
         else:
-            particleTableName = "data_"
+            mdOut = MetaData()
+            dataTableName = "data_"
 
-        mdOut.addDataTable(particleTableName)
-        mdOut.addLabels(particleTableName, md.getLabels(particleTableName))
-        mdOut.addData(particleTableName, new_particles)
+        mdOut.addDataTable(dataTableName)
+        mdOut.addLabels(dataTableName, md.getLabels(dataTableName))
+        mdOut.addData(dataTableName, new_particles)
         mdOut.write(args.o)
 
         print("New star file %s created. Have fun!" % args.o)
