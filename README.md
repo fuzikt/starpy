@@ -1,7 +1,7 @@
 # starpy
 Python scripts for easy RELION STAR file manipulation. Base library file metadata.py needed by all scripts.
 
-**!!! Scripts are now RELION 3.1 compatible !!!**
+**!!! Scripts are now RELION 3.1+ compatible !!!**
 
 Backward compatible with RELION <=3.0 format star files! 
 
@@ -16,11 +16,12 @@ Add beamtilt class to the particles. Script adds rlnBeamTiltClass extracted from
 ## assign_column_star.py
 Add label (col_lb) to Input1 and assigns values to it from Input2 where the label (comp_lb) of Input2 matches Input1
 ```        
---i1        Input1 STAR filename.
---i2        Input2 STAR filename.
---o         Output STAR filename.
---col_lb    Label of the new column assigned to Input1; Default: rlnDefocusU
---comp_lb   Compare label used for Input1 and Input2 for value assignment. Default:rlnMicrographName
+  --i1        Input1 STAR filename.
+  --i2        Input2 STAR filename.
+  --o         Output STAR filename.
+  --data  Data table from star file to be used, Default: data_particles
+  --col_lb    Label of the new column assigned to Input1; Default: rlnDefocusU
+  --comp_lb   Compare label used for Input1 and Input2 for value assignment. Default:rlnMicrographName
 ```
 Example 1: Assign values of DefocusU from input2.star as a column to input1.star where the value of column rlnMicrographName matches in both inputs. 
 ``` 
@@ -38,13 +39,13 @@ Remove other columns than particle coords from star file.
 ! only Relion <=3.0 format star files !
 Clusters beam-shifts extracted from xml files into beam-tilt classes.
 ```
---i         Input XML directory
---o         Output star file. If empty no file generated generated
---o_shifts  Output file with extracted beam-shifts and cluster numbers. If empty no file generated generated
---clusters  Number of clusters the beam-shifts should be divided in. (default: 1)
---elbow     Number of max clusters used in Elbow method optimal cluster number determination. (default: 0)
---max_iter  Expert option: Maximum number of iterations of the k-means algorithm for a single run. (default: 300)
---n_init    Expert option: Number of time the k-means algorithm will be run with different centroid seeds. (default: 10)
+  --i         Input XML directory
+  --o         Output star file. If empty no file generated generated
+  --o_shifts  Output file with extracted beam-shifts and cluster numbers. If empty no file generated generated
+  --clusters  Number of clusters the beam-shifts should be divided in. (default: 1)
+  --elbow     Number of max clusters used in Elbow method optimal cluster number determination. (default: 0)
+  --max_iter  Expert option: Maximum number of iterations of the k-means algorithm for a single run. (default: 300)
+  --n_init    Expert option: Number of time the k-means algorithm will be run with different centroid seeds. (default: 10)
 ```
 Requires specific conda environment. Install:
 ```
@@ -58,13 +59,13 @@ conda install matplotlib
 ! only Relion <=3.0 format star files !
 Clusters beam-shifts extracted from serialem mdoc files into beam-tilt classes.
 ```
---i         Input mdoc directory
---o         Output star file. If empty no file generated generated
---o_shifts  Output file with extracted beam-shifts and cluster numbers. If empty no file generated generated
---clusters  Number of clusters the beam-shifts should be divided in. (default: 1)
---elbow     Number of max clusters used in Elbow method optimal cluster number determination. (default: 0)
---max_iter  Expert option: Maximum number of iterations of the k-means algorithm for a single run. (default: 300)
---n_init    Expert option: Number of time the k-means algorithm will be run with different centroid seeds. (default: 10)
+  --i         Input mdoc directory
+  --o         Output star file. If empty no file generated generated
+  --o_shifts  Output file with extracted beam-shifts and cluster numbers. If empty no file generated generated
+  --clusters  Number of clusters the beam-shifts should be divided in. (default: 1)
+  --elbow     Number of max clusters used in Elbow method optimal cluster number determination. (default: 0)
+  --max_iter  Expert option: Maximum number of iterations of the k-means algorithm for a single run. (default: 300)
+  --n_init    Expert option: Number of time the k-means algorithm will be run with different centroid seeds. (default: 10)
 ```
 Requires specific conda environment. Install:
 ```
@@ -78,9 +79,9 @@ conda install matplotlib
 
 Creates optic groups according to acquisition position identifier (number) in the FoilHole_XXX_Data_YYY_ZZZ_AAA_BBB-CCC.mrc filename of the micrograph.
 ```
---i           Input STAR filename.
---o,          Output STAR filename.
---word_count  Position of the acquisition position identifier in the FoilHole_XXX_Data_YYY_ZZZ.mrc filename. Default: 4 (th word).")
+  --i           Input STAR filename.
+  --o,          Output STAR filename.
+  --word_count  Position of the acquisition position identifier in the FoilHole_XXX_Data_YYY_ZZZ.mrc filename. Default: 4 (th word).")
 ```
 
 ## create_opticgroups_from_xml.py
@@ -88,14 +89,14 @@ Creates optic groups according to acquisition position identifier (number) in th
 
 Clusters beam-shifts extracted from xml files into optic groups.
 ```
---i         Input XML directory
---istar     Input particles star file.
---o         Output star file. If empty no file generated generated
---o_shifts  Output file with extracted beam-shifts and cluster numbers. If empty no file generated generated
---clusters  Number of clusters the beam-shifts should be divided in. (default: 1)
---elbow     Number of max clusters used in Elbow method optimal cluster number determination. (default: 0)
---max_iter  Expert option: Maximum number of iterations of the k-means algorithm for a single run. (default: 300)
---n_init    Expert option: Number of time the k-means algorithm will be run with different centroid seeds. (default: 10)
+  --i         Input XML directory
+  --istar     Input particles star file.
+  --o         Output star file. If empty no file generated generated
+  --o_shifts  Output file with extracted beam-shifts and cluster numbers. If empty no file generated generated
+  --clusters  Number of clusters the beam-shifts should be divided in. (default: 1)
+  --elbow     Number of max clusters used in Elbow method optimal cluster number determination. (default: 0)
+  --max_iter  Expert option: Maximum number of iterations of the k-means algorithm for a single run. (default: 300)
+  --n_init    Expert option: Number of time the k-means algorithm will be run with different centroid seeds. (default: 10)
 ```
 Requires specific conda environment. Install:
 ```
@@ -110,14 +111,14 @@ conda install matplotlib
 
 Clusters beam-shifts extracted from serialem mdoc files into optic groups.
 ```
---i         Input mdoc directory
---istar     Input particles star file.
---o         Output star file. If empty no file generated generated
---o_shifts  Output file with extracted beam-shifts and cluster numbers. If empty no file generated generated
---clusters  Number of clusters the beam-shifts should be divided in. (default: 1)
---elbow     Number of max clusters used in Elbow method optimal cluster number determination. (default: 0)
---max_iter  Expert option: Maximum number of iterations of the k-means algorithm for a single run. (default: 300)
---n_init    Expert option: Number of time the k-means algorithm will be run with different centroid seeds. (default: 10)
+  --i         Input mdoc directory
+  --istar     Input particles star file.
+  --o         Output star file. If empty no file generated generated
+  --o_shifts  Output file with extracted beam-shifts and cluster numbers. If empty no file generated generated
+  --clusters  Number of clusters the beam-shifts should be divided in. (default: 1)
+  --elbow     Number of max clusters used in Elbow method optimal cluster number determination. (default: 0)
+  --max_iter  Expert option: Maximum number of iterations of the k-means algorithm for a single run. (default: 300)
+  --n_init    Expert option: Number of time the k-means algorithm will be run with different centroid seeds. (default: 10)
 ```
 Requires specific conda environment. Install:
 ```
@@ -162,6 +163,7 @@ Join two star files. Joining options: UNION, INTERSECT, EXCEPT.
   --i1    Input1 STAR filename with particles.
   --i2    Input2 STAR filename with particles.
   --o     Output STAR filename.
+  --data  Data table from star file to be used, Default: data_particles
   --lb    Label used for intersect/except joining. e.g. rlnAngleTilt, rlnDefocusU...; Default: rlnMicrographName
   --op    Operator used for comparison. Allowed: "union", "intersect", "except"
 ```
@@ -195,6 +197,7 @@ Perform basic math operations on star file values.
 ```
   --i         Input STAR filename with particles.
   --o         Output STAR filename.
+  --data  Data table from star file to be used, Default: data_particles
   --lb        Label used for math operation. e.g. rlnAngleTilt, rlnDefocusU...
   --op        Operator used for comparison. Allowed: "+", "-", "*", "/","^","abs","=","mod","remainder". Use double quotes!!!
   --val       Value used for math operation.
@@ -222,17 +225,17 @@ Base library required by all scripts.
 ## particles_star_to_box.py
 Extracts coordinates from particles STAR file and saves as per micrograph box files.
 ```
---i         Input STAR filename with particles.
---o         Output directory where the box files will be stored.
---box_size  Box size. Default: 256
+  --i         Input STAR filename with particles.
+  --o         Output directory where the box files will be stored.
+  --box_size  Box size. Default: 256
 ```
 
 ## particles_star_to_coords_star.py 
 Extracts coordinates from particles STAR file and saves as per micrograph
 coords star files.
 ```
---i         Input STAR filename with particles.
---o         Output directory where the coords files will be stored.
+  --i         Input STAR filename with particles.
+  --o         Output directory where the coords files will be stored.
 ```
 
 ## rel31_to_rel30_star.py
@@ -306,7 +309,8 @@ Select random orientation from symmetry expanded star files. One orientation per
 Select particles complying with selection rule on specified label.
 ``` 
   --i        Input STAR filename with particles.
-  --o        Output STAR filename. 
+  --o        Output STAR filename.
+  --data  Data table from star file to be used, Default: data_particles 
   --lb       Label used for selection. e.g. rlnAngleTilt, rlnDefocusU...
   --op       Operator used for comparison. Allowed: "=", "!=", ">=", "<=", "<". Use double quotes!!!
   --val      Value used for comparison. Used together with --op parameter.
@@ -318,7 +322,7 @@ Select particles complying with selection rule on specified label.
 
 Example 1: Select lines from input.star where source micrograph does not equals to mic123456789.mrc
 ```
- select_values_star.py --i input.star --o output.star --lb rlnMicrographName --op "!=" --val mic123456789.mrc 
+select_values_star.py --i input.star --o output.star --lb rlnMicrographName --op "!=" --val mic123456789.mrc 
 ```
 Example 2: Select lines from input.star where tilt angles are less than 15 deg.
 ```
@@ -374,18 +378,23 @@ Print basic statistics on numerical labels present in STAR file
 ```
   --i     Input STAR filename.
   --lb    Labels used for statistics (Default: ALL). Multiple labels can be used enclosed in double quotes. (e.g. "rlnAngleTilt rlnAngleRot")
+  --data  Data table from star file to be used, Default: data_particles
 ```
-Example 1: Print out statistics on all labels:
+Example 1: Print out statistics on particles - all labels:
 ```
-./stats_star.py --i input.star
+stats_star.py --i input.star
 ```
-Example 2: Print out statistics on rlnAngleTilt:
+Example 2: Print out statistics on data_model_class_1 - all labels
 ```
-./stats_star.py --i input.star --lb rlnAngleTilt
+stats_star.py --i run_model.star --data data_model_class_1
 ```
-Example 3: Print out statistics on rlnAngleTilt, rlnAngleRot and rlnAnglePsi
+Example 3: Print out statistics on rlnAngleTilt:
 ```
-./stats_star.py --i input.star --lb "rlnAngleTilt rlnAngleRot rlnAnglePsi"
+stats_star.py --i input.star --lb rlnAngleTilt
+```
+Example 4: Print out statistics on rlnAngleTilt, rlnAngleRot and rlnAnglePsi
+```
+stats_star.py --i input.star --lb "rlnAngleTilt rlnAngleRot rlnAnglePsi"
 ```
 
 ## xflip_particles_star.py
