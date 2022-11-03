@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import sys
@@ -68,25 +68,22 @@ class HelixCorrectStar:
         if 'rlnHelicalTrackLength' not in ilabels:
             md.addLabels(['rlnHelicalTrackLength'])
 
-        mdOut = MetaData()
-
         if md.version == "3.1":
-            mdOut.version = "3.1"
-            mdOut.addDataTable("data_optics")
-            mdOut.addLabels("data_optics", md.getLabels("data_optics"))
-            mdOut.addData("data_optics", getattr(md, "data_optics"))
-            particleTableName = "data_particles"
+            mdOut = md.clone()
+            dataTableName = "data_particles"
+            mdOut.removeDataTable(dataTableName)
         else:
-            particleTableName = "data_"
-
-        mdOut.addDataTable(particleTableName)
-        mdOut.addLabels(particleTableName, md.getLabels(particleTableName))
+            mdOut = MetaData()
+            dataTableName = "data_"
+            
+        mdOut.addDataTable(dataTableName)
+        mdOut.addLabels(dataTableName, md.getLabels(dataTableName))
 
         particles = self.get_particles(md)
 
         self.helixParticles(particles)
 
-        mdOut.addData(particleTableName, particles)
+        mdOut.addData(dataTableName, particles)
         mdOut.write(args.o)
 
         print("New star file %s created. Have fun!" % args.o)

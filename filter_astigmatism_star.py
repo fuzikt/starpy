@@ -1,8 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import sys
-from copy import deepcopy
 from metadata import MetaData
 import argparse
 
@@ -88,13 +87,13 @@ class SelAstgStar:
         new_particles.extend(self.selParticles(particles, args.astg, args.res,))
 
         if md.version == "3.1":
-            mdOut = deepcopy(md)
+            mdOut = md.clone()
             mdOut.removeDataTable(dataTableName)
         else:
             mdOut = MetaData()
             dataTableName = "data_"
 
-        mdOut.addDataTable(dataTableName)
+        mdOut.addDataTable(dataTableName, md.isLoop(dataTableName))
         mdOut.addLabels(dataTableName, md.getLabels(dataTableName))
         mdOut.addData(dataTableName, new_particles)
         mdOut.write(args.o)

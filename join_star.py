@@ -1,8 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import sys
-from copy import deepcopy
 from metadata import MetaData
 from metadata import LABELS
 import argparse
@@ -116,13 +115,13 @@ class JoinStar:
                             md1.setLabels(dataTableName, **dic)
 
             if md1.version == "3.1":
-                mdOut = deepcopy(md1)
+                mdOut = md1.clone()
                 mdOut.removeDataTable(dataTableName)
             else:
                 mdOut = MetaData()
                 dataTableName = "data_"
 
-            mdOut.addDataTable(dataTableName)
+            mdOut.addDataTable(dataTableName, md1.isLoop(dataTableName))
             mdOut.addLabels(dataTableName, md1.getLabels(dataTableName))
             particles1 = self.get_particles(md1, dataTableName)
             particles2 = self.get_particles(md2, dataTableName)
@@ -157,13 +156,13 @@ class JoinStar:
                     intersectParticles.append(particle)
 
             if md1.version == "3.1":
-                mdOut = deepcopy(md1)
+                mdOut = md1.clone()
                 mdOut.removeDataTable(dataTableName)
             else:
                 mdOut = MetaData()
                 dataTableName = "data_"
 
-            mdOut.addDataTable(dataTableName)
+            mdOut.addDataTable(dataTableName, md1.isLoop(dataTableName))
             mdOut.addLabels(dataTableName, md1.getLabels(dataTableName))
             mdOut.addData(dataTableName, intersectParticles)
 
@@ -196,13 +195,13 @@ class JoinStar:
                     exceptParticles.append(particle)
 
             if md1.version == "3.1":
-                mdOut = deepcopy(md1)
+                mdOut = md1.clone()
                 mdOut.removeDataTable(dataTableName)
             else:
                 mdOut = MetaData()
                 dataTableName = "data_"
 
-            mdOut.addDataTable(dataTableName)
+            mdOut.addDataTable(dataTableName, md1.isLoop(dataTableName))
             mdOut.addLabels(dataTableName, md1.getLabels(dataTableName))
             mdOut.addData(dataTableName, exceptParticles)
 

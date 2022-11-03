@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import sys
@@ -63,9 +63,9 @@ class CreateOpticGroupsFromFilenameStar:
         # create output star file
         mdOut = MetaData()
         mdOut.version = "3.1"
-        mdOut.addDataTable("data_optics")
+        mdOut.addDataTable("data_optics", True)
         mdOut.addLabels("data_optics", md.getLabels("data_optics"))
-        mdOut.addDataTable("data_particles")
+        mdOut.addDataTable("data_particles", True)
         mdOut.addLabels("data_particles", md.getLabels("data_particles"))
 
         if "rlnOpticsGroup" not in md.getLabels("data_particles"):

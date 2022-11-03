@@ -114,23 +114,21 @@ class splitStacksToMics:
 
         if not os.path.exists(args.o):
             os.makedirs(args.o)
-        mdOut = MetaData()
 
         new_particles.extend(self.splitParticlesToMicrographs(particles, args.o))
 
         if md.version == "3.1":
-            mdOut.version = "3.1"
-            mdOut.addDataTable("data_optics")
-            mdOut.addLabels("data_optics", md.getLabels("data_optics"))
-            mdOut.addData("data_optics", getattr(md, "data_optics"))
-            particleTableName = "data_particles"
+            mdOut = md.clone()
+            dataTableName = "data_particles"
+            mdOut.removeDataTable(dataTableName)
         else:
-            particleTableName = "data_"
+            mdOut = MetaData()
+            dataTableName = "data_"
 
-        mdOut.addDataTable(particleTableName)
-        mdOut.addLabels(particleTableName, md.getLabels(particleTableName))
-        mdOut.removeLabels(particleTableName, ['rlnImageName'])
-        mdOut.addData(particleTableName, new_particles)
+        mdOut.addDataTable(dataTableName, md.isLoop(dataTableName))
+        mdOut.addLabels(dataTableName, md.getLabels(dataTableName))
+        mdOut.removeLabels(dataTableName, ['rlnImageName'])
+        mdOut.addData(dataTableName, new_particles)
         mdOut.write(args.o+".star")
 
         print("New star file %s created. Have fun!" % args.o+".star")

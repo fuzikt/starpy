@@ -1,9 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import math
 import os
 import sys
 import operator
-from copy import deepcopy
 from metadata import MetaData
 from metadata import LABELS
 import argparse
@@ -205,13 +204,13 @@ class SelValueStar:
             self.selParticles(particles, args.lb, args.op, compValue, rangeHi, rangeLo, rangeSel, prctl_l, prctl_h))
 
         if md.version == "3.1":
-            mdOut = deepcopy(md)
+            mdOut = md.clone()
             mdOut.removeDataTable(dataTableName)
         else:
             mdOut = MetaData()
             dataTableName = "data_"
 
-        mdOut.addDataTable(dataTableName)
+        mdOut.addDataTable(dataTableName, md.isLoop(dataTableName))
         mdOut.addLabels(dataTableName, md.getLabels(dataTableName))
         mdOut.addData(dataTableName, new_particles)
 

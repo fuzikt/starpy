@@ -1,8 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import sys
-from copy import deepcopy
 from metadata import MetaData
 from metadata import LABELS
 import argparse
@@ -100,13 +99,13 @@ class AssignLabelStar:
             "Assigning values for Input1 label %s where the %s of Input2 matches Input1" % (args.col_lb, args.comp_lb))
 
         if md1.version == "3.1":
-            mdOut = deepcopy(md1)
+            mdOut = md1.clone()
             mdOut.removeDataTable(dataTableName)
         else:
             mdOut = MetaData()
             dataTableName = "data_"
 
-        mdOut.addDataTable(dataTableName)
+        mdOut.addDataTable(dataTableName, md1.isLoop(dataTableName))
         mdOut.addLabels(dataTableName, i1labels)
         if args.col_lb not in i1labels:
             mdOut.addLabels(dataTableName, args.col_lb)

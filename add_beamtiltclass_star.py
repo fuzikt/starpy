@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import sys
@@ -63,7 +63,7 @@ class RenameStar:
         self.addBeamTiltClass(particles)
 
         mdOut = MetaData()
-        mdOut.addDataTable("data_")
+        mdOut.addDataTable("data_", True)
         mdOut.addLabels("data_", md.getLabels("data_"))
         mdOut.addData("data_", particles)
         mdOut.write(args.o)

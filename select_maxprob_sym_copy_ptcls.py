@@ -1,10 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import sys
-import random
 from metadata import MetaData
-import copy
 import argparse
 
 
@@ -84,19 +82,17 @@ class selMaxProbSymStar:
 
         new_particles.extend(self.selMostProbableParticles(particles))
 
-        mdOut = MetaData()
         if md.version == "3.1":
-            mdOut.version = "3.1"
-            mdOut.addDataTable("data_optics")
-            mdOut.addLabels("data_optics", md.getLabels("data_optics"))
-            mdOut.addData("data_optics", getattr(md, "data_optics"))
-            particleTableName = "data_particles"
+            mdOut = md.clone()
+            dataTableName = "data_particles"
+            mdOut.removeDataTable(dataTableName)
         else:
-            particleTableName = "data_"
+            mdOut = MetaData()
+            dataTableName = "data_"
 
-        mdOut.addDataTable(particleTableName)
-        mdOut.addLabels(particleTableName, md.getLabels(particleTableName))
-        mdOut.addData(particleTableName, new_particles)
+        mdOut.addDataTable(dataTableName, md.isLoop(dataTableName))
+        mdOut.addLabels(dataTableName, md.getLabels(dataTableName))
+        mdOut.addData(dataTableName, new_particles)
 
         mdOut.write(args.o)
 

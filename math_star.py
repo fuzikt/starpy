@@ -3,7 +3,6 @@
 import os
 import sys
 import operator
-from copy import deepcopy
 from metadata import MetaData
 from metadata import LABELS
 import argparse
@@ -234,18 +233,19 @@ class MathStar:
         new_particles = []
 
         particles = self.get_particles(md, dataTableName)
+        print(particles[0][])
         new_particles.extend(
             self.mathParticles(particles, args.lb, args.op, compValue, args.selop, args.sellb, selValue, rangeHi,
                                rangeLo, rangeSel))
 
         if md.version == "3.1":
-            mdOut = deepcopy(md)
+            mdOut = md.clone()
             mdOut.removeDataTable(dataTableName)
         else:
             mdOut = MetaData()
             dataTableName = "data_"
 
-        mdOut.addDataTable(dataTableName)
+        mdOut.addDataTable(dataTableName, md.isLoop(dataTableName))
         mdOut.addLabels(dataTableName, md.getLabels(dataTableName))
         mdOut.addData(dataTableName, new_particles)
         mdOut.write(args.o)

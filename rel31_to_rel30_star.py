@@ -1,8 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import sys
-import random
 from metadata import MetaData
 import argparse
 
@@ -87,7 +86,7 @@ class Rel31ToRel30Star:
 
         mdOut = MetaData()
         particleTableName = "data_"
-        mdOut.addDataTable(particleTableName)
+        mdOut.addDataTable(particleTableName, True)
         mdOut.addLabels(particleTableName, md.getLabels("data_particles"))
 
         mdOut.addLabels(particleTableName,['rlnVoltage', 'rlnSphericalAberration', 'rlnAmplitudeContrast', 'rlnMagnification', 'rlnDetectorPixelSize', 'rlnOriginX', 'rlnOriginY', 'rlnBeamTiltClass'])

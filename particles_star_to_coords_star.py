@@ -41,7 +41,7 @@ class ParticlesToCoordsStar:
         mdOut = MetaData()
         particleTableName = "data_"
 
-        mdOut.addDataTable(particleTableName)
+        mdOut.addDataTable(particleTableName, True)
         mdOut.addLabels(particleTableName, "rlnCoordinateX", "rlnCoordinateY")
         mdOut.addData(particleTableName, partCoords)
         micName = partCoords[0].rlnMicrographName.split("/")[-1]
