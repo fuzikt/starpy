@@ -596,18 +596,22 @@ class MetaData:
         else:
             self.clear()
 
+    def clone(self):
+        return copy.deepcopy(self)
+
     def clear(self):
         for attribute in dir(self):
             if "data_" in attribute and "_labels" not in attribute:
                 setattr(self, attribute + "_labels", OrderedDict())
                 setattr(self, attribute, [])
 
-    def addDataTable(self, dataTableName):
+    def addDataTable(self, dataTableName, loop=False):
         setattr(self, dataTableName + "_labels", OrderedDict())
+        setattr(self, dataTableName + "_loop", loop)
         setattr(self, dataTableName, [])
 
     def removeDataTable(self, dataTableName):
-        delattr(self,dataTableName)
+        delattr(self, dataTableName)
 
     def _setItemValue(self, item, label, value):
         setattr(item, label.name, label.type(value))
@@ -618,13 +622,29 @@ class MetaData:
     def read(self, input_star):
         self.clear()
         found_label = False
+        found_loop = False
+        non_loop_values = []
+
         f = open(input_star)
+
+        def setItemValues(currentTableRead, values):
+            # Iterate in pairs (zipping) over labels and values in the row
+            item = Item()
+            # Dynamically set values, using label type (str by default)
+            for label, value in izip(getattr(self, currentTableRead + "_labels").values(), values):
+                self._setItemValue(item, label, value)
+            getattr(self, currentTableRead).append(item)
 
         for line in f:
             values = line.strip().split()
 
+            if not values and found_label and not found_loop:  # empty lines after non-loop labels
+                setItemValues(currentTableRead, non_loop_values)
+                continue
+
             if not values:  # empty lines
                 continue
+
             if "#" in values[0]:
                 continue
 
@@ -636,49 +656,64 @@ class MetaData:
                 self.addDataTable(values[0])
                 currentTableRead = values[0]
                 found_label = False
+                found_loop = False
+                non_loop_values = []
+                continue
+
+            if values[0].startswith('loop_'):  # Label line
+                setattr(self, currentTableRead + "_loop", True)
+                found_loop = True
                 continue
 
             if values[0].startswith('_rln'):  # Label line
                 # Skip leading underscore in label name
                 self._addLabel(currentTableRead, labelName=values[0][1:])
+                if not found_loop:
+                    non_loop_values.append(values[1])
                 found_label = True
-
             elif found_label:  # Read data lines after at least one label
-                # Iterate in pairs (zipping) over labels and values in the row
-                item = Item()
-                # Dynamically set values, using label type (str by default)
-
-                for label, value in izip(getattr(self, currentTableRead + "_labels").values(), values):
-                    self._setItemValue(item, label, value)
-                getattr(self, currentTableRead).append(item)
+                setItemValues(currentTableRead, values)
 
         f.close()
 
     def _write(self, output_file):
         # Write labels and prepare the line format for rows
         for attribute in dir(self):
-            if "data_" in attribute and "_labels" not in attribute:
+            if "data_" in attribute and "_labels" not in attribute and "_loop" not in attribute:
                 line_format = ""
                 if self.version == "3.1":
-                    output_file.write("\n# version 30001\n\n%s\n\nloop_\n" % attribute)
+                    if "_loop" not in attribute:
+                        output_file.write("\n# version 30001\n\n%s\n\n" % attribute)
+                    if getattr(self, attribute + "_loop"):
+                        output_file.write("loop_\n")
                 else:
                     output_file.write("\n%s\n\nloop_\n" % attribute)
 
                 for i, l in enumerate(getattr(self, attribute + "_labels").values()):
-                    output_file.write("_%s #%d \n" % (l.name, i + 1))
                     # Retrieve the type of the label
                     t = l.type
-                    if t is float:
-                        line_format += "%%(%s)f \t" % l.name
-                    elif t is int:
-                        line_format += "%%(%s)d \t" % l.name
+                    if getattr(self, attribute + "_loop"):
+                        output_file.write("_%s #%d \n" % (l.name, i + 1))
+                        if t is float:
+                            line_format += "%%(%s)f \t" % l.name
+                        elif t is int:
+                            line_format += "%%(%s)d \t" % l.name
+                        else:
+                            line_format += "%%(%s)s \t" % l.name
                     else:
-                        line_format += "%%(%s)s \t" % l.name
+                        if t is float:
+                            line_format = "_%-35s%15f\n"
+                        elif t is int:
+                            line_format = "_%-35s%15d\n"
+                        else:
+                            line_format = "_%-35s%15s\n"
+                        output_file.write(line_format % (l.name, getattr(getattr(self, attribute)[0], l.name)))
 
-                line_format += '\n'
+                if getattr(self, attribute + "_loop"):
+                    line_format += '\n'
 
-                for item in getattr(self, attribute):
-                    output_file.write(line_format % item.__dict__)
+                    for item in getattr(self, attribute):
+                        output_file.write(line_format % item.__dict__)
 
     def write(self, output_star):
         output_file = open(output_star, 'w')
@@ -706,6 +741,9 @@ class MetaData:
         else:
             for item in self.data_:
                 yield item
+
+    def isLoop(self, dataTableName="data_particles"):
+        return getattr(self, dataTableName + "_loop")
 
     def getLabels(self, dataTableName="data_particles"):
         return [l.name for l in getattr(self, dataTableName + "_labels").values()]
