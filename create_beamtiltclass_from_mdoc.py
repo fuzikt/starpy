@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import os
@@ -6,7 +6,6 @@ import numpy as np
 import argparse
 from os import listdir
 from os.path import isfile, join
-from xml.dom import minidom
 from matplotlib import pyplot as plt
 from sklearn.cluster import KMeans
 
