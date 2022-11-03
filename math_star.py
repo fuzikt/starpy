@@ -233,7 +233,6 @@ class MathStar:
         new_particles = []
 
         particles = self.get_particles(md, dataTableName)
-        print(particles[0][])
         new_particles.extend(
             self.mathParticles(particles, args.lb, args.op, compValue, args.selop, args.sellb, selValue, rangeHi,
                                rangeLo, rangeSel))
