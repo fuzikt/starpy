@@ -640,6 +640,7 @@ class MetaData:
 
             if not values and found_label and not found_loop:  # empty lines after non-loop labels
                 setItemValues(currentTableRead, non_loop_values)
+                found_label = False
                 continue
 
             if not values:  # empty lines
