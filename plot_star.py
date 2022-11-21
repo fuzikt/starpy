@@ -30,6 +30,9 @@ class PlotStar:
         add('--threshold', type=str, default="",
             help="Draw a threshold line at the defined y value. Multiple values accepted, separated by comma (e.g. 0.5,0.143). (Default: none)"
             )
+        add('--thresholdx', type=str, default="",
+            help="Draw a threshold line at the defined x value. Multiple values accepted, separated by comma (e.g. 0.5,0.143). (Default: none)"
+            )
         add('--multiplotY', type=str, default="1,1",
             help="Create separate plot for each --lby in a grid (Default: 1,1 = single plot). Define in parameter number of rows and columns  (e.g. --multiplotY \"2,3\")")
         add('--multiplotFile', type=str, default="1,1",
@@ -176,16 +179,16 @@ class PlotStar:
                         else:
                             axis[axisTile].plot(xValues, yValues, label=yLabel)
                 else:  # single plot
-                    if args.hist_bins > 0: # histogram
+                    if args.hist_bins > 0:  # histogram
                         axis.set_xlabel(yTitle)
                         axis.set_ylabel("count")
                         axis.hist(yValues, args.hist_bins, alpha=alphaVal, label=yLabel)
                     else:
                         axis.set_xlabel(xTitle)
                         axis.set_ylabel(yTitle)
-                        if args.scatter: # scatter
+                        if args.scatter:  # scatter
                             axis.scatter(xValues, yValues, label=yLabel)
-                        else: # line plot
+                        else:  # line plot
                             axis.plot(xValues, yValues, label=yLabel)
 
                 if multiplotY:
@@ -203,6 +206,10 @@ class PlotStar:
         if args.threshold != "":
             for thresholdValue in args.threshold.split(","):
                 plt.axhline(y=float(thresholdValue), linestyle=':')
+
+        if args.thresholdx != "":
+            for thresholdValue in args.thresholdx.split(","):
+                plt.axvline(x=float(thresholdValue), linestyle=':')
 
         plt.legend()
         plt.show()
