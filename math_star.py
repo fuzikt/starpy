@@ -24,7 +24,7 @@ class MathStar:
         add('--op', type=str, default="=",
             help="Operator used for comparison. Allowed: \"+\", \"-\", \"*\", \"/\",\"^\",\"abs\",\"=\",\"mod\",\"remainder\". Use double quotes!!!")
         add('--val', type=str, default="0",
-            help="Value used for math operation.")
+            help="Value used for math operation. If Relion label used (e.g. rlnDefocusV) then value of the label is used.")
         add('--sellb', type=str, default="None",
             help="Label used for selection. e.g. rlnAngleTilt, rlnDefocusU... Default: None")
         add('--selop', type=str, default="=",
@@ -59,16 +59,28 @@ class MathStar:
             self.error("Label " + args.lb + " not recognized as RELION label.")
 
         if LABELS[args.lb] == float:
-            try:
-                compValue = float(args.val)
-            except ValueError:
-                self.error("Attribute '%s' requires FLOAT value for operation." % args.lb)
+            if args.val.startswith("rln"):
+                if LABELS[args.val] == float:
+                    compValue =  args.val
+                else:
+                    self.error("Attribute '%s' requires FLOAT value for operation, but %s is type %s." % (args.lb, args.val, LABELS[args.val]))
+            else:
+                try:
+                    compValue = float(args.val)
+                except ValueError:
+                    self.error("Attribute '%s' requires FLOAT value for operation." % args.lb)
 
         if LABELS[args.lb] == int:
-            try:
-                compValue = int(args.val)
-            except ValueError:
-                self.error("Attribute '%s' requires INT value for operation." % args.lb)
+            if args.val.startswith("rln"):
+                if LABELS[args.val] == int:
+                    compValue =  args.val
+                else:
+                    self.error("Attribute '%s' requires INT value for operation, but %s is type %s." % (args.lb, args.val, LABELS[args.val]))
+            else:
+                try:
+                    compValue = int(args.val)
+                except ValueError:
+                    self.error("Attribute '%s' requires INT value for operation." % args.lb)
 
         if LABELS[args.lb] == str:
             self.error("Attribute '%s' has STR value. Cannot perform math operation on STR values." % args.lb)
@@ -169,6 +181,10 @@ class MathStar:
         mathCounter = 0
 
         def doMathOnParticle(selectedParticle, atr, value):
+            if type(value) == str:
+                if value.startswith("rln"):
+                    value = getattr(selectedParticle, value)
+
             if op_char == "abs":
                 setattr(selectedParticle, atr, op_func(getattr(selectedParticle, atr)))
             elif op_char == "=":

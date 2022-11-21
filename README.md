@@ -238,6 +238,39 @@ coords star files.
   --o         Output directory where the coords files will be stored.
 ```
 
+## plot_star.py
+Plots values of defined label(s) from STAR file.
+```        
+  --i              Input STAR filename.
+  --data           Data table from star file to be used (Default: data_particles).
+  --lbx            Label used for X axis (Default: None). If not defined, X axis is per record in the data table (e.g. per particle)
+  --lby            Labels used for plot (Y-axis values)
+  --hist_bins      Number of bins for plotting a histogram. If set to >0 then histogram is plotted.
+  --scatter        Sets scatter type of plot.")
+  --threshold      Draw a threshold line at the defined y value. Multiple values accepted, separated by comma (e.g. 0.5,0.143). (Default: none)
+  --multiplotY     Create separate plot for each --lby in a grid (Default: 1,1 = single plot). Define in parameter number of rows and columns  (e.g. --multiplotY \"2,3\")
+  --multiplotFile  Create separate plot for each file in --i in a grid (Default: 1,1 = single plot). Define in parameter number of rows and columns  (e.g. --multiplotFile \"2,3\")
+```
+Example 1: Creates a scatter plot of DefocusU values per particle
+```
+plot_star.py --i input.star --lby rlnDefocusU --scatter 
+```
+
+Example 2: Creates a histogram (in 50 bins) of DefocusU values per particle
+```
+plot_star.py --i input.star --lby rlnDefocusU --hist_bins 50 
+```
+
+Example 3: Creates a scatter plot of DefocusU and DefocusV values in single plot
+```
+plot_star.py --i input.star --lby rlnDefocusU,rlnDefocusV --scatter
+```
+
+Example 4: Creates a scatter plot of DefocusU dependent on DefocusV values in single plot
+```
+plot_star.py --i input.star --lby rlnDefocusU --lbx rlnDefocusV --scatter
+```
+
 ## rel31_to_rel30_star.py
 Converts particle star from RELION 3.1 format to RELION 3.0 format.
 ```
