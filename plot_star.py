@@ -55,6 +55,8 @@ class PlotStar:
             inputFiles = str(args.i).replace('\n', ' ').split(" ")
         elif "," in args.i:
             inputFiles = str(args.i).replace('\n', ' ').split(",")
+        else:
+            inputFiles = [str(args.i)]
 
         for inputFile in inputFiles:
             if not os.path.exists(inputFile):
@@ -78,6 +80,8 @@ class PlotStar:
 
     def get_particles(self, md, dataTable):
         particles = []
+        if md.version != "3.1":
+            dataTable="data_"
         for particle in getattr(md, dataTable):
             particles.append(particle)
         return particles
@@ -97,6 +101,8 @@ class PlotStar:
             inputFiles = str(args.i).replace('\n', ' ').split(" ")
         elif "," in args.i:
             inputFiles = str(args.i).replace('\n', ' ').split(",")
+        else:
+            inputFiles = [str(args.i)]
 
         multiplotY = [int(item) for item in args.multiplotY.split(",")]
         multiplotFile = [int(item) for item in args.multiplotFile.split(",")]
