@@ -13,6 +13,8 @@ class selMaxProbSymStar:
         add = self.parser.add_argument
         add('--i', help="Input STAR filename with particles.")
         add('--o', help="Output STAR filename.")
+        add('--lb', type=str, default="rlnImageName",
+            help="Label used for comparison considering that the record is a sym copy. (default: rlnImageName)")
 
     def usage(self):
         self.parser.print_help()
@@ -44,7 +46,7 @@ class selMaxProbSymStar:
                 maxLikeParticle = particle
         return maxLikeParticle
 
-    def selMostProbableParticles(self, particles):
+    def selMostProbableParticles(self, particles, symCopyLabel):
         i = 1
         newParticles = []
         symmCopies = []
@@ -54,7 +56,7 @@ class selMaxProbSymStar:
             if len(particles) != 0:
                 particlePos = 0
                 while particlePos < len(particles):
-                    if symmCopies[0].rlnImageName == particles[particlePos].rlnImageName:
+                    if getattr(symmCopies[0],symCopyLabel) == getattr(particles[particlePos],symCopyLabel):
                         symmCopies.append(particles.pop(particlePos))
                         particlePos -= 1
                     particlePos += 1
@@ -80,7 +82,7 @@ class selMaxProbSymStar:
         print("Total %s particles in input star file. \nSelecting one orientation per particle according to the greatest value of rlnMaxValueProbDistribution." % str(
             len(particles)))
 
-        new_particles.extend(self.selMostProbableParticles(particles))
+        new_particles.extend(self.selMostProbableParticles(particles, args.lb))
 
         if md.version == "3.1":
             mdOut = md.clone()
