@@ -21,9 +21,9 @@ class AddRemoveLabel:
         add('--rm', action='store_true',
             help="Remove label from the star file.")
         add('--lb', type=str, default="",
-            help="Label to be added or removed Default: None")
+            help="Label to be added or removed. Use comma separated label values to add or remove multiple labels. Default: None")
         add('--val', type=str, default="0",
-            help="Value filled for added label. Default: 0")
+            help="Value filled for added labels. Use comma separated values if adding multiple labels. Default: 0")
         add('--data', type=str, default="data_particles",
             help="Data table from star file to be used (Default: data_particles).")
 
@@ -49,8 +49,12 @@ class AddRemoveLabel:
         if args.lb == "":
             self.error("Please specify the label (--lb) to be added or removed.")
 
-        if args.lb not in LABELS:
-            self.error("Label %s not recognized as RELION label." % args.lb)
+        if len(args.lb.split(",")) != len(args.val.split(",")):
+            self.error("Same number of values (--val) has to be specified as the number of newly added labels (--lb).")
+
+        for lb in args.lb.split(","):
+            if lb not in LABELS:
+                self.error("Label %s not recognized as RELION label." % args.lb)
 
     def main(self):
         self.define_parser()
@@ -63,11 +67,14 @@ class AddRemoveLabel:
 
         if args.add:
             dataTable = args.data
-            dic = {args.lb: args.val}
+            #dic = {args.lb: args.val}
+            lbs = args.lb.split(",")
+            vals = args.val.split(",")
+            dic = dict(map(lambda i, j: (i, j), lbs, vals))
             md.setLabels(dataTable, **dic)
 
         if args.rm:
-            md.removeLabels(args.data, args.lb)
+            md.removeLabels(args.data, args.lb.split(","))
 
         md.write(args.o)
 
