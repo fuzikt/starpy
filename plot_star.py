@@ -16,13 +16,13 @@ class PlotStar:
             description="Plots values of defined label(s) from STAR file.",
             formatter_class=RawTextHelpFormatter)
         add = self.parser.add_argument
-        add('--i', help="Input STAR filename.")
+        add('--i', help="Input STAR filename. Multiple files allowed separated by comma or by space (then all must be enclosed in double quotes).")
         add('--data', type=str, default="data_particles",
             help="Data table from star file to be used (Default: data_particles).")
         add('--lbx', type=str, default="",
             help="Label used for X axis (Default: None). If not defined, X axis is per record in the data table (e.g. per particle)")
         add('--lby', type=str, default="",
-            help="Labels used for plot (Y-axis values)")
+            help="Labels used for plot (Y-axis values). Accepts multiple labels to plot (separated by comma, or by space (then all must be enclosed in double quotes)).")
         add('--hist_bins', type=int, default=0,
             help="Number of bins for plotting a histogram. If set to >0 then histogram is plotted.")
         add('--scatter', action='store_true',

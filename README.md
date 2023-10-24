@@ -13,6 +13,33 @@ Add beamtilt class to the particles. Script adds rlnBeamTiltClass extracted from
   --o    Output STAR filename.
 ```
 
+## add_remove_label.py
+Adds or removes labels from star file.
+```
+--i         Input STAR filename.
+--o         Output STAR filename.
+--add       Add new label to the star file.
+--rm        Remove label from the star file.
+--lb        Label to be added or removed. Use comma separated label values to add or remove multiple labels. Default: None
+--val       Value filled for added labels. Use comma separated values if adding multiple labels. Default: 0
+--data      Data table from star file to be used (Default: data_particles).
+```
+
+Example 1: Remove rlnCoordinateY from input.star 
+``` 
+add_remove_label.py --i input.star --o output.star --lb rlnCoordinateY --rm
+```
+
+Example 2: Remove rlnCoordinateX,rlnCoordinateY from input.star 
+``` 
+add_remove_label.py --i input.star --o output.star --lb rlnCoordinateX,rlnCoordinateY --rm
+```
+
+Example 3: Add rlnCoordinateX,rlnCoordinateY with default values 10,20 respectively
+``` 
+add_remove_label.py --i input.star --o output.star --lb rlnCoordinateX,rlnCoordinateY --add --val 10,20
+```
+
 ## assign_column_star.py
 Add label (col_lb) to Input1 and assigns values to it from Input2 where the label (comp_lb) of Input2 matches Input1
 ```        
@@ -241,13 +268,14 @@ coords star files.
 ## plot_star.py
 Plots values of defined label(s) from STAR file.
 ```        
-  --i              Input STAR filename.
+  --i              Input STAR filename. Multiple files allowed separated by comma or by space (then all must be enclosed in double quotes).
   --data           Data table from star file to be used (Default: data_particles).
   --lbx            Label used for X axis (Default: None). If not defined, X axis is per record in the data table (e.g. per particle)
-  --lby            Labels used for plot (Y-axis values)
+  --lby            Labels used for plot (Y-axis values). Accepts multiple labels to plot (separated by comma, or by space (then all must be enclosed in double quotes)).
   --hist_bins      Number of bins for plotting a histogram. If set to >0 then histogram is plotted.
   --scatter        Sets scatter type of plot.")
   --threshold      Draw a threshold line at the defined y value. Multiple values accepted, separated by comma (e.g. 0.5,0.143). (Default: none)
+  --thresholdx     Draw a threshold line at the defined x value. Multiple values accepted, separated by comma (e.g. 0.5,0.143). (Default: none)"
   --multiplotY     Create separate plot for each --lby in a grid (Default: 1,1 = single plot). Define in parameter number of rows and columns  (e.g. --multiplotY \"2,3\")
   --multiplotFile  Create separate plot for each file in --i in a grid (Default: 1,1 = single plot). Define in parameter number of rows and columns  (e.g. --multiplotFile \"2,3\")
 ```
@@ -269,6 +297,32 @@ plot_star.py --i input.star --lby rlnDefocusU,rlnDefocusV --scatter
 Example 4: Creates a scatter plot of DefocusU dependent on DefocusV values in single plot
 ```
 plot_star.py --i input.star --lby rlnDefocusU --lbx rlnDefocusV --scatter
+```
+
+Example 5: Plot rlnDefocusU,rlnDefocusU values in 2 separate plots (1 row 2 plots)
+```
+plot_star.py --i micrographs_all_gctf_og.star --lby rlnDefocusU,rlnDefocusV --data data_micrographs --hist_bins 50 --multiplotY "1,2"
+```
+Note: If grid is < than the number of --lby => it iterates over the tiles from beginning.
+
+Example 6: Plot rlnDefocusU, rlnDefocusV values of 2 datasets in a 2 plots (histogram)
+```
+plot_star.py --i micrographs_all_gctf_og.star,micrographs_all_gctf_og_200.star --lby rlnDefocusU,rlnDefocusV --data data_micrographs --hist_bins 50 --multiplotFile 1,2
+```
+
+Example 7: Plot out FSC from PostProcess
+```
+plot_star.py --i PostpProcess/job001/post.star --lby rlnFourierShellCorrelationCorrected,rlnFourierShellCorrelationUnmaskedMaps,rlnCorrectedFourierShellCorrelationPhaseRandomizedMaskedMaps --lbx rlnResolution --data data_fsc --threshold 0.143
+```
+
+Example 8: Plot (compare) FSC curves from 2 separate postprocess with multiple thresholds set
+```
+plot_star.py --i "PostpProcess/job001/post.star PostpProcess/job002/post.star" --lby rlnFourierShellCorrelationCorrected --lbx rlnResolution --data data_fsc --threshold 0.143,0.3,0.5
+```
+
+Example 9: Plot FSC from all iterations of an auto-refine run
+```
+plot_star.py --i "$(ls Refine3D/job003/run_it*_half1_model.star)" --lby rlnGoldStandardFsc --lbx rlnResolution --data data_model_class_1
 ```
 
 ## rel31_to_rel30_star.py
