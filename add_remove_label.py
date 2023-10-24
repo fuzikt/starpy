@@ -17,7 +17,7 @@ class AddRemoveLabel:
         add('--i', help="Input STAR filename.")
         add('--o', help="Output STAR filename.")
         add('--add', action='store_true',
-            help="Adds new label to the star file.")
+            help="Add new label to the star file.")
         add('--rm', action='store_true',
             help="Remove label from the star file.")
         add('--lb', type=str, default="",
@@ -49,7 +49,7 @@ class AddRemoveLabel:
         if args.lb == "":
             self.error("Please specify the label (--lb) to be added or removed.")
 
-        if len(args.lb.split(",")) != len(args.val.split(",")):
+        if (len(args.lb.split(",")) != len(args.val.split(","))) and args.add:
             self.error("Same number of values (--val) has to be specified as the number of newly added labels (--lb).")
 
         for lb in args.lb.split(","):
