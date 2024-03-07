@@ -162,20 +162,26 @@ Calculates the absolute apix for the optics groups according to https://www3.mrc
 ```
 
 ## heatmap_orient_star.py
-Generates heatmap of particle orientations from star file. Cartesian and mollweide representations are generated. For symmetrical particles, first make symmetry expand of the star file (relion_particle_symmetry_expand).
+Generates heatmap of particle orientations from star file. Cartesian (hexbin, healpix, legacy) and mollweide (healpix, legacy) representations are generated. For symmetrical particles, first make symmetry expand of the star file (relion_particle_symmetry_expand).
 
 Requires:
 - Matplotlib
 - Numpy
+- healpy
 ```
-  --i         Input STAR filename with particles and orientations.
-  --o         Output files prefix. Default: heatmap_orient
-  --show      Only shows the resulting heatmap. Does not store any output file.
-  --white_bg  Set background of the heatmap to white. (i.e. zero values represented by white)
-  --black_bg  Set background of the heatmap to black . (i.e. zero values represented by black)
-  --format    Output format. Available formats: png, svg, jpg, tif. Default: png
-  --vmin      Min values represented on color bar. Default: -1 (auto)
-  --vmax      Max values represented on color bar. Default: -1 (auto)
+  --i               Input STAR filename with particles and orientations.
+  --o               Output files prefix. Default: heatmap_orient
+  --show            Only shows the resulting heatmap. Does not store any output file.
+  --format          Output format. Available formats: png, svg, jpg, tif. Default: png
+  --cmap            Color map used for the heatmap. Matplotlib colormap names accepted. Recommended: jet, inferno, viridis, turbo. (Default: turbo)")
+  --mask_zero       Mask zero values not to be represented by color. (i.e. zero values represented by white)")
+  --grid_size       Grid size of the hexbin grid. The higher number the finer sampling. Default: 50")
+  --hlpx            Create HealPix style maps
+  --hlpx_order      HealPix sampling order used for plotting (2->15deg,3->7.5deg, 4->3.75). Default: 4 (3.75deg)
+  --no_graticule    Do not plot graticule on HealPix maps.
+  --vmin            Min values represented on color bar. Default: -1 (auto)
+  --vmax            Max values represented on color bar. Default: -1 (auto)
+  --legacy          Creates old (original) style heatmaps
 ```
 
 ## helix_correct_star.py
