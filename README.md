@@ -339,12 +339,23 @@ Converts particle star from RELION 3.1 format to RELION 3.0 format.
 ```
 
 ## remove_preferred_orient.py
+!!! DEPRECATED USE: remove_preferred_orient_hlpx.py, which gives better results !!!
 Remove particles with overrepresented orientations. Average count of particles at each orientation is calculated. Then the count of particles that are n-times SD over the average is modified by retaining the particles with the highest rlnMaxValueProbDistribution.
 ```
   --i      Input STAR filename with particles and orientations.
   --o      Output star file. Default: output.star
   --sd     This many times SD above the average count will be representations kept. Default: 3
 ```
+
+## remove_preferred_orient_hlpx.py
+Remove particles with overrepresented orientations by sorting them into HealPix based orientation bins. Average count of particles per orientation bin is calculated. Then the count of particles that are n-times SD over the average is modified by retaining the particles with the highest rlnMaxValueProbDistribution.
+```
+  --i           Input STAR filename with particles and orientations.
+  --o           Output star file. Default: output.star")
+  --hlpx_order  HealPix sampling order used for sorting particles into orientation bins (2->15deg,3->7.5deg, 4->3.75). Default: 4 (3.75deg)
+  --sd          This many times SD above the average count will be representations kept. Default: 3
+```
+
 ## rename_foilhole_star.py
 Deprecated - need to be rewritten
 
