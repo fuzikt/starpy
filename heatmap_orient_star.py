@@ -71,7 +71,7 @@ class HeatmapStar:
             particles.append(particle)
         return particles
 
-    def makeHeatMap(particles, heatmap):
+    def makeHeatMap(self, particles, heatmap):
         for particle in particles:
             if particle.rlnAngleRot <= 0:
                 angleRot = particle.rlnAngleRot + 360
@@ -143,6 +143,8 @@ class HeatmapStar:
 
             hlpOrder = args.hlpx_order
             NSIDE = hlpOrder ** 2
+
+            print("HealPix order %s represents uniform angular sampling of %0.3f degrees." % (hlpOrder, np.degrees(hp.max_pixrad(NSIDE))))
 
             heatmap_hp = np.zeros(hp.nside2npix(NSIDE))
             for particle in particles:
