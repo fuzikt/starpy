@@ -54,6 +54,10 @@ class ParticlesToCoordsStar:
 
         self.validate(args)
 
+        if not os.path.exists(args.o):
+            print("Creating output directory: %s" % args.o)
+            os.makedirs(args.o)
+
         print("Extracting coordinates of particles per micrograph and storing as coords star files.")
 
         md = MetaData(args.i)
