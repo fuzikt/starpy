@@ -331,6 +331,17 @@ Example 9: Plot FSC from all iterations of an auto-refine run
 plot_star.py --i "$(ls Refine3D/job003/run_it*_half1_model.star)" --lby rlnGoldStandardFsc --lbx rlnResolution --data data_model_class_1
 ```
 
+## regular_box_pattern_around_center_coordinate.py
+Creates a regular pattern of small boxes around the center coordinate of the particle.
+```
+--i             Input STAR filename with particles.
+--o             Output directory where the coords files will be stored.
+--orig_box      Size of the box in pixels around the center coordinate of the original particles. (Default: 512)
+--pattern_box   Size of the box in the regular pattern. (Default: 128)
+--overlap       Overlap in percents between the neighboring boxes in pattern. (Default: 30)
+--sph_mask      If set then only boxes inside a circular mask touching the orig_box are included.
+```
+
 ## rel31_to_rel30_star.py
 Converts particle star from RELION 3.1 format to RELION 3.0 format.
 ```
