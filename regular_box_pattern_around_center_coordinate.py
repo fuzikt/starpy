@@ -63,6 +63,10 @@ class ParticlesToCoordsStar:
 
         patternBoxSize = patternBoxSize * (1 - overlap / 100)
 
+        # progress bar initialization
+        progress_step = max(int(len(partCoords) / 20), 1)
+        i = 0
+
         for coord in partCoords:
             row = 0
 
@@ -84,6 +88,15 @@ class ParticlesToCoordsStar:
 
                 row += 1
                 ycoord = coord.rlnCoordinateY - origBoxSize / 2 + row * patternBoxSize
+
+            # a simple progress bar
+            sys.stdout.write('\r')
+            progress = int(i / progress_step)
+            sys.stdout.write("[%-20s] %d%%" % ('=' * progress, 5 * progress))
+            sys.stdout.flush()
+            i += 1
+
+        sys.stdout.write('\r\n')
         return patternCoords
 
     def main(self):
