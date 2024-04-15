@@ -19,7 +19,8 @@ class ParticlesToCoordsStar:
             help="Size of the box in pixels around the center coordinate of the original particles. (Default: 512)")
         add('--pattern_box', type=int, default=128,
             help="Size of the box in the regular pattern. (Default: 128)")
-        add('--overlap', type=int, default=30, help="Overlap in percents between the neighboring boxes in pattern. (Default: 30)")
+        add('--overlap', type=int, default=30,
+            help="Overlap in percents between the neighboring boxes in pattern. (Default: 30)")
         add('--sph_mask', action='store_true',
             help="If set then only boxes inside a spherical mask touching the orig_box are included.")
 
@@ -59,27 +60,30 @@ class ParticlesToCoordsStar:
 
     def createRegularPatternAroundCoordinates(self, partCoords, origBoxSize, patternBoxSize, overlap, sphMask):
         patternCoords = []
+
+        patternBoxSize = patternBoxSize * (1 - overlap / 100)
+
         for coord in partCoords:
             row = 0
 
-            ycoord = coord.rlnCoordinateY - origBoxSize / 2 + row * patternBoxSize + (patternBoxSize * (1 - overlap / 100) / 2)
+            ycoord = coord.rlnCoordinateY - origBoxSize / 2 + row * patternBoxSize / 2
 
-            while ycoord+patternBoxSize*(overlap+100)/100/2  <= coord.rlnCoordinateY + origBoxSize / 2:
+            while ycoord + patternBoxSize / 2 <= coord.rlnCoordinateY + origBoxSize / 2:
                 column = 0
-                xcoord = coord.rlnCoordinateX - origBoxSize / 2 + column * patternBoxSize + (patternBoxSize * (1 - overlap / 100) / 2)
-                while xcoord+patternBoxSize*(overlap+100)/100/2  <= coord.rlnCoordinateX+origBoxSize/2:
-                    if (sphMask and (sqrt((coord.rlnCoordinateX - xcoord)**2 + (coord.rlnCoordinateY - ycoord)**2) < origBoxSize / 2)) or not sphMask:
+                xcoord = coord.rlnCoordinateX - origBoxSize / 2 + column * patternBoxSize / 2
+                while xcoord + patternBoxSize / 2 <= coord.rlnCoordinateX + origBoxSize / 2:
+                    if (sphMask and (sqrt((coord.rlnCoordinateX - xcoord) ** 2 + (
+                            coord.rlnCoordinateY - ycoord) ** 2) < origBoxSize / 2)) or not sphMask:
                         patternCoord = deepcopy(coord)
                         patternCoord.rlnCoordinateX = xcoord
                         patternCoord.rlnCoordinateY = ycoord
                         patternCoords.append(patternCoord)
 
                     column += 1
-                    xcoord = coord.rlnCoordinateX - origBoxSize / 2 + column * patternBoxSize + (
-                                patternBoxSize * (1 - overlap / 100) / 2)
+                    xcoord = coord.rlnCoordinateX - origBoxSize / 2 + column * patternBoxSize
 
                 row += 1
-                ycoord = coord.rlnCoordinateY - origBoxSize / 2 + row * patternBoxSize + (patternBoxSize * (1 - overlap / 100) / 2)
+                ycoord = coord.rlnCoordinateY - origBoxSize / 2 + row * patternBoxSize
         return patternCoords
 
     def main(self):
@@ -106,7 +110,8 @@ class ParticlesToCoordsStar:
                         particlePos -= 1
                     particlePos += 1
 
-            patternCoords = self.createRegularPatternAroundCoordinates(partCoords, args.orig_box, args.pattern_box, args.overlap, args.sph_mask)
+            patternCoords = self.createRegularPatternAroundCoordinates(partCoords, args.orig_box, args.pattern_box,
+                                                                       args.overlap, args.sph_mask)
             self.writeCoordsFile(patternCoords, args.o)
             partCoords = []
 
