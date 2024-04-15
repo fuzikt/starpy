@@ -22,7 +22,7 @@ class ParticlesToCoordsStar:
         add('--overlap', type=int, default=30,
             help="Overlap in percents between the neighboring boxes in pattern. (Default: 30)")
         add('--sph_mask', action='store_true',
-            help="If set then only boxes inside a spherical mask touching the orig_box are included.")
+            help="If set then only boxes inside a circular mask touching the orig_box are included.")
 
     def usage(self):
         self.parser.print_help()
@@ -63,10 +63,6 @@ class ParticlesToCoordsStar:
 
         patternBoxSize = patternBoxSize * (1 - overlap / 100)
 
-        # progress bar initialization
-        progress_step = max(int(len(partCoords) / 20), 1)
-        i = 0
-
         for coord in partCoords:
             row = 0
 
@@ -89,14 +85,6 @@ class ParticlesToCoordsStar:
                 row += 1
                 ycoord = coord.rlnCoordinateY - origBoxSize / 2 + row * patternBoxSize
 
-            # a simple progress bar
-            sys.stdout.write('\r')
-            progress = int(i / progress_step)
-            sys.stdout.write("[%-20s] %d%%" % ('=' * progress, 5 * progress))
-            sys.stdout.flush()
-            i += 1
-
-        sys.stdout.write('\r\n')
         return patternCoords
 
     def main(self):
@@ -117,20 +105,34 @@ class ParticlesToCoordsStar:
 
         partCoords = []
 
+        # progress bar initialization
+        progress_step = max(int(len(particles) / 20), 1)
+        i = 0
+
         while len(particles) > 0:
             partCoords.append(particles.pop(0))
+            i += 1
             if len(particles) != 0:
                 particlePos = 0
                 while particlePos < len(particles):
                     if partCoords[0].rlnMicrographName == particles[particlePos].rlnMicrographName:
                         partCoords.append(particles.pop(particlePos))
                         particlePos -= 1
+                        i += 1
                     particlePos += 1
 
             patternCoords = self.createRegularPatternAroundCoordinates(partCoords, args.orig_box, args.pattern_box,
                                                                        args.overlap, args.sph_mask)
             self.writeCoordsFile(patternCoords, args.o)
             partCoords = []
+
+            # a simple progress bar
+            sys.stdout.write('\r')
+            progress = int(i / progress_step)
+            sys.stdout.write("[%-20s] %d%%" % ('=' * progress, 5 * progress))
+            sys.stdout.flush()
+
+        sys.stdout.write('\r\n')
 
         print("Star-files written out. Have fun!")
 
