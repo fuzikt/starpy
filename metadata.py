@@ -36,17 +36,14 @@ LABELS = {
     'rlnAreaName': str,  # Name of an area (i.e. field-of-view)
     'rlnBodyMaskName': str,  # Name of an image that contains a [0
     'rlnBodyKeepFixed': int,  # Flag to indicate whether to keep a body fixed (value 1) or keep on refining it (0)
-    'rlnBodyReferenceName': str,
-    # Name of an image that contains the initial reference for one body of a multi-body refinement
+    'rlnBodyReferenceName': str, # Name of an image that contains the initial reference for one body of a multi-body refinement
     'rlnBodyRotateDirectionX': float,  # X-component of axis around which to rotate this body
     'rlnBodyRotateDirectionY': float,  # Y-component of axis around which to rotate this body
     'rlnBodyRotateDirectionZ': float,  # Z-component of axis around which to rotate this body
     'rlnBodyRotateRelativeTo': int,  # Number of the body relative to which this body rotates (if negative
-    'rlnBodySigmaAngles': float,
-    # Width of prior on all three Euler angles of a body in multibody refinement (in degrees)
+    'rlnBodySigmaAngles': float, # Width of prior on all three Euler angles of a body in multibody refinement (in degrees)
     'rlnBodySigmaOffset': float,  # Width of prior on origin offsets of a body in multibody refinement (in pixels)
-    'rlnBodySigmaOffsetAngst': float,
-    # Width of prior on origin offsets of a body in multibody refinement (in Angstroms)
+    'rlnBodySigmaOffsetAngst': float, # Width of prior on origin offsets of a body in multibody refinement (in Angstroms)
     'rlnBodySigmaRot': float,  # Width of prior on rot angles of a body in multibody refinement (in degrees)
     'rlnBodySigmaTilt': float,  # Width of prior on tilt angles of a body in multibody refinement (in degrees)
     'rlnBodySigmaPsi': float,  # Width of prior on psi angles of a body in multibody refinement (in degrees)
@@ -54,29 +51,18 @@ LABELS = {
     'rlnClassIndex': int,  # Class number of each class from the model STAR file of 2D classification
     'rlnParticleNr': float,  # Number of particles in this class
     'rlnIsSelected': int,  # Whether this class is selected
-    'rlnCircleMaskedMean': float,
-    # Average value for the pixels in the circularly masked area of this class average image
-    'rlnCircleMaskedStddev': float,
-    # Standard deviation for the pixel values in the circularly masked area of this class average image
-    'rlnCircleMaskedSkew': float,
-    # Skewness (3rd moment) for the pixel values in the circularly masked area of this class average image
-    'rlnCircleMaskedKurt': float,
-    # Kurtosis (4th moment) for the pixel values in the circularly masked area of this class average image
-    'rlnRingMean': float,
-    # Average value for the pixels in the area of this class average image specified by inner and outer radius
-    'rlnRingStddev': float,
-    # Standard deviation for the pixel values in the area of this class average image specified by inner and outer radius
-    'rlnRingSkew': float,
-    # Skewness (3rd moment) for the pixel values in the area of this class average image specified by inner and outer radius
-    'rlnRingKurt': float,
-    # Kurtosis (4th moment) for the pixel values in the area of this class average image specified by inner and outer radius
+    'rlnCircleMaskedMean': float, # Average value for the pixels in the circularly masked area of this class average image
+    'rlnCircleMaskedStddev': float, # Standard deviation for the pixel values in the circularly masked area of this class average image
+    'rlnCircleMaskedSkew': float, # Skewness (3rd moment) for the pixel values in the circularly masked area of this class average image
+    'rlnCircleMaskedKurt': float, # Kurtosis (4th moment) for the pixel values in the circularly masked area of this class average image
+    'rlnRingMean': float, # Average value for the pixels in the area of this class average image specified by inner and outer radius
+    'rlnRingStddev': float, # Standard deviation for the pixel values in the area of this class average image specified by inner and outer radius
+    'rlnRingSkew': float, # Skewness (3rd moment) for the pixel values in the area of this class average image specified by inner and outer radius
+    'rlnRingKurt': float, # Kurtosis (4th moment) for the pixel values in the area of this class average image specified by inner and outer radius
     'rlnInnerCircleMean': float,  # Average pixel value of the smaller circular area specified by inner / outer radius
-    'rlnInnerCircleStddev': float,
-    # Pixel value standard deviation of the smaller circular area specified by inner / outer radius
-    'rlnInnerCircleSkew': float,
-    # Pixel value skewness (3rd moment) of the smaller circular area specified by inner / outer radius
-    'rlnInnerCircleKurt': float,
-    # Pixel value kurtosis (4th moment) of the smaller circular area specified by inner / outer radius
+    'rlnInnerCircleStddev': float, # Pixel value standard deviation of the smaller circular area specified by inner / outer radius
+    'rlnInnerCircleSkew': float, # Pixel value skewness (3rd moment) of the smaller circular area specified by inner / outer radius
+    'rlnInnerCircleKurt': float, # Pixel value kurtosis (4th moment) of the smaller circular area specified by inner / outer radius
     'rlnClassScore': float,  # Class score calculated based on estimated resolution and selection label
     'rlnJobScore': float,  # Overall score of this 2D classification job
     'rlnFftMean': float,  # Mean of Fourier components (amplitude only) up to resolution limit.
@@ -121,6 +107,7 @@ LABELS = {
     'rlnPredictedClassScore': float,  # 2D class merit scores predicted by RELION model.
     'rlnCtfAstigmatism': float,  # Absolute value of the difference between defocus in U- and V-direction (in A)
     'rlnCtfBfactor': float,  # B-factor (in A^2) that describes CTF power spectrum fall-off
+    'rlnCtfBfactorPerElectronDose': float,  # Relative factor with which to multiply B-factors per e/A^2 dose
     'rlnCtfMaxResolution': float,  # Estimated maximum resolution (in A) of significant CTF Thon rings
     'rlnCtfValidationScore': float,  # Gctf-based validation score for the quality of the CTF fit
     'rlnCtfScalefactor': float,  # Linear scale-factor on the CTF (values between 0 and 1)
@@ -135,6 +122,7 @@ LABELS = {
     'rlnEnergyLoss': float,  # Energy loss (in eV)
     'rlnCtfFigureOfMerit': float,  # Figure of merit for the fit of the CTF (not used inside relion_refine)
     'rlnCtfImage': str,  # Name of an image with all CTF values
+    'rlnCtfIceRingDensity': float,  # Power of the image in the ice ring frequency range (0.25-0.28 A-1)
     'rlnLensStability': float,  # Lens stability (in ppm)
     'rlnMagnification': float,  # Magnification at the detector (in times)
     'rlnPhaseShift': float,  # Phase-shift from a phase-plate (in degrees)
@@ -162,6 +150,9 @@ LABELS = {
     'rlnMagMat01': float,  # Anisotropic magnification matrix
     'rlnMagMat10': float,  # Anisotropic magnification matrix
     'rlnMagMat11': float,  # Anisotropic magnification matrix
+    'rlnCenteredCoordinateXAngst': float,  # X-Position of an image in a micrograph (in Angstroms
+    'rlnCenteredCoordinateYAngst': float,  # Y-Position of an image in a micrograph (in Angstroms
+    'rlnCenteredCoordinateZAngst': float,  # Z-Position of an image in a 3D micrograph
     'rlnCoordinateX': float,  # X-Position of an image in a micrograph (in pixels)
     'rlnCoordinateY': float,  # Y-Position of an image in a micrograph (in pixels)
     'rlnCoordinateZ': float,  # Z-Position of an image in a 3D micrograph
@@ -200,18 +191,18 @@ LABELS = {
     'rlnJobOptionFilePattern': str,  # Pattern for file browser of a joboption
     'rlnJobOptionDirectoryDefault': str,  # Default directory for file browser of a joboption
     'rlnJobOptionMenuOptions': str,  # Options for pull-down menu
-    'rlnMatrix_1_1': float,  # Matrix element (1
-    'rlnMatrix_1_2': float,  # Matrix element (1
-    'rlnMatrix_1_3': float,  # Matrix element (1
-    'rlnMatrix_2_1': float,  # Matrix element (2
-    'rlnMatrix_2_2': float,  # Matrix element (2
-    'rlnMatrix_2_3': float,  # Matrix element (2
-    'rlnMatrix_3_1': float,  # Matrix element (3
-    'rlnMatrix_3_2': float,  # Matrix element (3
-    'rlnMatrix_3_3': float,  # Matrix element (3
-    'rlnAccumMotionTotal': float,  # 'Accumulated global motion during the entire movie (in A)
-    'rlnAccumMotionEarly': float,  # 'Accumulated global motion during the first frames of the movie (in A)
-    'rlnAccumMotionLate': float,  # 'Accumulated global motion during the last frames of the movie (in A)
+    'rlnMatrix_1_1': float,  # Matrix element (1,1) of a 3x3 matrix
+    'rlnMatrix_1_2': float,  # Matrix element (1,2) of a 3x3 matrix
+    'rlnMatrix_1_3': float,  # Matrix element (1,3) of a 3x3 matrix
+    'rlnMatrix_2_1': float,  # Matrix element (2,1) of a 3x3 matrix
+    'rlnMatrix_2_2': float,  # Matrix element (2,1) of a 3x3 matrix
+    'rlnMatrix_2_3': float,  # Matrix element (2,1) of a 3x3 matrix
+    'rlnMatrix_3_1': float,  # Matrix element (3,1) of a 3x3 matrix
+    'rlnMatrix_3_2': float,  # Matrix element (3,1) of a 3x3 matrix
+    'rlnMatrix_3_3': float,  # Matrix element (3,1) of a 3x3 matrix
+    'rlnAccumMotionTotal': float,  # Accumulated global motion during the entire movie (in A)
+    'rlnAccumMotionEarly': float,  # Accumulated global motion during the first frames of the movie (in A)
+    'rlnAccumMotionLate': float,  # Accumulated global motion during the last frames of the movie (in A)
     'rlnMicrographCoordinates': str,  # Filename of a file (in .star
     'rlnMicrographIceThickness': float,  # Ice thickness (in Angstrom) of a micrograph
     'rlnMicrographId': int,  # ID (i.e. a unique number) of a micrograph
@@ -223,8 +214,7 @@ LABELS = {
     'rlnMicrographMetadata': str,  # Name of a micrograph metadata file
     'rlnMicrographTiltAngle': float,  # Tilt angle (in degrees) used to collect a micrograph
     'rlnMicrographTiltAxisDirection': float,  # Direction of the tilt-axis (in degrees) used to collect a micrograph
-    'rlnMicrographTiltAxisOutOfPlane': float,
-    # Out-of-plane angle (in degrees) of the tilt-axis used to collect a micrograph (90=in-plane)
+    'rlnMicrographTiltAxisOutOfPlane': float, # Out-of-plane angle (in degrees) of the tilt-axis used to collect a micrograph (90=in-plane)
     'rlnMicrographOriginalPixelSize': float,  # Pixel size of original movie before binning in Angstrom/pixel.
     'rlnMicrographPixelSize': float,  # Pixel size of (averaged) micrographs after binning in Angstrom/pixel.
     'rlnMicrographPreExposure': float,  # Pre-exposure dose in electrons per square Angstrom
@@ -238,7 +228,7 @@ LABELS = {
     'rlnMicrographShiftY': float,  # Y shift of a (patch of) micrograph
     'rlnMotionModelCoeffsIdx': int,  # Index of a coefficient of a motion model
     'rlnMotionModelCoeff': float,  # A coefficient of a motion model
-    'rlnEERUpsampling': int,  # EER upsampling ratio (1 = 4K
+    'rlnEERUpsampling': int,  # EER upsampling ratio (1 = physical
     'rlnEERGrouping': int,  # The number of hardware frames to group
     'rlnAccuracyRotations': float,  # Estimated accuracy (in degrees) with which rotations can be assigned
     'rlnAccuracyTranslations': float,  # Estimated accuracy (in pixels) with which translations can be assigned
@@ -249,14 +239,11 @@ LABELS = {
     'rlnSsnrMap': float,  # Spectral signal-to-noise ratio as defined for MAP estimation (SSNR^MAP)
     'rlnReferenceDimensionality': int,  # Dimensionality of the references (2D/3D)
     'rlnDataDimensionality': int,  # Dimensionality of the data (2D/3D)
-    'rlnDiff2RandomHalves': float,
-    # Power of the differences between two independent reconstructions from random halves of the data
+    'rlnDiff2RandomHalves': float, # Power of the differences between two independent reconstructions from random halves of the data
     'rlnEstimatedResolution': float,  # Estimated resolution (in A) for a reference
     'rlnFourierCompleteness': float,  # Fraction of Fourier components (per resolution shell) with SNR>1
-    'rlnOverallFourierCompleteness': float,
-    # Fraction of all Fourier components up to the current resolution with SNR>1
-    'rlnGoldStandardFsc': float,
-    # Fourier shell correlation between two independent reconstructions from random halves of the data
+    'rlnOverallFourierCompleteness': float, # Fraction of all Fourier components up to the current resolution with SNR>1
+    'rlnGoldStandardFsc': float, # Fourier shell correlation between two independent reconstructions from random halves of the data
     'rlnGroupName': str,  # The name of a group of images (e.g. all images from a micrograph)
     'rlnGroupNumber': int,  # The number of a group of images
     'rlnGroupNrParticles': int,  # Number particles in a group of images
@@ -273,110 +260,90 @@ LABELS = {
     'rlnIsHelix': bool,  # Flag to indicate that helical refinement should be performed
     'rlnFourierSpaceInterpolator': int,  # The kernel used for Fourier-space interpolation (NN=0
     'rlnLogLikelihood': float,  # Value of the log-likelihood target function
-    'rlnMinRadiusNnInterpolation': int,  # 'Minimum radius for NN-interpolation (in Fourier pixels)
-    'rlnNormCorrectionAverage': float,  # Average value (over all images) of the normalisation correction values
+    'rlnMinRadiusNnInterpolation': int, # Minimum radius for NN-interpolation (in Fourier pixels)
+    'rlnNormCorrectionAverage': float, # Average value (over all images) of the normalisation correction values
     'rlnNrClasses': int,  # The number of references (i.e. classes) to be used in refinement
     'rlnNrBodies': int,  # The number of independent rigid bodies to be refined in multi-body refinement
     'rlnNrGroups': int,  # The number of different groups of images (each group has its own intensity-scale correction)
     'rlnNrOpticsGroups': int,  # The number of different optics groups (each optics group has its own noise spectrum)
     'rlnOpticsGroupNumber': int,  # The number of an optics group
     'rlnOpticsGroupNrParticles': int,  # Number particles in an optics group
-    'rlnSpectralOrientabilityContribution': float,
-    # Spectral SNR contribution to the orientability of individual particles
+    'rlnSpectralOrientabilityContribution': float, # Spectral SNR contribution to the orientability of individual particles
     'rlnOriginalImageSize': int,  # Original size of the images (in pixels)
     'rlnPaddingFactor': float,  # Oversampling factor for Fourier transforms of the references
-    'rlnClassDistribution': float,
-    # Probability Density Function of the different classes (i.e. fraction of images assigned to each class)
+    'rlnClassDistribution': float, # Probability Density Function of the different classes (i.e. fraction of images assigned to each class)
     'rlnClassPriorOffsetX': float,  # Prior in the X-offset for a class (in pixels)
     'rlnClassPriorOffsetY': float,  # Prior in the Y-offset for a class (in pixels)
-    'rlnOrientationDistribution': float,
-    # Probability Density Function of the orientations  (i.e. fraction of images assigned to each orient)
+    'rlnOrientationDistribution': float, # Probability Density Function of the orientations  (i.e. fraction of images assigned to each orient)
     'rlnPixelSize': float,  # Size of the pixels in the references and images (in Angstroms)
     'rlnReferenceSpectralPower': float,  # Spherical average of the power of the reference
     'rlnOrientationalPriorMode': int,  # Mode for prior distributions on the orientations (0=no prior; 1=(rot
     'rlnReferenceImage': str,  # Name of a reference image
     'rlnGradMoment1': str,  # Name of image containing the first moment of the gradient
     'rlnGradMoment2': str,  # Name of image containing the second moment of the gradient
-    'rlnSigmaOffsets': float,  # 'Standard deviation in the origin offsets (in pixels)
-    'rlnSigmaOffsetsAngst': float,  # 'Standard deviation in the origin offsets (in Angstroms)
+    'rlnSigmaOffsets': float,  # Standard deviation in the origin offsets (in pixels)
+    'rlnSigmaOffsetsAngst': float,  # Standard deviation in the origin offsets (in Angstroms)
     'rlnSigma2Noise': float,  # Spherical average of the standard deviation in the noise (sigma)
     'rlnReferenceSigma2': float,  # Spherical average of the estimated power in the noise of a reference
     'rlnSigmaPriorRotAngle': float,  # Standard deviation of the prior on the rot (i.e. first Euler) angle
     'rlnSigmaPriorTiltAngle': float,  # Standard deviation of the prior on the tilt (i.e. second Euler) angle
     'rlnSigmaPriorPsiAngle': float,  # Standard deviation of the prior on the psi (i.e. third Euler) angle
     'rlnSignalToNoiseRatio': float,  # Spectral signal-to-noise ratio for a reference
-    'rlnTau2FudgeFactor': float,
-    # Regularisation parameter with which estimates for the power in the references will be multiplied (T in original paper)
+    'rlnTau2FudgeFactor': float, # Regularisation parameter with which estimates for the power in the references will be multiplied (T in original paper)
     'rlnReferenceTau2': float,  # Spherical average of the estimated power in the signal of a reference
     'rlnOverallAccuracyRotations': float,  # Overall accuracy of the rotational assignments (in degrees)
     'rlnOverallAccuracyTranslations': float,  # Overall accuracy of the translational assignments (in pixels)
     'rlnOverallAccuracyTranslationsAngst': float,  # Overall accuracy of the translational assignments (in Angstroms)
-    'rlnAdaptiveOversampleFraction': float,
-    # Fraction of the weights that will be oversampled in a second pass of the adaptive oversampling strategy
+    'rlnAdaptiveOversampleFraction': float, # Fraction of the weights that will be oversampled in a second pass of the adaptive oversampling strategy
     'rlnAdaptiveOversampleOrder': int,  # Order of the adaptive oversampling (0=no oversampling
-    'rlnAutoLocalSearchesHealpixOrder': int,
-    # Healpix order (before oversampling) from which autosampling procedure will use local angular searches
+    'rlnAutoLocalSearchesHealpixOrder': int, # Healpix order (before oversampling) from which autosampling procedure will use local angular searches
     'rlnAvailableMemory': float,  # Available memory per computing node (i.e. per MPI-process)
     'rlnBestResolutionThusFar': float,  # The highest resolution that has been obtained in this optimization thus far
-    'rlnCoarseImageSize': int,
-    # Current size of the images to be used in the first pass of the adaptive oversampling strategy (may be smaller than the original image size)
+    'rlnCoarseImageSize': int, # Current size of the images to be used in the first pass of the adaptive oversampling strategy (may be smaller than the original image size)
     'rlnChangesOptimalOffsets': float,  # The average change in optimal translation in the last iteration (in pixels)
-    'rlnChangesOptimalOrientations': float,
-    # The average change in optimal orientation in the last iteration (in degrees)
-    'rlnChangesOptimalClasses': float,
-    # The number of particles that changed their optimal clsas assignment in the last iteration
+    'rlnChangesOptimalOrientations': float, # The average change in optimal orientation in the last iteration (in degrees)
+    'rlnChangesOptimalClasses': float, # The number of particles that changed their optimal clsas assignment in the last iteration
     'rlnCtfDataArePhaseFlipped': bool,  # Flag to indicate that the input images have been phase-flipped
-    'rlnCtfDataAreCtfPremultiplied': bool,
-    # Flag to indicate that the input images have been premultiplied with their CTF
+    'rlnCtfDataAreCtfPremultiplied': bool, # Flag to indicate that the input images have been premultiplied with their CTF
     'rlnExperimentalDataStarFile': str,  # STAR file with metadata for the experimental images
     'rlnDoCorrectCtf': bool,  # Flag to indicate that CTF-correction should be performed
     'rlnDoCorrectMagnification': bool,  # Flag to indicate that (per-group) magnification correction should be performed
     'rlnDoCorrectNorm': bool,  # Flag to indicate that (per-image) normalisation-error correction should be performed
-    'rlnDoCorrectScale': bool,
-    # Flag to indicate that internal (per-group) intensity-scale correction should be performed
-    'rlnDoExternalReconstruct': bool,
-    # Flag to indicate that the reconstruction will be performed outside relion_refine
+    'rlnDoCorrectScale': bool, # Flag to indicate that internal (per-group) intensity-scale correction should be performed
+    'rlnDoExternalReconstruct': bool, # Flag to indicate that the reconstruction will be performed outside relion_refine
+    'rlnDoBlush': bool,  # Flag to indicate that the reconstruction will be performed with Blush regularization.
+    'rlnBlushNoSpectralTrailing': bool,
+    # Flag to indicate that Blush regularization will be performed without spectral trailing.
     'rlnDoRealignMovies': bool,  # Flag to indicate that individual frames of movies are being re-aligned
     'rlnDoMapEstimation': bool,  # Flag to indicate that MAP estimation should be performed (otherwise ML estimation)
     'rlnDoGradientRefine': bool,  # Perform gradient refine.
-    'rlnDoStochasticGradientDescent': bool,
-    # Flag to indicate that gradient refinement should be performed (otherwise expectation maximisation)
+    'rlnDoStochasticGradientDescent': bool, # Flag to indicate that gradient refinement should be performed (otherwise expectation maximisation)
     'rlnGradEmIters': int,  # Finish gradient optimization with this many iterations of Expectation-Maximization.
     'rlnGradHasConverged': bool,  # Has gradient refinement converged.
     'rlnGradCurrentStepsize': float,  # The current step size.
     'rlnGradSubsetOrder': int,  # The initial subset size multiplied with two (2) to the power of this number.
     'rlnGradSuspendFinerSamplingIter': int,  # Suspend finer sampling this many iterations
     'rlnGradSuspendLocalSamplingIter': int,  # Suspend local sampling this many iterations
-    'rlnDoStochasticEM': bool,
-    # Flag to indicate that stochastic EM-optimisation should be performed (an alternative to gradient refinement)
-    'rlnExtReconsDataReal': str,
-    # Name of the map with the real components of the input data array for the external reconstruction program
-    'rlnExtReconsDataImag': str,
-    # Name of the map with the imaginary components of the input data array for the external reconstruction program
+    'rlnDoStochasticEM': bool, # Flag to indicate that stochastic EM-optimisation should be performed (an alternative to gradient refinement)
+    'rlnExtReconsDataReal': str, # Name of the map with the real components of the input data array for the external reconstruction program
+    'rlnExtReconsDataImag': str, # Name of the map with the imaginary components of the input data array for the external reconstruction program
     'rlnExtReconsWeight': str,  # Name of the map with the input weight array for the external reconstruction program
     'rlnExtReconsResult': str,  # Name of the output reconstruction from the external reconstruction program
     'rlnExtReconsResultStarfile': str,  # Name of the output STAR file with updated FSC or tau curves
     'rlnDoFastSubsetOptimisation': bool,  # Use subsets of the data in the earlier iterations to speed up convergence
-    'rlnSgdInitialIterationsFraction': float,
-    # Fraction of initial gradient iterations (at rlnSgdInitialResolution and with rlnSgdInitialSubsetSize)
-    'rlnSgdFinalIterationsFraction': float,
-    # fraction of final gradient iterations (at rlnSgdFinalResolution and with rlnSgdFinalSubsetSize)
-    'rlnSgdMinimumResolution': float,
-    # Adjust under-estimated signal power in gradient optimization to this resolution.
-    'rlnSgdInitialResolution': float,  # Resolution (in A) to use during the initial gradient refinement iterations
+    'rlnSgdInitialIterationsFraction': float, # Fraction of initial gradient iterations (at rlnSgdInitialResolution and with rlnSgdInitialSubsetSize)
+    'rlnSgdFinalIterationsFraction': float, # fraction of final gradient iterations (at rlnSgdFinalResolution and with rlnSgdFinalSubsetSize)
+    'rlnSgdMinimumResolution': float, # Adjust under-estimated signal power in gradient optimization to this resolution.
+    'rlnSgdInitialResolution': float, # Resolution (in A) to use during the initial gradient refinement iterations
     'rlnSgdFinalResolution': float,  # Resolution (in A) to use during the final gradient refinement iterations
-    'rlnSgdInitialSubsetSize': int,
-    # Number of particles in a mini-batch (subset) during the initial gradient refinement iterations
-    'rlnSgdFinalSubsetSize': int,
-    # Number of particles in a mini-batch (subset) during the final gradient refinement iteration
+    'rlnSgdInitialSubsetSize': int, # Number of particles in a mini-batch (subset) during the initial gradient refinement iterations
+    'rlnSgdFinalSubsetSize': int, # Number of particles in a mini-batch (subset) during the final gradient refinement iteration
     'rlnSgdMuFactor': float,  # The mu-parameter that controls the momentum of the SGD gradients
     'rlnSgdSigma2FudgeInitial': float,
     # The variance of the noise will initially be multiplied with this value (larger than 1)
-    'rlnSgdSigma2FudgeHalflife': int,
-    # After processing this many particles the multiplicative factor for the noise variance will have halved
+    'rlnSgdSigma2FudgeHalflife': int, # After processing this many particles the multiplicative factor for the noise variance will have halved
     'rlnSgdSkipAnneal': bool,  # Option to switch off annealing of multiple references in gradient refinement
-    'rlnSgdClassInactivityThreshold': float,
-    # Threshold for dropping classes with low activity during gradient optimisation.
+    'rlnSgdClassInactivityThreshold': float, # Threshold for dropping classes with low activity during gradient optimisation.
     'rlnSgdSubsetSize': int,  # The number of particles in the random subsets for gradient refinement
     'rlnSgdWriteEverySubset': int,  # Every this many iterations the model is written to disk in gradient refinement
     'rlnSgdMaxSubsets': int,  # Stop SGD after doing this many subsets (possibly spanning more than 1 iteration)
@@ -388,91 +355,67 @@ LABELS = {
     'rlnDoAutoRefine': bool,  # Flag to indicate that 3D auto-refine procedure is being used
     'rlnDoAutoSampling': bool,  # Flag to indicate that auto-sampling is to be used (outside the auto-refine procedure)
     'rlnDoOnlyFlipCtfPhases': bool,  # Flag to indicate that CTF-correction should only comprise phase-flipping
-    'rlnDoCenterClasses': bool,
-    # Flag to indicate that the class averages or reconstructions should be centered based on their center-of-mass during every iteration.
-    'rlnDoSolventFlattening': bool,
-    # Flag to indicate that the references should be masked to set their solvent areas to a constant density
+    'rlnDoCenterClasses': bool, # Flag to indicate that the class averages or reconstructions should be centered based on their center-of-mass during every iteration.
+    'rlnDoSolventFlattening': bool, # Flag to indicate that the references should be masked to set their solvent areas to a constant density
     'rlnDoSolventFscCorrection': bool,  # Flag to indicate that the FSCs should be solvent-corrected during refinement
-    'rlnDoSkipAlign': bool,
-    # Flag to indicate that orientational (i.e. rotational and translational) searches will be omitted from the refinement
+    'rlnDoSkipAlign': bool, # Flag to indicate that orientational (i.e. rotational and translational) searches will be omitted from the refinement
     'rlnDoSkipRotate': bool,  # Flag to indicate that rotational searches will be omitted from the refinement
     'rlnDoSplitRandomHalves': bool,  # Flag to indicate that the data should be split into two completely separate
-    'rlnDoZeroMask': bool,
-    # Flag to indicate that the surrounding solvent area in the experimental particles will be masked to zeros (by default random noise will be used
-    'rlnFixSigmaNoiseEstimates': bool,
-    # Flag to indicate that the estimates for the power spectra of the noise should be kept constant
-    'rlnFixSigmaOffsetEstimates': bool,
-    # Flag to indicate that the estimates for the stddev in the origin offsets should be kept constant
-    'rlnFixTauEstimates': bool,
-    # Flag to indicate that the estimates for the power spectra of the signal (i.e. the references) should be kept constant
+    'rlnDoZeroMask': bool, # Flag to indicate that the surrounding solvent area in the experimental particles will be masked to zeros (by default random noise will be used
+    'rlnFixSigmaNoiseEstimates': bool, # Flag to indicate that the estimates for the power spectra of the noise should be kept constant
+    'rlnFixSigmaOffsetEstimates': bool,# Flag to indicate that the estimates for the stddev in the origin offsets should be kept constant
+    'rlnFixTauEstimates': bool, # Flag to indicate that the estimates for the power spectra of the signal (i.e. the references) should be kept constant
     'rlnHasConverged': bool,  # Flag to indicate that the optimization has converged
     'rlnHasHighFscAtResolLimit': bool,  # Flag to indicate that the FSC at the resolution limit is significant
-    'rlnHasLargeSizeIncreaseIterationsAgo': int,
-    # How many iterations have passed since the last large increase in image size
+    'rlnHasLargeSizeIncreaseIterationsAgo': int, # How many iterations have passed since the last large increase in image size
     'rlnDoHelicalRefine': bool,  # Flag to indicate that helical refinement should be performed
     'rlnIgnoreHelicalSymmetry': bool,  # Flag to indicate that helical symmetry is ignored in 3D reconstruction
     'rlnFourierMask': str,  # Name of an FFTW-centred Fourier mask to be applied to the Projector for refinement.
     'rlnHelicalTwistInitial': float,  # The intial helical twist (rotation per subunit) in degrees before refinement
     'rlnHelicalRiseInitial': float,  # The initial helical rise (translation per subunit) in Angstroms before refinement
-    'rlnHelicalCentralProportion': float,
-    # Only expand this central fraction of the Z axis when imposing real-space helical symmetry
+    'rlnHelicalCentralProportion': float, # Only expand this central fraction of the Z axis when imposing real-space helical symmetry
     'rlnNrHelicalNStart': int,  # The N-number for an N-start helix
-    'rlnHelicalMaskTubeInnerDiameter': float,
-    # Inner diameter of helical tubes in Angstroms (for masks of helical references and particles)
-    'rlnHelicalMaskTubeOuterDiameter': float,
-    # Outer diameter of helical tubes in Angstroms (for masks of helical references and particles)
-    'rlnHelicalSymmetryLocalRefinement': bool,
-    # Flag to indicate that local refinement of helical parameters should be performed
+    'rlnHelicalMaskTubeInnerDiameter': float, # Inner diameter of helical tubes in Angstroms (for masks of helical references and particles)
+    'rlnHelicalMaskTubeOuterDiameter': float, # Outer diameter of helical tubes in Angstroms (for masks of helical references and particles)
+    'rlnHelicalSymmetryLocalRefinement': bool, # Flag to indicate that local refinement of helical parameters should be performed
     'rlnHelicalSigmaDistance': float,  # Sigma of distance along the helical tracks
-    'rlnHelicalKeepTiltPriorFixed': bool,
-    # Flag to indicate that helical tilt priors are kept fixed (at 90 degrees) in global angular searches
+    'rlnHelicalKeepTiltPriorFixed': bool, # Flag to indicate that helical tilt priors are kept fixed (at 90 degrees) in global angular searches
     'rlnLowresLimitExpectation': float,  # Low-resolution-limit (in Angstrom) for the expectation step
-    'rlnHighresLimitExpectation': float,  # High-resolution-limit (in Angstrom) for the expectation step
+    'rlnHighresLimitExpectation': float, # High-resolution-limit (in Angstrom) for the expectation step
     'rlnHighresLimitSGD': float,  # High-resolution-limit (in Angstrom) for Stochastic Gradient Descent
     'rlnDoIgnoreCtfUntilFirstPeak': bool,  # Flag to indicate that the CTFs should be ignored until their first peak
-    'rlnIncrementImageSize': int,
-    # Number of Fourier shells to be included beyond the resolution where SSNR^MAP drops below 1
+    'rlnIncrementImageSize': int, # Number of Fourier shells to be included beyond the resolution where SSNR^MAP drops below 1
     'rlnCurrentIteration': int,  # The number of the current iteration
     'rlnLocalSymmetryFile': str,  # Local symmetry description file containing list of masks and their operators
-    'rlnJoinHalvesUntilThisResolution': float,
-    # Resolution (in Angstrom) to join the two random half-reconstructions to prevent their diverging orientations (for C-symmetries)
+    'rlnJoinHalvesUntilThisResolution': float, # Resolution (in Angstrom) to join the two random half-reconstructions to prevent their diverging orientations (for C-symmetries)
     'rlnMagnificationSearchRange': float,  # Search range for magnification correction
     'rlnMagnificationSearchStep': float,  # Step size  for magnification correction
-    'rlnMaximumCoarseImageSize': int,
-    # Maximum size of the images to be used in the first pass of the adaptive oversampling strategy (may be smaller than the original image size)
-    'rlnMaxNumberOfPooledParticles': int,
-    # Maximum number particles that are processed together to speed up calculations
+    'rlnMaximumCoarseImageSize': int, # Maximum size of the images to be used in the first pass of the adaptive oversampling strategy (may be smaller than the original image size)
+    'rlnMaxNumberOfPooledParticles': int, # Maximum number particles that are processed together to speed up calculations
     'rlnModelStarFile': str,  # STAR file with metadata for the model that is being refined
-    'rlnModelStarFile2': str,
-    # STAR file with metadata for the second model that is being refined (from random halves of the data)
+    'rlnModelStarFile2': str, # STAR file with metadata for the second model that is being refined (from random halves of the data)
     'rlnNumberOfIterations': int,  # Maximum number of iterations to be performed
     'rlnNumberOfIterWithoutResolutionGain': int,  # Number of iterations that have passed without a gain in resolution
-    'rlnNumberOfIterWithoutChangingAssignments': int,
-    # Number of iterations that have passed without large changes in orientation and class assignments
+    'rlnNumberOfIterWithoutChangingAssignments': int, # Number of iterations that have passed without large changes in orientation and class assignments
+    'rlnOffsetRangeX': float,  # Search range for offsets in the X-direction (in Angstrom)
+    'rlnOffsetRangeY': float,  # Search range for offsets in the Y-direction (in Angstrom)
+    'rlnOffsetRangeZ': float,  # Search range for offsets in the Z-direction (in Angstrom)
     'rlnOpticsStarFile': str,  # STAR file with metadata for the optical groups (new as of version 3.1)
     'rlnOutputRootName': str,  # Rootname for all output files (this may include a directory structure
-    'rlnParticleDiameter': float,
-    # Diameter of the circular mask to be applied to all experimental images (in Angstroms)
+    'rlnParticleDiameter': float, # Diameter of the circular mask to be applied to all experimental images (in Angstroms)
     'rlnRadiusMaskMap': int,  # Radius of the spherical mask to be applied to all references (in Angstroms)
-    'rlnRadiusMaskExpImages': int,
-    # Radius of the circular mask to be applied to all experimental images (in Angstroms)
+    'rlnRadiusMaskExpImages': int, # Radius of the circular mask to be applied to all experimental images (in Angstroms)
     'rlnRandomSeed': int,  # Seed (i.e. a number) for the random number generator
     'rlnRefsAreCtfCorrected': bool,  # Flag to indicate that the input references have been CTF-amplitude corrected
-    'rlnSmallestChangesClasses': int,
-    # Smallest changes thus far in the optimal class assignments (in numer of particles).
+    'rlnSmallestChangesClasses': int, # Smallest changes thus far in the optimal class assignments (in numer of particles).
     'rlnSmallestChangesOffsets': float,  # Smallest changes thus far in the optimal offset assignments (in pixels).
-    'rlnSmallestChangesOrientations': float,
-    # Smallest changes thus far in the optimal orientation assignments (in degrees).
+    'rlnSmallestChangesOrientations': float, # Smallest changes thus far in the optimal orientation assignments (in degrees).
     'rlnOrientSamplingStarFile': str,  # STAR file with metadata for the orientational sampling
-    'rlnSolventMaskName': str,
-    # Name of an image that contains a (possibly soft) mask for the solvent area (values=0 for solvent
-    'rlnSolventMask2Name': str,
-    # Name of a secondary solvent mask (e.g. to flatten density inside an icosahedral virus)
+    'rlnSolventMaskName': str, # Name of an image that contains a (possibly soft) mask for the solvent area (values=0 for solvent
+    'rlnSolventMask2Name': str, # Name of a secondary solvent mask (e.g. to flatten density inside an icosahedral virus)
     'rlnTauSpectrumName': str,  # Name of a STAR file that holds a tau2-spectrum
-    'rlnUseTooCoarseSampling': bool,
-    # Flag to indicate that the angular sampling on the sphere will be one step coarser than needed to speed up calculations
-    'rlnWidthMaskEdge': int,
-    # Width (in pixels) of the soft edge for spherical/circular masks to be used for solvent flattening
+    'rlnUseTooCoarseSampling': bool, # Flag to indicate that the angular sampling on the sphere will be one step coarser than needed to speed up calculations
+    'rlnWidthMaskEdge': int, # Width (in pixels) of the soft edge for spherical/circular masks to be used for solvent flattening
     'rlnIsFlip': bool,  # Flag to indicate that an image should be mirrored
     'rlnOrientationsID': int,  # ID (i.e. a unique number) for an orientation
     'rlnOriginX': float,  # X-coordinate (in pixels) for the origin of rotation
@@ -499,11 +442,10 @@ LABELS = {
     'rlnAutopickFigureOfMerit': float,  # Autopicking FOM for a particle
     'rlnHelicalTubeID': int,  # Helical tube ID for a helical segment
     'rlnHelicalTubePitch': float,  # Cross-over distance for a helical segment (A)
-    'rlnHelicalTrackLength': float,
-    # Distance (in pix) from the position of this helical segment to the starting point of the tube
-    'rlnHelicalTrackLengthAngst': float,
-    # Distance (in A) from the position of this helical segment to the starting point of the tube
+    'rlnHelicalTrackLength': float, # Distance (in pix) from the position of this helical segment to the starting point of the tube
+    'rlnHelicalTrackLengthAngst': float, # Distance (in A) from the position of this helical segment to the starting point of the tube
     'rlnClassNumber': int,  # Class number for which a particle has its highest probability
+    'rlnParticleSelectionType': int,  # Selection type for manually picked particles
     'rlnLogLikeliContribution': float,  # Contribution of a particle to the log-likelihood target function
     'rlnParticleId': int,  # ID (i.e. a unique number) for a particle
     'rlnParticleFigureOfMerit': float,  # Developmental FOM for a particle
@@ -512,8 +454,7 @@ LABELS = {
     'rlnBeamTiltClass': int,  # Beam-tilt class of a particle
     'rlnParticleName': str,  # Name for a particle
     'rlnOriginalParticleName': str,  # Original name for a particles
-    'rlnNrOfSignificantSamples': int,
-    # Number of orientational/class assignments (for a particle) with sign.probabilities in the 1st pass of adaptive oversampling /**< particle
+    'rlnNrOfSignificantSamples': int, # Number of orientational/class assignments (for a particle) with sign.probabilities in the 1st pass of adaptive oversampling /**< particle
     'rlnNrOfFrames': int,  # Number of movie frames that were collected for this particle
     'rlnAverageNrOfFrames': int,  # Number of movie frames that one averages over upon extraction of movie-particles
     'rlnMovieFramesRunningAverage': int,
@@ -522,53 +463,44 @@ LABELS = {
     # Maximum value of the (normalised) probability function for a particle /**< particle
     'rlnParticleNumber': int,  # Number of particles
     'rlnPipeLineJobCounter': int,  # Number of the last job in the pipeline
-    'rlnPipeLineNodeName': str,  # Name of a Node in the pipeline
+    'rlnPipeLineNodeName': str,  #Name of a Node in the pipeline
     'rlnPipeLineNodeType': int,  # Type of a Node in the pipeline
     'rlnPipeLineNodeTypeLabel': str,  # Name for the Node Type in the pipeline
+    'rlnPipeLineNodeTypeLabelDepth': int,  # How many levels down to use for .Nodes directory (only 1 by default)
     'rlnPipeLineProcessAlias': str,  # Alias of a Process in the pipeline
-    'rlnPipeLineProcessName': str,  # Name of a Process in the pipeline
-    'rlnPipeLineProcessType': int,  # Type of a Process in the pipeline
+    'rlnPipeLineProcessName': str, # Name of a Process in the pipeline
+    'rlnPipeLineProcessType': int, # Type of a Process in the pipeline
     'rlnPipeLineProcessTypeLabel': str,  # Name for the Process type in the pipeline
     'rlnPipeLineProcessStatus': int,  # Status of a Process in the pipeline (integer for running
     'rlnPipeLineProcessStatusLabel': str,  # Name for the status of a Process in the pipeline (running
     'rlnPipeLineEdgeFromNode': str,  # Name of the origin of an edge
     'rlnPipeLineEdgeToNode': str,  # Name of the to-Node in an edge
-    'rlnPipeLineEdgeProcess': str,  # Name of the destination of an edge
+    'rlnPipeLineEdgeProcess': str, # Name of the destination of an edge
     'rlnFinalResolution': float,  # Final estimated resolution after postprocessing (in Angstroms)
     'rlnBfactorUsedForSharpening': float,  # Applied B-factor in the sharpening of the map
     'rlnParticleBoxFractionMolecularWeight': float,  # Fraction of protein voxels in the box
     'rlnParticleBoxFractionSolventMask': float,  # Fraction of protein voxels in the box
     'rlnFourierShellCorrelation': float,  # FSC value (of unspecified type
-    'rlnFourierShellCorrelationCorrected': float,
-    # Final FSC value: i.e. after correction based on masking of randomized-phases maps
+    'rlnFourierShellCorrelationCorrected': float, # Final FSC value: i.e. after correction based on masking of randomized-phases maps
     'rlnFourierShellCorrelationParticleMolWeight': float,  # CisTEM-like correction of unmasked FSCs
     'rlnFourierShellCorrelationParticleMaskFraction': float,  # CisTEM-like correction of unmasked FSCs
     'rlnFourierShellCorrelationMaskedMaps': float,  # FSC value after masking of the original maps
     'rlnFourierShellCorrelationUnmaskedMaps': float,  # FSC value before masking of the original maps
-    'rlnCorrectedFourierShellCorrelationPhaseRandomizedMaskedMaps': float,
-    # FSC value after masking of the randomized-phases maps
-    'rlnAmplitudeCorrelationMaskedMaps': float,
-    # Correlation coefficient between amplitudes in Fourier shells of masked maps
-    'rlnAmplitudeCorrelationUnmaskedMaps': float,
-    # Correlation coefficient between amplitudes in Fourier shells of unmasked maps
+    'rlnCorrectedFourierShellCorrelationPhaseRandomizedMaskedMaps': float, # FSC value after masking of the randomized-phases maps
+    'rlnAmplitudeCorrelationMaskedMaps': float, # Correlation coefficient between amplitudes in Fourier shells of masked maps
+    'rlnAmplitudeCorrelationUnmaskedMaps': float, # Correlation coefficient between amplitudes in Fourier shells of unmasked maps
     'rlnDifferentialPhaseResidualMaskedMaps': float,  # Differential Phase Residual in Fourier shells of masked maps
     'rlnDifferentialPhaseResidualUnmaskedMaps': float,  # Differential Phase Residual in Fourier shells of unmasked maps
     'rlnFittedInterceptGuinierPlot': float,  # The fitted intercept of the Guinier-plot
     'rlnFittedSlopeGuinierPlot': float,  # The fitted slope of the Guinier-plot
     'rlnCorrelationFitGuinierPlot': float,  # The correlation coefficient of the fitted line through the Guinier-plot
-    'rlnLogAmplitudesOriginal': float,
-    # Y-value for Guinier plot: the logarithm of the radially averaged amplitudes of the input map
-    'rlnLogAmplitudesMTFCorrected': float,
-    # Y-value for Guinier plot: the logarithm of the radially averaged amplitudes after MTF correction
-    'rlnLogAmplitudesWeighted': float,
-    # Y-value for Guinier plot: the logarithm of the radially averaged amplitudes after FSC-weighting
-    'rlnLogAmplitudesSharpened': float,
-    # Y-value for Guinier plot: the logarithm of the radially averaged amplitudes after sharpening
-    'rlnLogAmplitudesIntercept': float,
-    # Y-value for Guinier plot: the fitted plateau of the logarithm of the radially averaged amplitudes
+    'rlnLogAmplitudesOriginal': float, # Y-value for Guinier plot: the logarithm of the radially averaged amplitudes of the input map
+    'rlnLogAmplitudesMTFCorrected': float, # Y-value for Guinier plot: the logarithm of the radially averaged amplitudes after MTF correction
+    'rlnLogAmplitudesWeighted': float, # Y-value for Guinier plot: the logarithm of the radially averaged amplitudes after FSC-weighting
+    'rlnLogAmplitudesSharpened': float, # Y-value for Guinier plot: the logarithm of the radially averaged amplitudes after sharpening
+    'rlnLogAmplitudesIntercept': float, # Y-value for Guinier plot: the fitted plateau of the logarithm of the radially averaged amplitudes
     'rlnResolutionSquared': float,  # X-value for Guinier plot: squared resolution in 1/Angstrom^2
-    'rlnMolecularWeight': float,
-    # Molecular weight of the ordered mass inside the box for calculating cisTEM-like part.FSC (in kDa)
+    'rlnMolecularWeight': float, # Molecular weight of the ordered mass inside the box for calculating cisTEM-like part.FSC (in kDa)
     'rlnMtfValue': float,  # Value of the detectors modulation transfer function (between 0 and 1)
     'rlnRandomiseFrom': float,  # Resolution (in A) from which the phases are randomised in the postprocessing step
     'rlnUnfilteredMapHalf1': str,  # Name of the unfiltered map from halfset 1
@@ -586,18 +518,15 @@ LABELS = {
     'rlnOffsetStepOriginal': float,  # Original step size for the searches in the origin offsets (in Angstroms)
     'rlnHelicalOffsetStep': float,  # Step size for the searches of offsets along helical axis (in Angstroms)
     'rlnSamplingPerturbInstance': float,  # Random instance of the random perturbation on the orientational sampling
-    'rlnSamplingPerturbFactor': float,
-    # Factor for random perturbation on the orientational sampling (between 0 no perturbation and 1 very strong perturbation)
+    'rlnSamplingPerturbFactor': float, # Factor for random perturbation on the orientational sampling (between 0 no perturbation and 1 very strong perturbation)
     'rlnPsiStep': float,  # Step size (in degrees) for the sampling of the in-plane rotation angle (psi)
-    'rlnPsiStepOriginal': float,
-    # Original step size (in degrees) for the sampling of the in-plane rotation angle (psi)
+    'rlnPsiStepOriginal': float, # Original step size (in degrees) for the sampling of the in-plane rotation angle (psi)
     'rlnSymmetryGroup': str,  # Symmetry group (e.g.
     'rlnSchemeEdgeNumber': int,  # Numbered index of an edge inside a Scheme
     'rlnSchemeEdgeInputNodeName': str,  # Name of the input Node for a schedule Edge
     'rlnSchemeEdgeOutputNodeName': str,  # Name of the output Node for a schedule Edge
     'rlnSchemeEdgeIsFork': bool,  # Flag to indicate that this Edge is a Fork
-    'rlnSchemeEdgeOutputNodeNameIfTrue': str,
-    # Name of the output Node for a schedule Fork if the associated Boolean is True
+    'rlnSchemeEdgeOutputNodeNameIfTrue': str, # Name of the output Node for a schedule Fork if the associated Boolean is True
     'rlnSchemeEdgeBooleanVariable': str,  # Name of the associated Boolean variable if this Edge is a Fork
     'rlnSchemeCurrentNodeName': str,  # Name of the current Node for this Scheme
     'rlnSchemeOriginalStartNodeName': str,  # Name of the original starting Node for this Scheme
@@ -625,8 +554,7 @@ LABELS = {
     'rlnParticleSelectZScore': float,  # Sum of Z-scores from particle_select. High Z-scores are likely to be outliers.
     'rlnSortedIndex': int,  # Index of a metadata entry after sorting (first sorted index is 0).
     'rlnStarFileMovieParticles': str,  # Filename of a STAR file with movie-particles in it
-    'rlnPerFrameCumulativeWeight': float,
-    # Sum of the resolution-dependent relative weights from the first frame until the given frame
+    'rlnPerFrameCumulativeWeight': float, # Sum of the resolution-dependent relative weights from the first frame until the given frame
     'rlnPerFrameRelativeWeight': float,  # The resolution-dependent relative weights for a given frame
     'rlnResolution': float,  # Resolution (in 1/Angstroms)
     'rlnAngstromResolution': float,  # Resolution (in Angstroms)
@@ -634,10 +562,26 @@ LABELS = {
     'rlnSpectralIndex': int,  # Spectral index (i.e. distance in pixels to the origin in Fourier space)
     'rlnTomoName': str,  # Arbitrary name for a tomogram
     'rlnTomoTiltSeriesName': str,  # Tilt series file name
+    'rlnTomoTiltSeriesStarFile': str,  # Tilt series starfile
+    'rlnTomoTiltMovieFrameCount': int,  # Number of frames in the tilt series movies
+    'rlnEtomoDirectiveFile': str,  # Location of the etomo directive file (.edf) from tilt series alignment
+    'rlnTomoFrameCount': int,  # Number of tilts in a tilt series
+    'rlnTomoReconstructedTomogram': str,  # File name of a reconstructed tomogram
+    'rlnTomoReconstructedTomogramHalf1': str, # File name of a reconstructed tomogram from even numbered movie frames or tilt image index
+    'rlnTomoReconstructedTomogramHalf2': str, # File name of a reconstructed tomogram from odd numbered movie frames or tilt image index
+    'rlnTomogramProjection': str,  # File name of a 2D projection of a reconstructed tomogram
+    'rlnTomogramProjectionHalf1': str, # File name of a 2D projection of a reconstructed tomogram from even numbered movie frames or tilt image index
+    'rlnTomogramHProjectionalf2': str, # File name of a 2D projection of a reconstructed tomogram from odd numbered movie frames or tilt image index
+    'rlnTomoDenoisedTomogram': str,  # File name of a denoised tomogram
     'rlnTomoFrameCount': int,  # Number of tilts in a tilt series
     'rlnTomoSizeX': int,  # Width of a bin-1 tomogram in pixels
     'rlnTomoSizeY': int,  # Height of a bin-1 tomogram in pixels
     'rlnTomoSizeZ': int,  # Depth of a bin-1 tomogram in pixels
+    'rlnTomoXTilt': float,  # Euler angle for rotation of tomogram around X-axis
+    'rlnTomoYTilt': float,  # Euler angle for rotation of tomogram around Y-axis
+    'rlnTomoZRot': float,  # Euler angle for rotation of tomogram around Z-axis
+    'rlnTomoXShiftAngst': float, # X-translation (in A) to align the projection of a tomogram with the tilt series image
+    'rlnTomoYShiftAngst': float, # Y-translation (in A) to align the projection of a tomogram with the tilt series image
     'rlnTomoProjX': str,  # First row of the projection matrix
     'rlnTomoProjY': str,  # Second row of the projection matrix
     'rlnTomoProjZ': str,  # Third row of the projection matrix
@@ -648,7 +592,9 @@ LABELS = {
     'rlnTomoSubtomogramRot': float,  # First Euler angle of a subtomogram (rot
     'rlnTomoSubtomogramTilt': float,  # Second Euler angle of a subtomogram (tilt
     'rlnTomoSubtomogramPsi': float,  # Third Euler angle of a subtomogram (psi
+    'rlnTomoSubTomosAre2DStacks': bool,  # This flag is set to true if subtomograms are saved as 2D image stacks
     'rlnTomoSubtomogramBinning': float,  # Binning level of a subtomogram
+    'rlnTomoTomogramBinning': float,  # Binning level of a  reconstructed tomogram
     'rlnTomoParticleName': str,  # Name of each individual particle
     'rlnTomoParticleId': int,  # Unique particle index
     'rlnTomoManifoldIndex': int,  # Index of a 2D manifold in a tomogram
@@ -663,6 +609,10 @@ LABELS = {
     'rlnTomoReferenceMap2File': str,  # Name of second reference map file
     'rlnTomoReferenceMaskFile': str,  # Name of mask file corresponding to a pair of reference maps
     'rlnTomoReferenceFscFile': str,  # Name of FSC STAR file corresponding to a pair of reference maps
+    'rlnTomoNominalStageTiltAngle': float,  # Nominal value for the stage tilt angle
+    'rlnTomoNominalTiltAxisAngle': float,  # Nominal value for the angle of the tilt axis
+    'rlnTomoNominalDefocus': float,  # Nominal value for the defocus in the tilt series image
+    'rlnTomoVisibleFrames': str, # Frames fromt he tilt series that are included in the 2D stack of a pseudo-subtomogram
     'rlnTomoImportOffsetX': float,  # X offset of a tomogram
     'rlnTomoImportOffsetY': float,  # Y offset of a tomogram
     'rlnTomoImportOffsetZ': float,  # Z offset of a tomogram
@@ -686,6 +636,8 @@ LABELS = {
     'rlnTomoTempPredSquared': float,  # Sum over squares of predicted values
     'rlnTomoTiltMovieIndex': int,  # Chronological index of a tilt movie
     'rlnTomoTiltMovieFile': str,  # Movie containing the frames of a tilt
+    'rlnMicrographNameEven': str,  # Micrograph summed from even frames of motion corrected movie
+    'rlnMicrographNameOdd': str,  # Micrograph summed from odd frames of motion corrected movie
 }
 
 
@@ -747,7 +699,10 @@ class MetaData:
         delattr(self, dataTableName)
 
     def _setItemValue(self, item, label, value):
-        setattr(item, label.name, label.type(value))
+        if label.type == int:
+            setattr(item, label.name, label.type(float(value)))
+        else:
+            setattr(item, label.name, label.type(value))
 
     def _addLabel(self, dataTableName, labelName):
         getattr(self, dataTableName + "_labels")[labelName] = Label(labelName)
