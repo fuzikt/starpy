@@ -54,10 +54,10 @@ class FlipParticleCoordinates:
             coordinateForFlipping = getattr(particle,"rlnCoordinate"+axis)
             particleDistanceFromFlipAxis = abs(coordinateForFlipping - axisSize / 2)
             if coordinateForFlipping >= axisSize/2 :
-                setattr(particle, "rlnCoordinate"+axis, coordinateForFlipping - particleDistanceFromFlipAxis)
+                setattr(particle, "rlnCoordinate"+axis, coordinateForFlipping - 2*particleDistanceFromFlipAxis)
             else:
                 setattr(particle, "rlnCoordinate" + axis,
-                        coordinateForFlipping + particleDistanceFromFlipAxis)
+                        coordinateForFlipping + 2*particleDistanceFromFlipAxis)
             newParticles.append(particle)
         return newParticles
 
