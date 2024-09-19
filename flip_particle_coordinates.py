@@ -32,9 +32,21 @@ class FlipParticleCoordinates:
         if len(sys.argv) == 1:
             self.error("No directory given.")
 
-        if not os.path.exists(args.i):
-            self.error("Input directory '%s' not found."
-                       % args.i)
+        if args.i != "":
+            if args.i_dir != "":
+                self.error("You cannot use --i and --i_dir simultaneously")
+            if not os.path.exists(args.i):
+                self.error("Input star file '%s' not found."
+                           % args.i)
+            if args.o =="":
+                self.error("No --o given. Please set the desired output particle star file when using --i")
+
+        if args.i_dir != "":
+            if not os.path.exists(args.i_dir):
+                self.error("Input directory '%s' not found."
+                           % args.i_dir)
+            if args.o_dir =="":
+                self.error("No --o_dir given. Please set the desired output direcotry of the coordinate star files when using --i_dir")
 
         if not args.flipX and not args.flipY:
             self.error("You must define --flipX or --flipY.")
@@ -67,10 +79,6 @@ class FlipParticleCoordinates:
 
         self.validate(args)
 
-        if not os.path.exists(args.o):
-            os.makedirs(args.o)
-            print("%s output directory created!" % args.o)
-
         if args.flipX:
             flipAxis = "X"
         elif args.flipY:
@@ -78,35 +86,57 @@ class FlipParticleCoordinates:
 
         print("Flipping coordinates along %s axis." % flipAxis)
 
-        counter = 0
-        nrOfStarFiles = len(os.listdir(args.i))
-        for filename in os.listdir(args.i):
-            f = os.path.join(args.i, filename)
-            # checking if it is a file with extension star
-            if os.path.isfile(f) and f.split(".")[-1] == "star":
-                md = MetaData(f)
-                new_particles = []
-                particles = self.get_particles(md)
-                new_particles.extend(self.flipCoordinates(particles, flipAxis, args.axis_size ))
-                if md.version == "3.1":
-                    mdOut = md.clone()
-                    dataTableName = "data_particles"
-                    mdOut.removeDataTable(dataTableName)
-                else:
-                    mdOut = MetaData()
-                    dataTableName = "data_"
-                mdOut.addDataTable(dataTableName, md.isLoop(dataTableName))
-                mdOut.addLabels(dataTableName, md.getLabels(dataTableName))
-                mdOut.addData(dataTableName, new_particles)
-                mdOut.write(os.path.join(args.o, filename))
-                # a simple progress bar
-                sys.stdout.write('\r')
-                progress = int(counter / nrOfStarFiles * 20)
-                sys.stdout.write("[%-20s] %d%%" % ('=' * progress, 5 * progress))
-                sys.stdout.flush()
+        if args.i != "":
+            md = MetaData(args.i)
+            new_particles = []
+            particles = self.get_particles(md)
+            new_particles.extend(self.flipCoordinates(particles, flipAxis, args.axis_size))
+            if md.version == "3.1":
+                mdOut = md.clone()
+                dataTableName = "data_particles"
+                mdOut.removeDataTable(dataTableName)
+            else:
+                mdOut = MetaData()
+                dataTableName = "data_"
+            mdOut.addDataTable(dataTableName, md.isLoop(dataTableName))
+            mdOut.addLabels(dataTableName, md.getLabels(dataTableName))
+            mdOut.addData(dataTableName, new_particles)
+            mdOut.write(os.path.join(args.o))
 
-                counter += 1
-        print("\n %s star files processed. Have fun!" % counter)
+        if args.i_dir != "":
+            if not os.path.exists(args.o):
+                os.makedirs(args.o)
+                print("%s output directory created!" % args.o)
+
+            counter = 0
+            nrOfStarFiles = len(os.listdir(args.i))
+            for filename in os.listdir(args.i):
+                f = os.path.join(args.i, filename)
+                # checking if it is a file with extension star
+                if os.path.isfile(f) and f.split(".")[-1] == "star":
+                    md = MetaData(f)
+                    new_particles = []
+                    particles = self.get_particles(md)
+                    new_particles.extend(self.flipCoordinates(particles, flipAxis, args.axis_size ))
+                    if md.version == "3.1":
+                        mdOut = md.clone()
+                        dataTableName = "data_particles"
+                        mdOut.removeDataTable(dataTableName)
+                    else:
+                        mdOut = MetaData()
+                        dataTableName = "data_"
+                    mdOut.addDataTable(dataTableName, md.isLoop(dataTableName))
+                    mdOut.addLabels(dataTableName, md.getLabels(dataTableName))
+                    mdOut.addData(dataTableName, new_particles)
+                    mdOut.write(os.path.join(args.o_dir, filename))
+                    # a simple progress bar
+                    sys.stdout.write('\r')
+                    progress = int(counter / nrOfStarFiles * 20)
+                    sys.stdout.write("[%-20s] %d%%" % ('=' * progress, 5 * progress))
+                    sys.stdout.flush()
+
+                    counter += 1
+            print("\n %s star files processed. Have fun!" % counter)
 
 if __name__ == "__main__":
     FlipParticleCoordinates().main()
