@@ -11,10 +11,10 @@ class FlipParticleCoordinates:
         self.parser = argparse.ArgumentParser(
             description="Flip (mirror) X/Y coordinates of particles in particles star file or coordinates star files in a directory.")
         add = self.parser.add_argument
-        add('--i', help="Input particles STAR file.")
-        add('--o', help="Output particles STAR file.")
-        add('--i_dir', help="Input directory with coordinates STAR files.")
-        add('--o_dir', help="Output directory.")
+        add('--i', type=str, default="", help="Input particles STAR file.")
+        add('--o', type=str, default="", help="Output particles STAR file.")
+        add('--i_dir', type=str, default="", help="Input directory with coordinates STAR files.")
+        add('--o_dir', type=str, default="", help="Output directory.")
         add('--flipX', action='store_true', help="Flip coordinates along X-axis")
         add('--flipY', action='store_true', help="Flip coordinates along Y-axis")
         add('--axis_size', type=float, default=0, help="Size of micrograph in pixels along the flipping axis.")
