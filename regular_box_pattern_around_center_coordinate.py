@@ -23,6 +23,10 @@ class ParticlesToCoordsStar:
             help="Overlap in percents between the neighboring boxes in pattern. (Default: 30)")
         add('--sph_mask', action='store_true',
             help="If set then only boxes inside a circular mask touching the orig_box are included.")
+        add('--x_max', type=int, default=5760,
+            help="Maximum value of the x coordinate to be kept in the resulting star file (i.e. x size of the micrograph). (Default: 5760)")
+        add('--y_max', type=int, default=4092,
+            help="Overlap in percents between the neighboring boxes in pattern. (Default: 4092)")
 
     def usage(self):
         self.parser.print_help()
@@ -47,13 +51,19 @@ class ParticlesToCoordsStar:
             particles.append(particle)
         return particles
 
-    def writeCoordsFile(self, partCoords, outDir):
+    def writeCoordsFile(self, partCoords, outDir, xMax, yMax):
         mdOut = MetaData()
         particleTableName = "data_"
 
+        filteredPartCoords = []
+        # ensure that the particle center is inside the micrograph
+        for particle in partCoords:
+            if (particle.rlnCoordinateX <= xMax and particle.rlnCoordinateY <= yMax and particle.rlnCoordinateX > 0 and particle.rlnCoordinateY > 0):
+                filteredPartCoords.append(particle)
+
         mdOut.addDataTable(particleTableName, True)
         mdOut.addLabels(particleTableName, "rlnCoordinateX", "rlnCoordinateY")
-        mdOut.addData(particleTableName, partCoords)
+        mdOut.addData(particleTableName, filteredPartCoords)
         micName = partCoords[0].rlnMicrographName.split("/")[-1]
         starFileName = ("%s%s" % (micName[:-3], "star"))
         mdOut.write(outDir + "/" + starFileName)
@@ -123,7 +133,7 @@ class ParticlesToCoordsStar:
 
             patternCoords = self.createRegularPatternAroundCoordinates(partCoords, args.orig_box, args.pattern_box,
                                                                        args.overlap, args.sph_mask)
-            self.writeCoordsFile(patternCoords, args.o)
+            self.writeCoordsFile(patternCoords, args.o, args.x_max, args.y_max)
             partCoords = []
 
             # a simple progress bar
