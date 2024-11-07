@@ -26,7 +26,7 @@ class ParticlesToCoordsStar:
         add('--x_max', type=int, default=5760,
             help="Maximum value of the x coordinate to be kept in the resulting star file (i.e. x size of the micrograph). (Default: 5760)")
         add('--y_max', type=int, default=4092,
-            help="Overlap in percents between the neighboring boxes in pattern. (Default: 4092)")
+            help="Maximum value of the y coordinate to be kept in the resulting star file (i.e. y size of the micrograph). (Default: 4092)")
 
     def usage(self):
         self.parser.print_help()
