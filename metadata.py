@@ -676,6 +676,7 @@ class MetaData:
 
     def __init__(self, input_star=None):
         self.version = "3"
+        self.comments = []
         if input_star:
             self.read(input_star)
         else:
@@ -735,6 +736,7 @@ class MetaData:
                 continue
 
             if "#" in values[0]:
+                self.comments.append(line)
                 continue
 
             if "data_" in values[0]:
@@ -766,13 +768,24 @@ class MetaData:
         f.close()
 
     def _write(self, output_file):
+
+        # Add a comment with the command line used to generate the file; do it only if it was called from command line
+        if len(sys.argv) > 1:
+            self.comments.insert(0, "# " + ' '.join(sys.argv) + "\n")
+
+        # write comments in the beginning of the file
+        self.comments = set(self.comments)
+        for comment in self.comments:
+            output_file.write(comment + "\n")
+
         # Write labels and prepare the line format for rows
         for attribute in dir(self):
             if "data_" in attribute and "_labels" not in attribute and "_loop" not in attribute:
                 line_format = ""
                 if self.version == "3.1":
                     if "_loop" not in attribute:
-                        output_file.write("\n# version 30001\n\n%s\n\n" % attribute)
+                        #output_file.write("\n# version 30001\n\n%s\n\n" % attribute)
+                        output_file.write("\n\n%s\n\n" % attribute)
                     if getattr(self, attribute + "_loop"):
                         output_file.write("loop_\n")
                 else:
