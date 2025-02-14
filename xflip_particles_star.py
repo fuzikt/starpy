@@ -157,6 +157,8 @@ class RotateParticlesStar:
         add = self.parser.add_argument
         add('--i', help="Input STAR filename with particles.")
         add('--o', help="Output STAR filename.")
+        add('--cls_nr', type=int, default=-1,
+            help="Only particles from the defined class Nr will be flipped. (Default: -1 => off)")
 
     def usage(self):
         self.parser.print_help()
@@ -181,20 +183,21 @@ class RotateParticlesStar:
             particles.append(particle)
         return particles
 
-    def xflipParticles(self, particles):
+    def xflipParticles(self, particles, clsNr):
 
         newParticles = []
         for particle in copy.deepcopy(particles):
-            matrix_particle = matrix_from_euler(radians(particle.rlnAngleRot), radians(particle.rlnAngleTilt),
-                                                radians(particle.rlnAnglePsi))
-            matrix_rotation = matrix_from_euler(radians(180), radians(180), radians(0))
+            if (particle.rlnClassNumber == clsNr) or (clsNr == -1):
+                matrix_particle = matrix_from_euler(radians(particle.rlnAngleRot), radians(particle.rlnAngleTilt),
+                                                    radians(particle.rlnAnglePsi))
+                matrix_rotation = matrix_from_euler(radians(180), radians(180), radians(0))
 
-            m_rot = matrix_multiply(matrix_particle, matrix_transpose(matrix_rotation))
+                m_rot = matrix_multiply(matrix_particle, matrix_transpose(matrix_rotation))
 
-            rotNew, tiltNew, psiNew = euler_from_matrix(m_rot)
-            particle.rlnAngleRot = degrees(rotNew)
-            particle.rlnAngleTilt = degrees(tiltNew)
-            particle.rlnAnglePsi =  degrees(psiNew)-180
+                rotNew, tiltNew, psiNew = euler_from_matrix(m_rot)
+                particle.rlnAngleRot = degrees(rotNew)
+                particle.rlnAngleTilt = degrees(tiltNew)
+                particle.rlnAnglePsi =  degrees(psiNew)-180
 
             newParticles.append(particle)
         print("Processed " + str(len(newParticles)) + " particles.")
@@ -214,7 +217,7 @@ class RotateParticlesStar:
 
         particles = self.get_particles(md)
 
-        new_particles.extend(self.xflipParticles(particles))
+        new_particles.extend(self.xflipParticles(particles, args.cls_nr))
 
         if md.version == "3.1":
             mdOut = md.clone()
