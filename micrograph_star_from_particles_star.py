@@ -60,6 +60,17 @@ class CreateMicrographStarFile:
 
         particles = self.get_particles(md, "data_particles")
 
+        opticGroups = self.get_particles(md, "data_optics")
+
+        for opticGroup in opticGroups:
+            opticGroup.rlnMicrographPixelSize = opticGroup.rlnMicrographOriginalPixelSize
+
+        opticGroupLabels = md.getLabels("data_optics")
+        opticGroupLabels.remove("rlnImagePixelSize")
+        opticGroupLabels.append("rlnMicrographPixelSize")
+        md.removeLabels("data_optics", "rlnImagePixelSize")
+        md.addLabels("data_optics", "rlnMicrographPixelSize")
+
         uniqueMicrographs = self.filterUniqueMicrographs(particles)
 
 
