@@ -169,6 +169,8 @@ class RotateParticlesStar:
             help="Shift along Y axis. Default 0 (in px for Relion 3.0; in Angstrom for Relion 3.1)")
         add('--z', type=str, default="0",
             help="Shift along Z axis. Default 0 (in px for Relion 3.0; in Angstrom for Relion 3.1)")
+        add('--cls_nr', type=int, default=-1,
+            help="Only particles from the defined class Nr will be rotated. (Default: -1 => off)")
 
     def usage(self):
         self.parser.print_help()
@@ -230,36 +232,37 @@ class RotateParticlesStar:
             particles.append(particle)
         return particles
 
-    def rotateParticles(self, particles, rot, tilt, psi, x, y, z, version):
+    def rotateParticles(self, particles, rot, tilt, psi, x, y, z, version, clsNr):
 
         newParticles = []
         for particle in copy.deepcopy(particles):
-            matrix_particle = matrix_from_euler(radians(particle.rlnAngleRot), radians(particle.rlnAngleTilt),
-                                                radians(particle.rlnAnglePsi))
-            matrix_rotation = matrix_from_euler(radians(rot), radians(tilt), radians(psi))
+            if (particle.rlnClassNumber == clsNr) or (clsNr == -1):
+                matrix_particle = matrix_from_euler(radians(particle.rlnAngleRot), radians(particle.rlnAngleTilt),
+                                                    radians(particle.rlnAnglePsi))
+                matrix_rotation = matrix_from_euler(radians(rot), radians(tilt), radians(psi))
 
-            shiftRot, shiftTilt, shiftPsi = euler_from_vector([x, y, z])
-            matrix_shift = matrix_from_euler(shiftRot, shiftTilt, shiftPsi)
+                shiftRot, shiftTilt, shiftPsi = euler_from_vector([x, y, z])
+                matrix_shift = matrix_from_euler(shiftRot, shiftTilt, shiftPsi)
 
-            m_shift = matrix_multiply(matrix_particle, matrix_transpose(matrix_shift))
-            m_rot = matrix_multiply(matrix_particle, matrix_transpose(matrix_rotation))
+                m_shift = matrix_multiply(matrix_particle, matrix_transpose(matrix_shift))
+                m_rot = matrix_multiply(matrix_particle, matrix_transpose(matrix_rotation))
 
-            rotNew, tiltNew, psiNew = euler_from_matrix(m_rot)
-            particle.rlnAngleRot = degrees(rotNew)
-            particle.rlnAngleTilt = degrees(tiltNew)
-            particle.rlnAnglePsi = degrees(psiNew)
+                rotNew, tiltNew, psiNew = euler_from_matrix(m_rot)
+                particle.rlnAngleRot = degrees(rotNew)
+                particle.rlnAngleTilt = degrees(tiltNew)
+                particle.rlnAnglePsi = degrees(psiNew)
 
-            d = sqrt(x ** 2 + y ** 2 + z ** 2)
-            if version == "3.1":
-                particle.rlnOriginXAngst = -m_shift.m[0][2] * d + particle.rlnOriginXAngst
-                particle.rlnOriginYAngst = -m_shift.m[1][2] * d + particle.rlnOriginYAngst
-                if hasattr(particle, 'rlnOriginZAngst'):
-                    particle.rlnOriginZAngst = -m_shift.m[2][2] * d + particle.rlnOriginZAngst
-            else:
-                particle.rlnOriginX = -m_shift.m[0][2] * d + particle.rlnOriginX
-                particle.rlnOriginY = -m_shift.m[1][2] * d + particle.rlnOriginY
-                if hasattr(particle, 'rlnOriginZ'):
-                    particle.rlnOriginZ = -m_shift.m[2][2] * d + particle.rlnOriginZ
+                d = sqrt(x ** 2 + y ** 2 + z ** 2)
+                if version == "3.1":
+                    particle.rlnOriginXAngst = -m_shift.m[0][2] * d + particle.rlnOriginXAngst
+                    particle.rlnOriginYAngst = -m_shift.m[1][2] * d + particle.rlnOriginYAngst
+                    if hasattr(particle, 'rlnOriginZAngst'):
+                        particle.rlnOriginZAngst = -m_shift.m[2][2] * d + particle.rlnOriginZAngst
+                else:
+                    particle.rlnOriginX = -m_shift.m[0][2] * d + particle.rlnOriginX
+                    particle.rlnOriginY = -m_shift.m[1][2] * d + particle.rlnOriginY
+                    if hasattr(particle, 'rlnOriginZ'):
+                        particle.rlnOriginZ = -m_shift.m[2][2] * d + particle.rlnOriginZ
 
             newParticles.append(particle)
         print("Processed " + str(len(newParticles)) + " particles.")
@@ -279,7 +282,7 @@ class RotateParticlesStar:
 
         particles = self.get_particles(md)
 
-        new_particles.extend(self.rotateParticles(particles, self.rotValue, self.tiltValue, self.psiValue, self.xValue, self.yValue, self.zValue, md.version))
+        new_particles.extend(self.rotateParticles(particles, self.rotValue, self.tiltValue, self.psiValue, self.xValue, self.yValue, self.zValue, md.version, args.cls_nr))
 
         if md.version == "3.1":
             mdOut = md.clone()
