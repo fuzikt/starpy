@@ -157,8 +157,8 @@ class RotateParticlesStar:
         add = self.parser.add_argument
         add('--i', help="Input STAR filename with particles.")
         add('--o', help="Output STAR filename.")
-        add('--cls_nr', type=int, default=-1,
-            help="Only particles from the defined class Nr will be flipped. (Default: -1 => off)")
+        add('--cls_nr', type=str, default="-1",
+            help="Comma-separated list of class numbers to be flipped.. (Default: -1 => off)")
 
     def usage(self):
         self.parser.print_help()
@@ -176,6 +176,11 @@ class RotateParticlesStar:
         if not os.path.exists(args.i):
             self.error("Input file '%s' not found."
                        % args.i)
+        # Convert comma-separated string to list of integers
+        try:
+            self.classNumbers = [int(x.strip()) for x in args.cls_nr.split(',')]
+        except ValueError:
+            self.error("Class numbers must be comma-separated integers")
 
     def get_particles(self, md):
         particles = []
@@ -183,12 +188,12 @@ class RotateParticlesStar:
             particles.append(particle)
         return particles
 
-    def xflipParticles(self, particles, clsNr):
+    def xflipParticles(self, particles, classNumbers):
 
         flippedParticleCounter = 0
         newParticles = []
         for particle in copy.deepcopy(particles):
-            if (particle.rlnClassNumber == clsNr) or (clsNr == -1):
+            if (-1 in classNumbers) or (particle.rlnClassNumber in classNumbers):
                 matrix_particle = matrix_from_euler(radians(particle.rlnAngleRot), radians(particle.rlnAngleTilt),
                                                     radians(particle.rlnAnglePsi))
                 matrix_rotation = matrix_from_euler(radians(180), radians(180), radians(0))
@@ -220,7 +225,7 @@ class RotateParticlesStar:
 
         particles = self.get_particles(md)
 
-        new_particles.extend(self.xflipParticles(particles, args.cls_nr))
+        new_particles.extend(self.xflipParticles(particles, self.classNumbers))
 
         if md.version == "3.1":
             mdOut = md.clone()

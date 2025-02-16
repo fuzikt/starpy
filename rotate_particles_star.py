@@ -169,8 +169,8 @@ class RotateParticlesStar:
             help="Shift along Y axis. Default 0 (in px for Relion 3.0; in Angstrom for Relion 3.1)")
         add('--z', type=str, default="0",
             help="Shift along Z axis. Default 0 (in px for Relion 3.0; in Angstrom for Relion 3.1)")
-        add('--cls_nr', type=int, default=-1,
-            help="Only particles from the defined class Nr will be rotated. (Default: -1 => off)")
+        add('--cls_nr', type=str, default="-1",
+            help="Comma-separated list of class numbers to be flipped.. (Default: -1 => off)")
 
     def usage(self):
         self.parser.print_help()
@@ -188,6 +188,11 @@ class RotateParticlesStar:
         if not os.path.exists(args.i):
             self.error("Input file '%s' not found."
                        % args.i)
+        # Convert comma-separated string to list of integers
+        try:
+            self.classNumbers = [int(x.strip()) for x in args.cls_nr.split(',')]
+        except ValueError:
+            self.error("Class numbers must be comma-separated integers")
 
         self.rotValue = 0.0
         self.tiltValue = 0.0
@@ -232,12 +237,12 @@ class RotateParticlesStar:
             particles.append(particle)
         return particles
 
-    def rotateParticles(self, particles, rot, tilt, psi, x, y, z, version, clsNr):
+    def rotateParticles(self, particles, rot, tilt, psi, x, y, z, version, classNumbers):
 
         rotatedParticleCounter = 0
         newParticles = []
         for particle in copy.deepcopy(particles):
-            if (particle.rlnClassNumber == clsNr) or (clsNr == -1):
+            if (-1 in classNumbers) or (particle.rlnClassNumber in classNumbers):
                 matrix_particle = matrix_from_euler(radians(particle.rlnAngleRot), radians(particle.rlnAngleTilt),
                                                     radians(particle.rlnAnglePsi))
                 matrix_rotation = matrix_from_euler(radians(rot), radians(tilt), radians(psi))
@@ -285,7 +290,7 @@ class RotateParticlesStar:
 
         particles = self.get_particles(md)
 
-        new_particles.extend(self.rotateParticles(particles, self.rotValue, self.tiltValue, self.psiValue, self.xValue, self.yValue, self.zValue, md.version, args.cls_nr))
+        new_particles.extend(self.rotateParticles(particles, self.rotValue, self.tiltValue, self.psiValue, self.xValue, self.yValue, self.zValue, md.version, self.classNumbers))
 
         if md.version == "3.1":
             mdOut = md.clone()
