@@ -149,7 +149,7 @@ def euler_from_vector(vector):
     return rot, tilt, psi
 
 
-class RotateParticlesStar:
+class yFlipParticlesStar:
     def define_parser(self):
         self.parser = argparse.ArgumentParser(
             description="Perform transformation of euler angles to produce Y-flipped reconstruction.",
@@ -245,4 +245,4 @@ class RotateParticlesStar:
 
 
 if __name__ == "__main__":
-    RotateParticlesStar().main()
+    yFlipParticlesStar().main()

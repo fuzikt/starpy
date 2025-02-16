@@ -149,7 +149,7 @@ def euler_from_vector(vector):
     return rot, tilt, psi
 
 
-class RotateParticlesStar:
+class xFlipParticlesStar:
     def define_parser(self):
         self.parser = argparse.ArgumentParser(
             description="Perform transformation of euler angles to produce X-flipped reconstruction (same as the result of --invert_hand in relion_image_handler on a map).",
@@ -245,4 +245,4 @@ class RotateParticlesStar:
 
 
 if __name__ == "__main__":
-    RotateParticlesStar().main()
+    xFlipParticlesStar().main()
