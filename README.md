@@ -5,6 +5,47 @@ Python scripts for easy RELION STAR file manipulation. Base library file metadat
 
 Backward compatible with RELION <=3.0 format star files! 
 
+## Table of Contents
+- [add_beamtiltclass_star.py](#add_beamtiltclass_starpy)
+- [add_remove_label.py](#add_remove_labelpy)
+- [assign_column_star.py](#assign_column_starpy)
+- [binning_correct_star.py](#binning_correct_starpy)
+- [create_beamtiltclass_from_mdoc.py](#create_beamtiltclass_from_mdocpy)
+- [create_beamtiltclass_from_xml.py](#create_beamtiltclass_from_xmlpy)
+- [create_opticgroups_from_filename.py](#create_opticgroups_from_filenamepy)
+- [create_opticgroups_from_xml.py](#create_opticgroups_from_xmlpy)
+- [create_opticgroups_from_mdoc.py](#create_opticgroups_from_mdocpy)
+- [extract_particles_coords_star.py](#extract_particles_coords_starpy)
+- [filter_astigmatism_star.py](#filter_astigmatism_starpy)
+- [flip_particles_coordinates.py](#flip_particles_coordinatespy)
+- [get_absolute_apix.py](#get_absolute_apixpy)
+- [heatmap_orient_star.py](#heatmap_orient_starpy)
+- [helix_correct_star.py](#helix_correct_starpy)
+- [join_star.py](#join_starpy)
+- [json2star.py](#json2starpy)
+- [math_star.py](#math_starpy)
+- [metadata.py](#metadatapyy)
+- [micrograph_star_from_particles_star.py](#micrograph_star_from_particles_starpy)
+- [particles_star_to_box.py](#particles_star_to_boxpy)
+- [particles_star_to_coords_star.py](#particles_star_to_coords_starpy)
+- [plot_star.py](#plot_starpy)
+- [regular_box_pattern_around_center_coordinate.py](#regular_box_pattern_around_center_coordinatepy)
+- [rel31_to_rel30_star.py](#rel31_to_rel30_starpy)
+- [remove_preferred_orient.py](#remove_preferred_orientpy)
+- [remove_preferred_orient_hlpx.py](#remove_preferred_orient_hlpxpy)
+- [rename_foilhole_star.py](#rename_foilhole_starpy)
+- [rotate_particles_star.py](#rotate_particles_starpy)
+- [select_maxprob_sym_copy_ptcls.py](#select_maxprob_sym_copy_ptclspy)
+- [select_orientations_star.py](#select_orientations_starpy)
+- [select_rand_sym_copy_ptcls.py](#select_rand_sym_copy_ptclspy)
+- [select_values_star.py](#select_values_starpy)
+- [split_particles_to_micrographs.py](#split_particles_to_micrographspy)
+- [split_stacks.py](#split_stackspy)
+- [stats_star.py](#stats_starpy)
+- [unbin_coordinates.py](#unbin_coordinatespy)
+- [xflip_particles_star.py](#xflip_particles_starpy)
+- [yflip_particles_star.py](#yflip_particles_starpy)
+
 ## add_beamtiltclass_star.py
 ! only Relion <=3.0 format star files !
 Add beamtilt class to the particles. Script adds rlnBeamTiltClass extracted from the micrograph name (in FoilHoleXXXX.mrc FEI format).
@@ -55,11 +96,34 @@ Example 1: Assign values of DefocusU from input2.star as a column to input1.star
 assign_column_star.py --i1 input1.star --i2 input2.star --o output.star --col_lb rlnDefocusU --comp_lb rlnMicrographName
 ```
 
-## extract_particles_coords_star.py
-Remove other columns than particle coords from star file.
+## binnig_correct_star.py
+Binning correct original star file according to the binning factor. Correcting rlnOriginX, rlnOriginY, pixel size, and particle suffix.
 ```
-  --i    Input STAR filename with particles.
-  --o    Output STAR filename. 
+  --i             Input STAR filename with particles.
+  --o             Output STAR filename.
+  --bin_factor    Binning factor.
+  --suf_orig      Original suffix to replace (e.g. _512.mrcs)
+  --suf_new       New suffix to use for replacement (e.g. _256.mrcs)
+```
+
+## create_beamtiltclass_from_mdoc.py
+! only Relion <=3.0 format star files !
+Clusters beam-shifts extracted from serialem mdoc files into beam-tilt classes.
+```
+  --i         Input mdoc directory
+  --o         Output star file. If empty no file generated generated
+  --o_shifts  Output file with extracted beam-shifts and cluster numbers. If empty no file generated generated
+  --clusters  Number of clusters the beam-shifts should be divided in. (default: 1)
+  --elbow     Number of max clusters used in Elbow method optimal cluster number determination. (default: 0)
+  --max_iter  Expert option: Maximum number of iterations of the k-means algorithm for a single run. (default: 300)
+  --n_init    Expert option: Number of time the k-means algorithm will be run with different centroid seeds. (default: 10)
+```
+Requires specific conda environment. Install:
+```
+conda create -n beamtiltclass-env
+conda activate beamtiltclass-env
+conda install scikit-learn
+conda install matplotlib
 ```
 
 ## create_beamtiltclass_from_xml.py
@@ -82,25 +146,6 @@ conda install scikit-learn
 conda install matplotlib
 ```
 
-## create_beamtiltclass_from_mdoc.py
-! only Relion <=3.0 format star files !
-Clusters beam-shifts extracted from serialem mdoc files into beam-tilt classes.
-```
-  --i         Input mdoc directory
-  --o         Output star file. If empty no file generated generated
-  --o_shifts  Output file with extracted beam-shifts and cluster numbers. If empty no file generated generated
-  --clusters  Number of clusters the beam-shifts should be divided in. (default: 1)
-  --elbow     Number of max clusters used in Elbow method optimal cluster number determination. (default: 0)
-  --max_iter  Expert option: Maximum number of iterations of the k-means algorithm for a single run. (default: 300)
-  --n_init    Expert option: Number of time the k-means algorithm will be run with different centroid seeds. (default: 10)
-```
-Requires specific conda environment. Install:
-```
-conda create -n beamtiltclass-env
-conda activate beamtiltclass-env
-conda install scikit-learn
-conda install matplotlib
-```
 ## create_opticgroups_from_filename.py
 ! only Relion >=3.1 format star files !
 
@@ -153,6 +198,35 @@ conda create -n beamtiltclass-env
 conda activate beamtiltclass-env
 conda install scikit-learn
 conda install matplotlib
+```
+
+## extract_particles_coords_star.py
+Remove other columns than particle coords from star file.
+```
+  --i    Input STAR filename with particles.
+  --o    Output STAR filename. 
+```
+
+## filter_astigmatism_star.py
+Limit astigmatism of particles or micrographs in star file.
+```
+  --i      Input STAR filename with particles.
+  --o      Output STAR filename.
+  --astg   Max astigmatism in Angstroms. Default: 1000
+  --res    Minimum resolution in Angstroms. Default: 0 (off)
+  --data   Data table from star file to be used (Default: data_particles).
+```
+
+## flip_particles_coordinates.py
+Flip (mirror) X/Y coordinates of particles in particles star file or coordinates star files in a directory.
+```
+  --i           Input particles STAR file.
+  --o           Output particles STAR file.
+  --i_dir       Input directory with coordinates STAR files.
+  --o_dir       Output directory.
+  --flipX       Flip coordinates along X-axis
+  --flipY       Flip coordinates along Y-axis
+  --axis_size   Size of micrograph in pixels along the flipping axis.
 ```
 
 ## get_absolute_apix.py
@@ -254,6 +328,13 @@ math_star.py --i input.star --o output.star --lb rlnAnlgeRot --op "remainder" --
 ```
 ## metadata.py
 Base library required by all scripts.
+
+## micrograph_star_from_particles_star.py
+Create a micrographs star containing unique micrograph names file form input particles star file.
+```
+  --i    Input STAR filename.
+  --o    Output STAR filename.
+```
 
 ## particles_star_to_box.py
 Extracts coordinates from particles STAR file and saves as per micrograph box files.
@@ -387,6 +468,18 @@ Example:
 rotate_particles_star.py --i input.star --o output.star --rot 15 --tilt 20 --psi 150
 ```
 
+## select_maxprob_sym_copy_ptcls.py
+Select one orientation per particle from 3D classified symmetry expanded star files according to the greatest value of rlnMaxValueProbDistribution.
+
+```
+  --i    Input STAR filename with particles.
+  --o    Output STAR filename. 
+```
+Example: You created a C5 symmetry expanded star file that was 3D classified into 5 classes. You select the best looking class, which should in theory contain 1/5 of the particles from the symmetry expanded star. Because the classification is not perfect there are multiple redundant (symmetry) copies of some of the particles present in the selected class. To filter out only a single copy (unique) of every particle you can use this script, which will chose the particle with the greatest value of rlnMaxValueProbDistribution.
+```
+select_maxprob_sym_copy_ptcls.py --i selected_class.star --o selected_class_unique.star
+```
+
 ## select_orientations_star.py
 Limit orientations of particles in STAR file. Select particles that are in the defined range of ROT, TILT, PSI angle.
 
@@ -399,18 +492,6 @@ Limit orientations of particles in STAR file. Select particles that are in the d
   --tilt_max    Minimum tilt angle.
   --psi_min     Minimum psi angle.
   --psi_max     Minimum psi angle.
-```
-
-## select_maxprob_sym_copy_ptcls.py
-Select one orientation per particle from 3D classified symmetry expanded star files according to the greatest value of rlnMaxValueProbDistribution.
-
-```
-  --i    Input STAR filename with particles.
-  --o    Output STAR filename. 
-```
-Example: You created a C5 symmetry expanded star file that was 3D classified into 5 classes. You select the best looking class, which should in theory contain 1/5 of the particles from the symmetry expanded star. Because the classification is not perfect there are multiple redundant (symmetry) copies of some of the particles present in the selected class. To filter out only a single copy (unique) of every particle you can use this script, which will chose the particle with the greatest value of rlnMaxValueProbDistribution.
-```
-select_maxprob_sym_copy_ptcls.py --i selected_class.star --o selected_class_unique.star
 ```
 
 ## select_rand_sym_copy_ptcls.py
@@ -512,15 +593,26 @@ Example 4: Print out statistics on rlnAngleTilt, rlnAngleRot and rlnAnglePsi
 stats_star.py --i input.star --lb "rlnAngleTilt rlnAngleRot rlnAnglePsi"
 ```
 
+## unbin_coordinates.py
+Unbin particle coordinate star files.
+```
+  --i    Input directory with coordinates STAR files.
+  --o    Output directory.
+  --bin  Binning factor used (--bin 10 will multiply input coordinates by 10.)
+```
+
 ## xflip_particles_star.py
-Perform transformation of euler angles to produce X-flipped reconstruction. The resulting map is the same as if "--invert_hand" is applied on the map in relion_image_handler.
+Performs transformation of euler angles to produce X-flipped reconstruction. The resulting map is the same as if "--invert_hand" is applied on the map in relion_image_handler.
 ```
-  --i    Input STAR filename with particles.
-  --o    Output STAR filename. 
+  --i       Input STAR filename with particles.
+  --o       Output STAR filename.
+  --cls_nr  Comma-separated list of class numbers to be flipped.. (Default: -1 => off) 
 ```
+
 ## yflip_particles_star.py
-Perform transformation of euler angles to produce Y-flipped reconstruction.
+Performs transformation of euler angles to produce Y-flipped reconstruction.
 ```
-  --i    Input STAR filename with particles.
-  --o    Output STAR filename. 
+  --i       Input STAR filename with particles.
+  --o       Output STAR filename.
+  --cls_nr  Comma-separated list of class numbers to be flipped.. (Default: -1 => off)
 ```

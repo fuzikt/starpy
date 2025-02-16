@@ -11,10 +11,10 @@ from argparse import RawTextHelpFormatter
 class CreateMicrographStarFile:
     def define_parser(self):
         self.parser = argparse.ArgumentParser(
-            description="Create a micrographs star containing unique micrograph names file form input particles star file",
+            description="Create a micrographs star containing unique micrograph names file form input particles star file.",
             formatter_class=RawTextHelpFormatter)
         add = self.parser.add_argument
-        add('--i', help="Input1 STAR filename.")
+        add('--i', help="Input STAR filename.")
         add('--o', help="Output STAR filename.")
 
     def usage(self):
