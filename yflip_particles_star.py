@@ -184,6 +184,7 @@ class RotateParticlesStar:
 
     def yflipParticles(self, particles, clsNr):
 
+        flippedParticleCounter = 0
         newParticles = []
         for particle in copy.deepcopy(particles):
             if (particle.rlnClassNumber == clsNr) or (clsNr == -1):
@@ -197,9 +198,11 @@ class RotateParticlesStar:
                 particle.rlnAngleRot = degrees(rotNew)
                 particle.rlnAngleTilt = degrees(tiltNew)
                 particle.rlnAnglePsi = degrees(psiNew) - 180
+                flippedParticleCounter += 1
 
             newParticles.append(particle)
         print("Processed " + str(len(newParticles)) + " particles.")
+        print("Flipped " + str(flippedParticleCounter) + " particles.")
 
         return newParticles
 

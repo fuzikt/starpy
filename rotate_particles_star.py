@@ -234,6 +234,7 @@ class RotateParticlesStar:
 
     def rotateParticles(self, particles, rot, tilt, psi, x, y, z, version, clsNr):
 
+        rotatedParticleCounter = 0
         newParticles = []
         for particle in copy.deepcopy(particles):
             if (particle.rlnClassNumber == clsNr) or (clsNr == -1):
@@ -263,9 +264,11 @@ class RotateParticlesStar:
                     particle.rlnOriginY = -m_shift.m[1][2] * d + particle.rlnOriginY
                     if hasattr(particle, 'rlnOriginZ'):
                         particle.rlnOriginZ = -m_shift.m[2][2] * d + particle.rlnOriginZ
+                rotatedParticleCounter += 1
 
             newParticles.append(particle)
         print("Processed " + str(len(newParticles)) + " particles.")
+        print("Rotated " + str(rotatedParticleCounter) + " particles.")
 
         return newParticles
 
