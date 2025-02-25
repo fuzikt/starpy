@@ -452,7 +452,7 @@ Remove particles with overrepresented orientations by sorting them into HealPix 
 Deprecated - need to be rewritten
 
 ## rotate_particles_star.py
-Perform rotation of particles according to given euler angles.
+Performs rotation of particles according to given Euler angles.
 ```
   --i       Input STAR filename with particles.
   --o       Output STAR filename.
@@ -462,6 +462,7 @@ Perform rotation of particles according to given euler angles.
   --x       Shift along X axis. Default 0
   --y       Shift along Y axis. Default 0
   --z       Shift along Z axis. Default 0
+  --cls_nr  Comma-separated list of class numbers to be flipped.. (Default: -1 => off)
 ```
 Example:
 ```
