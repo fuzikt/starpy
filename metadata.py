@@ -638,6 +638,14 @@ LABELS = {
     'rlnTomoTiltMovieFile': str,  # Movie containing the frames of a tilt
     'rlnMicrographNameEven': str,  # Micrograph summed from even frames of motion corrected movie
     'rlnMicrographNameOdd': str,  # Micrograph summed from odd frames of motion corrected movie
+    # non-standard RELION labels
+    'rlnOriginXAngstDiff': float,  # Distribution of the X-coordinate (in Angstrom) between 2 particles from analyze_orientation_distances_star.py
+    'rlnOriginYAngstDiff': float,  # Difference in the Y-shifts (in Angstrom) between 2 particles from analyze_orientation_distances_star.py
+    'rlnAngleRotDiff': float,  # Difference in the first Euler angle (rot) between 2 particles from analyze_orientation_distances_star.py
+    'rlnAngleTiltDiff': float,  # Difference in the second Euler angle (tilt) between 2 particles from analyze_orientation_distances_star.py
+    'rlnAnglePsiDiff': float,  # Difference in the third Euler angle (psi) between 2 particles from analyze_orientation_distances_star.py
+    'rlnSpatDist': float,  # Spatial distances between 2 particles from analyze_orientation_distances_star.py
+    'rlnAngDist': float,  # Angular distances between 2 particles from analyze_orientation_distances_star.py
 }
 
 

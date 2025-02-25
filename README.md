@@ -8,6 +8,7 @@ Backward compatible with RELION <=3.0 format star files!
 ## Table of Contents
 - [add_beamtiltclass_star.py](#add_beamtiltclass_starpy)
 - [add_remove_label.py](#add_remove_labelpy)
+- [analyze_orientation_distances_star.py](#analyze_orientation_distances_starpy)
 - [assign_column_star.py](#assign_column_starpy)
 - [binning_correct_star.py](#binning_correct_starpy)
 - [create_beamtiltclass_from_mdoc.py](#create_beamtiltclass_from_mdocpy)
@@ -79,6 +80,14 @@ add_remove_label.py --i input.star --o output.star --lb rlnCoordinateX,rlnCoordi
 Example 3: Add rlnCoordinateX,rlnCoordinateY with default values 10,20 respectively
 ``` 
 add_remove_label.py --i input.star --o output.star --lb rlnCoordinateX,rlnCoordinateY --add --val 10,20
+```
+
+## analyze_orientation_distances_star.py
+Calculates the spatial distance and angular distance between corresponding particles in --i1 and --i2. Output contains the particles from --i1 with additional columns for the spatial (rlnSpatDist), angular distances (rlnAngDist), rlnOriginXAngstDiff, rlnOriginYAngstDiff, rlnAngleRotDiff , rlnAngleTiltDiff, and rlnAnglePsiDiff.
+```
+  --i1    Input1 STAR filename
+  --i2    Input2 STAR filename
+  --o     Output STAR filename
 ```
 
 ## assign_column_star.py
