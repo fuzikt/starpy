@@ -132,6 +132,8 @@ class HeatmapStar:
                        '$90^\circ$']
             plt.yticks(np.arange(-90, 90.1, step=45))
             plt.xticks(np.arange(-180, 180.1, step=45))
+            fig_hexbin.canvas.manager.set_window_title(os.path.basename(args.i))
+
             plt.tick_params(axis="x", labelsize=14)
             plt.tick_params(axis="y", labelsize=14)
             ax_hexbin.set_xticklabels(xlabels, fontsize=14)
@@ -164,7 +166,7 @@ class HeatmapStar:
                 gratColor = "white"
 
             def plotHealpixHeatmap(mapStyle):
-                return projview(
+                _ = projview(
                     heatmap_hp,
                     fig=0,
                     coord=["G"],
@@ -179,6 +181,7 @@ class HeatmapStar:
                     longitude_grid_spacing=45,
                     xtick_label_color="w",
                     ytick_label_color="black",
+                    title = os.path.basename(args.i),
                     fontsize={
                         "xlabel": 14,
                         "ylabel": 14,
@@ -196,6 +199,10 @@ class HeatmapStar:
                     graticule_color=gratColor,
                     cmap=colorMap
                 )
+                fig = plt.gcf()
+                fig.canvas.manager.set_window_title(os.path.basename(args.i))
+                return fig
+
 
             plotHealpixHeatmap("mollweide")
             plotHealpixHeatmap("cart")
