@@ -188,9 +188,9 @@ class SelValueStar:
         compValue, rangeHi, rangeLo, rangeSel, prctl_l, prctl_h = self.validate(args)
 
         if rangeSel:
-            print("Selecting particles particles where %s is in range <%s, %s>." % (args.lb, rangeLo, rangeHi))
+            print("Selecting particles where %s is in range <%s, %s>." % (args.lb, rangeLo, rangeHi))
         elif args.prctl_l == "-1" and args.prctl_h == "-1":
-            print("Selecting particles particles where %s is %s %s." % (args.lb, args.op, compValue))
+            print("Selecting particles where %s is %s %s." % (args.lb, args.op, compValue))
 
         md = MetaData(args.i)
 
