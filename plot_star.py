@@ -118,8 +118,10 @@ class PlotStar:
 
         if maxTilesX > 1 or maxTilesY > 1:
             figure, axis = plt.subplots(maxTilesX, maxTilesY)
+            figure.canvas.manager.set_window_title(", ".join([os.path.basename(i) for i in args.i.split(",")]))
         else:
             figure, axis = plt.subplots(1, 1)
+            figure.canvas.manager.set_window_title(", ".join([os.path.basename(i) for i in args.i.split(",")]))
 
         tileX = tileY = 0
 
