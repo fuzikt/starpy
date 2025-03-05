@@ -219,6 +219,20 @@ class PlotStar:
             for thresholdValue in args.thresholdx.split(","):
                 plt.axvline(x=float(thresholdValue), linestyle=':')
 
+        if maxTilesX > 1 or maxTilesY > 1:
+            # a bit of plot formatting for multiplot
+            manager = plt.get_current_fig_manager()
+            screen_height = manager.window.winfo_screenheight()
+            # Make window square based on screen height
+            window_size = screen_height - 100
+            x = (manager.window.winfo_screenwidth() - window_size) // 2
+            y = 50  # Leave some space at the top
+            manager.window.geometry(f'{window_size}x{window_size}+{x}+{y}')
+            # Add some space between subplots
+            figure.subplots_adjust(hspace=0.35)  # Increase vertical space between plots (to make plot title not overlapping with x axis label)
+            figure.subplots_adjust(wspace=0.2) # Increase horizontal space between plots (to make y axis label not overlapping with y axis)
+            figure.subplots_adjust(left = 0.1, right = 0.95, top = 0.95, bottom = 0.05)
+
         plt.legend()
         plt.show()
 
