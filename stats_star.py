@@ -49,21 +49,21 @@ class StatsStar:
         def average(values):
             return sum(values) / len(values)
 
-        labelStats = [["Label", "Min", "Max", "Average"]]
+        labelStats = [["#", "Label", "Min", "Max", "Average"]]
 
         nonNumLabel = 0
 
-        for iLabel in iLabels:
+        for labelbNr, iLabel in enumerate(iLabels, start=1):
             if iLabel not in LABELS:
                 print("WARNING: Label %s not recognized as RELION label!" % iLabel)
             else:
                 if (LABELS[iLabel] == float) or (LABELS[iLabel] == int):
                     labelValues = [getattr(x, iLabel) for x in records]
                     if LABELS[iLabel] == float:
-                        labelStats.append([iLabel, '%.2f' % (min(labelValues),), '%.2f' % (max(labelValues),),
+                        labelStats.append(['%s' % labelbNr, iLabel, '%.2f' % (min(labelValues),), '%.2f' % (max(labelValues),),
                                            '%.2f' % (average(labelValues),)])
                     if LABELS[iLabel] == int:
-                        labelStats.append([iLabel, '%.d' % (min(labelValues)), '%.d' % (max(labelValues)),
+                        labelStats.append(['%s' % labelbNr, iLabel, '%.d' % (min(labelValues)), '%.d' % (max(labelValues)),
                                            '%.d' % (average(labelValues))])
                 else:
                     # non numerical label
