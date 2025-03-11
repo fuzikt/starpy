@@ -6,6 +6,7 @@ from metadata import MetaData
 from metadata import LABELS
 import argparse
 from argparse import RawTextHelpFormatter
+import time
 
 
 class JoinStar:
@@ -56,7 +57,7 @@ class JoinStar:
         self.define_parser()
         args = self.parser.parse_args()
         self.validate(args)
-
+        start_total = time.time()
         print("Selecting particles from star file...")
 
         md1 = MetaData(args.i1)
@@ -142,18 +143,9 @@ class JoinStar:
                 self.error("No label %s found in Input1 or Input2 file." % args.lb)
 
             particles1 = self.get_particles(md1, dataTableName)
-            particles2 = self.get_particles(md2, dataTableName)
-            intersectParticles = []
-            selectedValues = []
 
-            while len(particles2) > 0:
-                selectedParticle = particles2.pop(0)
-                if getattr(selectedParticle, args.lb) not in selectedValues:
-                    selectedValues.append(getattr(selectedParticle, args.lb))
-
-            for particle in particles1:
-                if getattr(particle, args.lb) in selectedValues:
-                    intersectParticles.append(particle)
+            selectedValues = {getattr(p, args.lb) for p in getattr(md2,dataTableName)}
+            intersectParticles = [p for p in particles1 if getattr(p, args.lb) in selectedValues]
 
             if md1.version == "3.1":
                 mdOut = md1.clone()
@@ -181,18 +173,9 @@ class JoinStar:
                 self.error("No label %s found in Input1 or Input2 file." % args.lb)
 
             particles1 = self.get_particles(md1, dataTableName)
-            particles2 = self.get_particles(md2, dataTableName)
-            exceptParticles = []
-            selectedValues = []
 
-            while len(particles2) > 0:
-                selectedParticle = particles2.pop(0)
-                if getattr(selectedParticle, args.lb) not in selectedValues:
-                    selectedValues.append(getattr(selectedParticle, args.lb))
-
-            for particle in particles1:
-                if getattr(particle, args.lb) not in selectedValues:
-                    exceptParticles.append(particle)
+            selectedValues = {getattr(p, args.lb) for p in getattr(md2,dataTableName)}
+            exceptParticles = [p for p in particles1 if getattr(p, args.lb) not in selectedValues]
 
             if md1.version == "3.1":
                 mdOut = md1.clone()
@@ -208,7 +191,7 @@ class JoinStar:
             print("%s particles were selected..." % str(len(exceptParticles)))
 
         mdOut.write(args.o)
-
+        print(f"Total execution time: {time.time() - start_total:.2f} seconds")
         print("New star file %s created. Have fun!" % args.o)
 
 
