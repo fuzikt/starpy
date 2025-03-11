@@ -129,9 +129,9 @@ class JoinStar:
             mdOut.addData(dataTableName, particles1)
             mdOut.addData(dataTableName, particles2)
             print("%s particles were selected..." % str((len(particles1) + len(particles2))))
-        # INTERSECT
-        if args.op == "intersect":
-            # create intersect unique values
+
+        # INTERSECT and EXCEPT
+        if args.op == "intersect" or args.op == "except":
             if md1.version == "3.1":
                 i1labels = md1.getLabels(dataTableName)
                 i2labels = md2.getLabels(dataTableName)
@@ -144,8 +144,12 @@ class JoinStar:
 
             particles1 = self.get_particles(md1, dataTableName)
 
-            selectedValues = {getattr(p, args.lb) for p in getattr(md2,dataTableName)}
-            intersectParticles = [p for p in particles1 if getattr(p, args.lb) in selectedValues]
+            selectedValues = {getattr(p, args.lb) for p in getattr(md2, dataTableName)}
+
+            if args.op == "intersect":
+                selectedParticles = [p for p in particles1 if getattr(p, args.lb) in selectedValues]
+            else:
+                selectedParticles = [p for p in particles1 if getattr(p, args.lb) not in selectedValues]
 
             if md1.version == "3.1":
                 mdOut = md1.clone()
@@ -156,39 +160,9 @@ class JoinStar:
 
             mdOut.addDataTable(dataTableName, md1.isLoop(dataTableName))
             mdOut.addLabels(dataTableName, md1.getLabels(dataTableName))
-            mdOut.addData(dataTableName, intersectParticles)
+            mdOut.addData(dataTableName, selectedParticles)
 
-            print("%s particles were selected..." % str(len(intersectParticles)))
-        # EXCEPT
-        if args.op == "except":
-            # create unique values for except
-            if md1.version == "3.1":
-                i1labels = md1.getLabels(dataTableName)
-                i2labels = md2.getLabels(dataTableName)
-            else:
-                i1labels = md1.getLabels("data_")
-                i2labels = md2.getLabels("data_")
-                dataTableName = "data_"
-            if (args.lb not in i1labels) or (args.lb not in i2labels):
-                self.error("No label %s found in Input1 or Input2 file." % args.lb)
-
-            particles1 = self.get_particles(md1, dataTableName)
-
-            selectedValues = {getattr(p, args.lb) for p in getattr(md2,dataTableName)}
-            exceptParticles = [p for p in particles1 if getattr(p, args.lb) not in selectedValues]
-
-            if md1.version == "3.1":
-                mdOut = md1.clone()
-                mdOut.removeDataTable(dataTableName)
-            else:
-                mdOut = MetaData()
-                dataTableName = "data_"
-
-            mdOut.addDataTable(dataTableName, md1.isLoop(dataTableName))
-            mdOut.addLabels(dataTableName, md1.getLabels(dataTableName))
-            mdOut.addData(dataTableName, exceptParticles)
-
-            print("%s particles were selected..." % str(len(exceptParticles)))
+            print("%s particles were selected..." % str(len(selectedParticles)))
 
         mdOut.write(args.o)
         print(f"Total execution time: {time.time() - start_total:.2f} seconds")
