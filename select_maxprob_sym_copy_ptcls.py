@@ -4,7 +4,7 @@ import os
 import sys
 from metadata import MetaData
 import argparse
-
+import time
 
 class selMaxProbSymStar:
     def define_parser(self):
@@ -47,22 +47,22 @@ class selMaxProbSymStar:
         return maxLikeParticle
 
     def selMostProbableParticles(self, particles, symCopyLabel):
-        i = 1
+        # Group particles by their symCopyLabel
+        particleGroups = {}
+
+        for particle in particles:
+            key = getattr(particle, symCopyLabel)
+            if key not in particleGroups:
+                particleGroups[key] = []
+            particleGroups[key].append(particle)
+
+        # Find max probability particle for each group
         newParticles = []
-        symmCopies = []
-        # read in symmetry copies of particle
-        while len(particles) > 0:
-            symmCopies.append(particles.pop(0))
-            if len(particles) != 0:
-                particlePos = 0
-                while particlePos < len(particles):
-                    if getattr(symmCopies[0],symCopyLabel) == getattr(particles[particlePos],symCopyLabel):
-                        symmCopies.append(particles.pop(particlePos))
-                        particlePos -= 1
-                    particlePos += 1
-            newParticles.append(self.maxProbParticle(symmCopies))
-            symmCopies = []
-        print("Selected " + str(len(newParticles)) + " particles from the original star file.")
+        for group in particleGroups.values():
+            maxParticle = max(group, key=lambda p: p.rlnMaxValueProbDistribution)
+            newParticles.append(maxParticle)
+
+        print(f"Selected {len(newParticles)} particles from the original star file.")
         return newParticles
 
     def main(self):
@@ -70,6 +70,7 @@ class selMaxProbSymStar:
         args = self.parser.parse_args()
 
         self.validate(args)
+        start_total = time.time()
 
         md = MetaData(args.i)
 
@@ -97,7 +98,7 @@ class selMaxProbSymStar:
         mdOut.addData(dataTableName, new_particles)
 
         mdOut.write(args.o)
-
+        print(f"Total execution time: {time.time() - start_total:.2f} seconds")
         print("New star file %s created. Have fun!" % args.o)
 
 
