@@ -7,6 +7,7 @@ from metadata import MetaData
 from metadata import LABELS
 import argparse
 from argparse import RawTextHelpFormatter
+import time
 
 
 class SelValueStar:
@@ -144,43 +145,44 @@ class SelValueStar:
         return d0 + d1
 
     def selParticles(self, particles, atr, op_char, value, rangeHi, rangeLo, rangeSel, prctl_l, prctl_h):
-        ops = {"=": operator.eq,
-               "!=": operator.ne,
-               ">": operator.gt,
-               ">=": operator.ge,
-               "<": operator.lt,
-               "<=": operator.le}
+        ops = {
+            "=": operator.eq,
+            "!=": operator.ne,
+            ">": operator.gt,
+            ">=": operator.ge,
+            "<": operator.lt,
+            "<=": operator.le
+        }
 
-        op_func = ops[op_char]
-
-        newParticles = []
-
+        # Process percentiles first if needed
         if prctl_h > -1 or prctl_l > -1:
-            allValues = []
-            for particle in particles:
-                allValues.append(getattr(particle, atr))
+            allValues = sorted(getattr(p, atr) for p in particles)
             prctl = max(prctl_l, prctl_h)
-            allValues.sort()
             value = self.percentile(allValues, prctl / 100.0)
 
             if prctl_l > -1:
                 op_func = ops["<="]
-                print("Selecting below %s-th percentile of data. %s values less or equal %s." % (prctl, atr, value))
-            if prctl_h > -1:
-                op_func = ops[">="]
-                print("Selecting above %s-th percentile of data. %s values more or equal %s." % (prctl, atr, value))
-
-        while len(particles) > 0:
-            selectedParticle = particles.pop(0)
-            if not rangeSel:
-                if op_func(getattr(selectedParticle, atr), value):
-                    newParticles.append(selectedParticle)
+                print(f"Selecting below {prctl}-th percentile of data. {atr} values less or equal {value}.")
             else:
-                if (getattr(selectedParticle, atr) >= rangeLo) and (getattr(selectedParticle, atr) <= rangeHi):
-                    newParticles.append(selectedParticle)
-        print(str(len(newParticles)) + " particles included in selection.")
+                op_func = ops[">="]
+                print(f"Selecting above {prctl}-th percentile of data. {atr} values more or equal {value}.")
+        else:
+            op_func = ops[op_char]
 
+        if rangeSel:
+            newParticles = [
+                p for p in particles
+                if rangeLo <= getattr(p, atr) <= rangeHi
+            ]
+        else:
+            newParticles = [
+                p for p in particles
+                if op_func(getattr(p, atr), value)
+            ]
+
+        print(f"{len(newParticles)} particles included in selection.")
         return newParticles
+
 
     def main(self):
         self.define_parser()
@@ -191,7 +193,7 @@ class SelValueStar:
             print("Selecting particles where %s is in range <%s, %s>." % (args.lb, rangeLo, rangeHi))
         elif args.prctl_l == "-1" and args.prctl_h == "-1":
             print("Selecting particles where %s is %s %s." % (args.lb, args.op, compValue))
-
+        start_total = time.time()
         md = MetaData(args.i)
 
         dataTableName = args.data
@@ -215,7 +217,7 @@ class SelValueStar:
         mdOut.addData(dataTableName, new_particles)
 
         mdOut.write(args.o)
-
+        print(f"Total execution time: {time.time() - start_total:.2f} seconds")
         print("New star file %s created. Have fun!" % args.o)
 
 
