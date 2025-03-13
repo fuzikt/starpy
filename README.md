@@ -25,6 +25,7 @@ Backward compatible with RELION <=3.0 format star files!
 - [join_star.py](#join_starpy)
 - [json2star.py](#json2starpy)
 - [math_star.py](#math_starpy)
+- [math_exp_star.py](#math_exp_starpy)
 - [metadata.py](#metadatapyy)
 - [micrograph_star_from_particles_star.py](#micrograph_star_from_particles_starpy)
 - [particles_star_to_box.py](#particles_star_to_boxpy)
@@ -335,6 +336,43 @@ Example 3: Compute remainder of rlnAngleRot where rlnGroupNumber is 2.
 ```
 math_star.py --i input.star --o output.star --lb rlnAnlgeRot --op "remainder" --sellb rlnGroupNumber --selval 2 
 ```
+
+## math_exp_star.py
+Performs complex math operations on star file values defined by user provided expression.
+
+All the supported math expressions can be found at: http://www.partow.net/programming/exprtk/index.html
+
+```
+  --i        Input STAR filename with particles.
+  --o        Output STAR filename.
+  --data     Data table from star file to be used (Default: data_particles).
+  --res_lb   Label used for storing the result (e.g. rlnAngleTilt, rlnDefocusU...). If the label is not present in input file, it will be created. Default: rlnResult
+  --exp      Expression to be evaluated. Enclose in double quotes!!! (e.g. "(rlnDefocusU - rlnDefocusV)/2")
+  --sel_exp  Expression used for selection of particles on which the --exp will be evaluated. Enclose in double quotes!!!  (e.g. "(rlnDefocusU-1500)<20000"), Default empty => all particles
+  --def_val  Default value of non-calculated results when --rel_lb is not present in --i. Default: 0.0"
+```
+Example 1: Add 15 deg to rlnAngleTilt.
+```
+math_exp_star.py --i input.star --o output.star --lb_res rlnAngleTilt --exp "rlnAngleTilt+15"
+```
+Example 2: Calculate the astigmatism and store it under label rlnAstigmatism.
+```
+math_exp_star.py --i input.star --o output.star --lb_res rlnAstigmatism --exp "abs(rlnDefocusU-rlnDefocusV)"
+```
+Example 3: Multiply rlnOriginX by 2 if (rlnOriginX+rlnOriginY) is less than 50.
+```
+math_exp_star.py --i input.star --o output.star --lb_res rlnOriginX --exp "rlnOriginX*2" --sel_exp "(rlnOriginX+rlnOriginY)<50"
+```
+Example 4: Compute cosine of rlnAngleRot and store it under label rlnCosAngleRot.
+```
+math_exp_star.py --i input.star --o output.star --lb_res rlnCosAngleRot --exp "cos(deg2rad(rlnAngleRot))"
+```
+Example 5: Set rlnResult to 150 if (rlnOriginX-rlnOriginY)<rlnOriginZ. If the condition is not fulfilled the default value of rlnResult is 20.
+```
+math_exp_star.py --i input.star --o output.star --lb_res rlnResult --exp "150" --sel_exp "(rlnOriginX-rlnOriginY)<rlnOriginZ" --def_val 20
+```
+
+
 ## metadata.py
 Base library required by all scripts.
 
