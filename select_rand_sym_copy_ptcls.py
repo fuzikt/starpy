@@ -39,23 +39,25 @@ class RandSymStar:
         return particles
 
     def randParticles(self, particles):
-        i = 1
-        newParticles = []
-        symmCopies = []
-        firstRound = 1
-        # read in symmetry copies of particle
-        while len(particles) > 0:
-            symmCopies.append(particles.pop(0))
-            if len(particles) != 0:
-                while symmCopies[0].rlnImageName == particles[0].rlnImageName:
-                    symmCopies.append(particles.pop(0))
-                    if len(particles) == 0: break
-            if firstRound == 1:
-                print("Detected " + str(len(symmCopies)) + "-fold symmetry.")
-                firstRound = 0
-            newParticles.append(random.choice(list(symmCopies)))
-            symmCopies = []
-        print("Selected " + str(len(newParticles)) + " random particles from their symmetry copies.")
+        # Group particles by image name in a dictionary
+        particle_groups = {}
+        for particle in particles:
+            img_name = particle.rlnImageName
+            if img_name not in particle_groups:
+                particle_groups[img_name] = []
+            particle_groups[img_name].append(particle)
+
+        # Get symmetry fold from first group
+        first_group = next(iter(particle_groups.values()))
+        sym_fold = len(first_group)
+        print(f"Detected {sym_fold}-fold symmetry.")
+
+        newParticles = [
+            random.choice(group)
+            for group in particle_groups.values()
+        ]
+
+        print(f"Selected {len(newParticles)} random particles from their symmetry copies.")
         return newParticles
 
     def main(self):
