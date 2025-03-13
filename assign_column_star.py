@@ -6,7 +6,7 @@ from metadata import MetaData
 from metadata import LABELS
 import argparse
 from argparse import RawTextHelpFormatter
-
+import time
 
 class AssignLabelStar:
     def define_parser(self):
@@ -55,22 +55,25 @@ class AssignLabelStar:
         return particles
 
     def assign_column(self, particles1, particles2, col_lb, comp_lb):
-        outParticles = []
+        lookup = {
+            getattr(p, comp_lb): getattr(p, col_lb)
+            for p in particles2
+        }
 
         for particle in particles1:
-            for comp_particle in particles2:
-                if getattr(particle, comp_lb) == getattr(comp_particle, comp_lb):
-                    setattr(particle, col_lb, getattr(comp_particle, col_lb))
-                    break
-            outParticles.append(particle)
-        return outParticles
+            key = getattr(particle, comp_lb)
+            if key in lookup:
+                setattr(particle, col_lb, lookup[key])
+
+        return particles1
 
     def main(self):
         self.define_parser()
         args = self.parser.parse_args()
         self.validate(args)
+        start_total = time.time()
 
-        print("Selecting particles from star file...")
+        print("Reading particles from star file...")
 
         md1 = MetaData(args.i1)
         md2 = MetaData(args.i2)
@@ -115,7 +118,7 @@ class AssignLabelStar:
         print("%s particles were processed..." % str((len(particles1))))
 
         mdOut.write(args.o)
-
+        print(f"Total execution time: {time.time() - start_total:.2f} seconds")
         print("New star file %s created. Have fun!" % args.o)
 
 
