@@ -12,8 +12,8 @@ class RandSymStar:
         self.parser = argparse.ArgumentParser(
             description="Select random orientation from symmetry expanded star files. One orientation per particle.")
         add = self.parser.add_argument
-        add('--i', help="Input STAR filename with particles.")
-        add('--o', help="Output STAR filename.")
+        add('--i', default="STDIN", help="Input STAR filename (Default: STDIN).")
+        add('--o', default="STDOUT", help="Output STAR filename (Default: STDOUT).")
 
     def usage(self):
         self.parser.print_help()
@@ -25,12 +25,16 @@ class RandSymStar:
         sys.exit(2)
 
     def validate(self, args):
-        if len(sys.argv) == 1:
-            self.error("No input file given.")
-
-        if not os.path.exists(args.i):
+        if not os.path.exists(args.i) and not args.i == "STDIN":
             self.error("Input file '%s' not found."
                        % args.i)
+
+        self.args = args
+
+    def mprint(self, message):
+        # muted print if the output is STDOUT
+        if self.args.o != "STDOUT":
+            print(message)
 
     def get_particles(self, md):
         particles = []
@@ -57,7 +61,7 @@ class RandSymStar:
             for group in particle_groups.values()
         ]
 
-        print(f"Selected {len(newParticles)} random particles from their symmetry copies.")
+        self.mprint(f"Selected {len(newParticles)} random particles from their symmetry copies.")
         return newParticles
 
     def main(self):
@@ -70,12 +74,13 @@ class RandSymStar:
 
         new_particles = []
 
-        print("Reading in input star file.....")
+        self.mprint("Reading in input star file.....")
 
         particles = self.get_particles(md)
 
-        print("Total %s particles in input star file. \nSelecting random particles from their symmetry copies." % str(
-            len(particles)))
+        self.mprint(
+            "Total %s particles in input star file. \nSelecting random particles from their symmetry copies." % str(
+                len(particles)))
 
         new_particles.extend(self.randParticles(particles))
 
@@ -93,7 +98,7 @@ class RandSymStar:
 
         mdOut.write(args.o)
 
-        print("New star file %s created. Have fun!" % args.o)
+        self.mprint("New star file %s created. Have fun!" % args.o)
 
 
 if __name__ == "__main__":

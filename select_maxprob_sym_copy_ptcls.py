@@ -6,13 +6,14 @@ from metadata import MetaData
 import argparse
 import time
 
+
 class selMaxProbSymStar:
     def define_parser(self):
         self.parser = argparse.ArgumentParser(
             description="Select one orientation per particle from symmetry expanded star files according to the greatest value of rlnMaxValueProbDistribution.")
         add = self.parser.add_argument
-        add('--i', help="Input STAR filename with particles.")
-        add('--o', help="Output STAR filename.")
+        add('--i', default="STDIN", help="Input STAR filename (Default: STDIN).")
+        add('--o', default="STDOUT", help="Output STAR filename (Default: STDOUT).")
         add('--lb', type=str, default="rlnImageName",
             help="Label used for comparison considering that the record is a sym copy. (default: rlnImageName)")
 
@@ -26,12 +27,16 @@ class selMaxProbSymStar:
         sys.exit(2)
 
     def validate(self, args):
-        if len(sys.argv) == 1:
-            self.error("No input file given.")
-
-        if not os.path.exists(args.i):
+        if not os.path.exists(args.i) and not args.i == "STDIN":
             self.error("Input file '%s' not found."
                        % args.i)
+
+        self.args = args
+
+    def mprint(self, message):
+        # muted print if the output is STDOUT
+        if self.args.o != "STDOUT":
+            print(message)
 
     def get_particles(self, md):
         particles = []
@@ -62,7 +67,7 @@ class selMaxProbSymStar:
             maxParticle = max(group, key=lambda p: p.rlnMaxValueProbDistribution)
             newParticles.append(maxParticle)
 
-        print(f"Selected {len(newParticles)} particles from the original star file.")
+        self.mprint(f"Selected {len(newParticles)} particles from the original star file.")
         return newParticles
 
     def main(self):
@@ -76,12 +81,13 @@ class selMaxProbSymStar:
 
         new_particles = []
 
-        print("Reading in input star file.....")
+        self.mprint("Reading in input star file.....")
 
         particles = self.get_particles(md)
 
-        print("Total %s particles in input star file. \nSelecting one orientation per particle according to the greatest value of rlnMaxValueProbDistribution." % str(
-            len(particles)))
+        self.mprint(
+            "Total %s particles in input star file. \nSelecting one orientation per particle according to the greatest value of rlnMaxValueProbDistribution." % str(
+                len(particles)))
 
         new_particles.extend(self.selMostProbableParticles(particles, args.lb))
 
@@ -98,8 +104,8 @@ class selMaxProbSymStar:
         mdOut.addData(dataTableName, new_particles)
 
         mdOut.write(args.o)
-        print(f"Total execution time: {time.time() - start_total:.2f} seconds")
-        print("New star file %s created. Have fun!" % args.o)
+        self.mprint(f"Total execution time: {time.time() - start_total:.2f} seconds")
+        self.mprint("New star file %s created. Have fun!" % args.o)
 
 
 if __name__ == "__main__":

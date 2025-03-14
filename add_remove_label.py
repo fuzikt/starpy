@@ -14,8 +14,8 @@ class AddRemoveLabel:
             description="Adds or removes labels from star file.",
             formatter_class=RawTextHelpFormatter)
         add = self.parser.add_argument
-        add('--i', help="Input STAR filename.")
-        add('--o', help="Output STAR filename.")
+        add('--i', default="STDIN", help="Input STAR filename (Default: STDIN).")
+        add('--o', default="STDOUT", help="Output STAR filename (Default: STDOUT).")
         add('--add', action='store_true',
             help="Add new label to the star file.")
         add('--rm', action='store_true',
@@ -37,14 +37,11 @@ class AddRemoveLabel:
         sys.exit(2)
 
     def validate(self, args):
-        if len(sys.argv) == 1:
-            self.error("No input file given.")
-
-        if not os.path.exists(args.i):
+        if not os.path.exists(args.i) and not args.i == "STDIN":
             self.error("Input file '%s' not found." % args.i)
 
         if args.add and args.rm:
-            self.error("Use only one of the --add or --remove")
+            self.error("Use only one of the --add or --rm")
 
         if args.lb == "":
             self.error("Please specify the label (--lb) to be added or removed.")
@@ -56,18 +53,24 @@ class AddRemoveLabel:
             if lb not in LABELS:
                 self.error("Label %s not recognized as RELION label." % args.lb)
 
+        self.args = args
+
+    def mprint(self, message):
+        # muted print if the output is STDOUT
+        if self.args.o != "STDOUT":
+            print(message)
+
     def main(self):
         self.define_parser()
         args = self.parser.parse_args()
         self.validate(args)
 
-        print("Selecting particles from star file...")
+        self.mprint("Selecting particles from star file...")
 
         md = MetaData(args.i)
 
         if args.add:
             dataTable = args.data
-            #dic = {args.lb: args.val}
             lbs = args.lb.split(",")
             vals = args.val.split(",")
             dic = dict(map(lambda i, j: (i, j), lbs, vals))
@@ -78,7 +81,7 @@ class AddRemoveLabel:
 
         md.write(args.o)
 
-        print("New star file %s created. Have fun!" % args.o)
+        self.mprint("New star file %s created. Have fun!" % args.o)
 
 
 if __name__ == "__main__":

@@ -16,7 +16,7 @@ class PlotStar:
             description="Plots values of defined label(s) from STAR file.",
             formatter_class=RawTextHelpFormatter)
         add = self.parser.add_argument
-        add('--i', help="Input STAR filename. Multiple files allowed separated by comma or by space (then all must be enclosed in double quotes).")
+        add('--i', default="STDIN", help="Input STAR filename. Multiple files allowed separated by comma or by space (then all must be enclosed in double quotes) (Default: STDIN).")
         add('--data', type=str, default="data_particles",
             help="Data table from star file to be used (Default: data_particles).")
         add('--lbx', type=str, default="",
@@ -48,9 +48,6 @@ class PlotStar:
         sys.exit(2)
 
     def validate(self, args):
-        if len(sys.argv) == 1:
-            self.error("No input file given.")
-
         if " " in args.i:
             inputFiles = str(args.i).replace('\n', ' ').split(" ")
         elif "," in args.i:
@@ -59,7 +56,7 @@ class PlotStar:
             inputFiles = [str(args.i)]
 
         for inputFile in inputFiles:
-            if not os.path.exists(inputFile):
+            if not os.path.exists(inputFile) and not inputFile == "STDIN":
                 self.error("Input file '%s' not found."
                            % inputFile)
 

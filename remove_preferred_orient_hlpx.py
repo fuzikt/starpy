@@ -15,8 +15,8 @@ class RemovePrefOrientStar:
             description="Remove particles with overrepresented orientations by sorting them into HealPix based orientation bins.\n Average count of particles per orientation bin is calculated.\n Then the count of particles that are n-times SD over the average is modified\n by retaining the particles with the highest rlnMaxValueProbDistribution.",
             formatter_class=RawTextHelpFormatter)
         add = self.parser.add_argument
-        add('--i', help="Input STAR filename with particles and orientations.")
-        add('--o', type=str, default="output.star", help="Output star file. Default: output.star")
+        add('--i', default="STDIN", help="Input STAR filename (Default: STDIN).")
+        add('--o', default="STDOUT", help="Output STAR filename (Default: STDOUT).")
         add('--hlpx_order', type=int, default=4,
             help="HealPix sampling order used for sorting particles into orientation bins (2->15deg,3->7.5deg, 4->3.75). Default: 4 (3.75deg)")
         add('--sd', type=float, default=3,
@@ -32,12 +32,16 @@ class RemovePrefOrientStar:
         sys.exit(2)
 
     def validate(self, args):
-        if len(sys.argv) == 1:
-            self.error("No input file given.")
-
-        if not os.path.exists(args.i):
+        if not os.path.exists(args.i) and not args.i == "STDIN":
             self.error("Input file '%s' not found."
                        % args.i)
+
+        self.args = args
+
+    def mprint(self, message):
+        # muted print if the output is STDOUT
+        if self.args.o != "STDOUT":
+            print(message)
 
     def get_particles(self, md):
 
@@ -71,8 +75,8 @@ class RemovePrefOrientStar:
         NSIDE = hlpxOrder ** 2
 
         hlpx_orient_bins = [[] for _ in range(hp.nside2npix(NSIDE))]
-        print("Sorting particles into %s HealPix bins at uniform angular sampling of %.2f." % (
-        len(hlpx_orient_bins), math.degrees(hp.max_pixrad(NSIDE))))
+        self.mprint("Sorting particles into %s HealPix bins at uniform angular sampling of %.2f." % (
+            len(hlpx_orient_bins), math.degrees(hp.max_pixrad(NSIDE))))
 
         for particle in particles:
             hppix = hp.ang2pix(NSIDE, math.radians(particle.rlnAngleTilt), math.radians(particle.rlnAngleRot))
@@ -93,9 +97,9 @@ class RemovePrefOrientStar:
 
         averageParticleCount = particleSum / n
 
-        print("Max count of particles per orientation bin: %s" % maxCount)
-        print("Min count of particles per orientation bin: %s" % minCount)
-        print("Average count of particles per orientation bin %0.2f" % averageParticleCount)
+        self.mprint("Max count of particles per orientation bin: %s" % maxCount)
+        self.mprint("Min count of particles per orientation bin: %s" % minCount)
+        self.mprint("Average count of particles per orientation bin %0.2f" % averageParticleCount)
 
         sigmaSum = 0.0
 
@@ -105,15 +109,17 @@ class RemovePrefOrientStar:
 
         particleSdev = math.sqrt(sigmaSum / (n - 1))
 
-        print("SD of the average count per bin: %.02f" % particleSdev)
+        self.mprint("SD of the average count per bin: %.02f" % particleSdev)
 
         orientationCountTreshold = averageParticleCount + xSD * particleSdev
 
-        print("Including max %s particles per orientation bin in the final star file." % int(orientationCountTreshold))
+        self.mprint(
+            "Including max %s particles per orientation bin in the final star file." % int(orientationCountTreshold))
 
         newParticleSet = []
 
-        print("Removing overrepresented orientations.... Preserving those by highest rlnMaxValueProbDistribution...")
+        self.mprint(
+            "Removing overrepresented orientations.... Preserving those by highest rlnMaxValueProbDistribution...")
 
         progress_step = int(len(hlpx_orient_bins) / 20)
         i = 0
@@ -128,13 +134,14 @@ class RemovePrefOrientStar:
                         self.reduceParticlesCount(hlpx_bin, int(orientationCountTreshold)))
 
             # a simple progress bar
-            sys.stdout.write('\r')
-            progress = int(i / progress_step)
-            sys.stdout.write("[%-20s] %d%%" % ('=' * progress, 5 * progress))
-            sys.stdout.flush()
-            i += 1
-
-        sys.stdout.write('\r\n')
+            if self.args.o != "STDOUT":
+                sys.stdout.write('\r')
+                progress = int(i / progress_step)
+                sys.stdout.write("[%-20s] %d%%" % ('=' * progress, 5 * progress))
+                sys.stdout.flush()
+                i += 1
+        if self.args.o != "STDOUT":
+            sys.stdout.write('\r\n')
 
         return newParticleSet
 
@@ -147,7 +154,7 @@ class RemovePrefOrientStar:
         md = MetaData(args.i)
 
         particles = self.get_particles(md)
-        print("%s particles found in star file." % len(particles))
+        self.mprint("%s particles found in star file." % len(particles))
 
         new_particles = []
 
@@ -166,10 +173,10 @@ class RemovePrefOrientStar:
         mdOut.addData(dataTableName, new_particles)
         mdOut.write(args.o)
 
-        print("%s particles written." % len(new_particles))
-        print("File %s was created..." % args.o)
+        self.mprint("%s particles written." % len(new_particles))
+        self.mprint("File %s was created..." % args.o)
 
-        print("Finished. Have fun!")
+        self.mprint("Finished. Have fun!")
 
 
 if __name__ == "__main__":

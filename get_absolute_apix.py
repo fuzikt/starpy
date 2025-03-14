@@ -14,7 +14,7 @@ class AbsoluteApixStar:
             description="Calculates the absolute apix for the optics groups according to https://www3.mrc-lmb.cam.ac.uk/relion/index.php/Pixel_size_issues",
             formatter_class=RawTextHelpFormatter)
         add = self.parser.add_argument
-        add('--i', help="Input STAR filename.")
+        add('--i', default="STDIN", help="Input STAR filename (Default: STDIN).")
 
 
     def usage(self):
@@ -27,10 +27,7 @@ class AbsoluteApixStar:
         sys.exit(2)
 
     def validate(self, args):
-        if len(sys.argv) == 1:
-            self.error("No input file given.")
-
-        if not os.path.exists(args.i):
+        if not os.path.exists(args.i) and not args.i == "STDIN":
             self.error("Input file '%s' not found."
                        % args.i)
 

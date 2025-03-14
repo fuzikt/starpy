@@ -6,13 +6,13 @@ from metadata import MetaData
 import argparse
 
 
-class RenameStar:
+class AddBeamTiltClass:
     def define_parser(self):
         self.parser = argparse.ArgumentParser(
             description="Add beamtilt class to the particles.")
         add = self.parser.add_argument
-        add('--i', help="Input STAR filename.")
-        add('--o', help="Output STAR filename.")
+        add('--i', default="STDIN", help="Input STAR filename (Default: STDIN).")
+        add('--o', default="STDOUT", help="Output STAR filename (Default: STDOUT).")
 
     def usage(self):
         self.parser.print_help()
@@ -27,9 +27,15 @@ class RenameStar:
         if len(sys.argv) == 1:
             self.error("No input file given.")
 
-        if not os.path.exists(args.i):
+        if not os.path.exists(args.i) and not args.i == "STDIN":
             self.error("Input file '%s' not found."
                        % args.i)
+        self.args = args
+
+    def mprint(self, message):
+        # muted print if the output is STDOUT
+        if self.args.o != "STDOUT":
+            print(message)
 
     def get_particles(self, md):
         particles = []
@@ -54,11 +60,11 @@ class RenameStar:
         md = MetaData(args.i)
         md.addLabels("data_particles", "rlnBeamTiltClass")
 
-        print("Reading in input star file.....")
+        self.mprint("Reading in input star file.....")
 
         particles = self.get_particles(md)
 
-        print("Total %s particles in input star file. \nAdding rlnBeamTiltClass." % str(len(particles)))
+        self.mprint("Total %s particles in input star file. \nAdding rlnBeamTiltClass." % str(len(particles)))
 
         self.addBeamTiltClass(particles)
 
@@ -68,8 +74,8 @@ class RenameStar:
         mdOut.addData("data_", particles)
         mdOut.write(args.o)
 
-        print("New star file %s created. Have fun!" % args.o)
+        self.mprint("New star file %s created. Have fun!" % args.o)
 
 
 if __name__ == "__main__":
-    RenameStar().main()
+    AddBeamTiltClass().main()

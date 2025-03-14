@@ -155,10 +155,10 @@ class xFlipParticlesStar:
             description="Perform transformation of euler angles to produce X-flipped reconstruction (same as the result of --invert_hand in relion_image_handler on a map).",
             formatter_class=RawTextHelpFormatter)
         add = self.parser.add_argument
-        add('--i', help="Input STAR filename with particles.")
-        add('--o', help="Output STAR filename.")
+        add('--i', default="STDIN", help="Input STAR filename (Default: STDIN).")
+        add('--o', default="STDOUT", help="Output STAR filename (Default: STDOUT).")
         add('--cls_nr', type=str, default="-1",
-            help="Comma-separated list of class numbers to be flipped.. (Default: -1 => off)")
+            help="Comma-separated list of class numbers to be flipped (Default: -1 => off).")
 
     def usage(self):
         self.parser.print_help()
@@ -170,10 +170,7 @@ class xFlipParticlesStar:
         sys.exit(2)
 
     def validate(self, args):
-        if len(sys.argv) == 1:
-            self.error("No input file given.")
-
-        if not os.path.exists(args.i):
+        if not os.path.exists(args.i) and not args.i == "STDIN":
             self.error("Input file '%s' not found."
                        % args.i)
         # Convert comma-separated string to list of integers
@@ -181,6 +178,13 @@ class xFlipParticlesStar:
             self.classNumbers = [int(x.strip()) for x in args.cls_nr.split(',')]
         except ValueError:
             self.error("Class numbers must be comma-separated integers")
+
+        self.args = args
+
+    def mprint(self, message):
+        # muted print if the output is STDOUT
+        if self.args.o != "STDOUT":
+            print(message)
 
     def get_particles(self, md):
         particles = []
@@ -203,13 +207,13 @@ class xFlipParticlesStar:
                 rotNew, tiltNew, psiNew = euler_from_matrix(m_rot)
                 particle.rlnAngleRot = degrees(rotNew)
                 particle.rlnAngleTilt = degrees(tiltNew)
-                particle.rlnAnglePsi =  degrees(psiNew)-180
+                particle.rlnAnglePsi = degrees(psiNew) - 180
                 particle.rlnOriginYAngst = -particle.rlnOriginYAngst
                 flippedParticleCounter += 1
 
             newParticles.append(particle)
-        print("Processed " + str(len(newParticles)) + " particles.")
-        print("Flipped " + str(flippedParticleCounter) + " particles.")
+        self.mprint("Processed " + str(len(newParticles)) + " particles.")
+        self.mprint("Flipped " + str(flippedParticleCounter) + " particles.")
 
         return newParticles
 
@@ -218,7 +222,7 @@ class xFlipParticlesStar:
         args = self.parser.parse_args()
         self.validate(args)
 
-        print("X-flipping particles from star file...")
+        self.mprint("X-flipping particles from star file...")
 
         md = MetaData(args.i)
 
@@ -242,7 +246,7 @@ class xFlipParticlesStar:
 
         mdOut.write(args.o)
 
-        print("New star file %s created. Have fun!" % args.o)
+        self.mprint("New star file %s created. Have fun!" % args.o)
 
 
 if __name__ == "__main__":

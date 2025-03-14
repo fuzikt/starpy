@@ -11,20 +11,14 @@ class SelOrientStar:
         self.parser = argparse.ArgumentParser(
             description="Limit orientations of particles in star file. Select particles that are in the defined range of rlnTilt, rlnRot, rlnPsi.")
         add = self.parser.add_argument
-        add('--i', help="Input STAR filename with particles.")
-        add('--o', help="Output STAR filename.")
-        add('--rot_min', type=float, default=-180,
-            help="Minimum rot angle.")
-        add('--rot_max', type=float, default=180,
-            help="Minimum rot angle.")
-        add('--tilt_min', type=float, default=0,
-            help="Minimum tilt angle.")
-        add('--tilt_max', type=float, default=180,
-            help="Minimum tilt angle.")
-        add('--psi_min', type=float, default=-180,
-            help="Minimum psi angle.")
-        add('--psi_max', type=float, default=180,
-            help="Minimum psi angle.")
+        add('--i', default="STDIN", help="Input STAR filename (Default: STDIN).")
+        add('--o', default="STDOUT", help="Output STAR filename (Default: STDOUT).")
+        add('--rot_min', type=float, default=-180, help="Minimum rot angle")
+        add('--rot_max', type=float, default=180, help="Maximum rot angle")
+        add('--tilt_min', type=float, default=0, help="Minimum tilt angle")
+        add('--tilt_max', type=float, default=180, help="Maximum tilt angle")
+        add('--psi_min', type=float, default=-180, help="Minimum psi angle")
+        add('--psi_max', type=float, default=180, help="Maximum psi angle")
 
     def usage(self):
         self.parser.print_help()
@@ -36,12 +30,16 @@ class SelOrientStar:
         sys.exit(2)
 
     def validate(self, args):
-        if len(sys.argv) == 1:
-            self.error("Error: No input file given.")
-
-        if not os.path.exists(args.i):
+        if not os.path.exists(args.i) and not args.i == "STDIN":
             self.error("Error: Input file '%s' not found."
                        % args.i)
+
+        self.args = args
+
+    def mprint(self, message):
+        # muted print if the output is STDOUT
+        if self.args.o != "STDOUT":
+            print(message)
 
     def get_particles(self, md):
         particles = []
@@ -57,7 +55,7 @@ class SelOrientStar:
                     selectedParticle.rlnAngleTilt >= tiltMin and selectedParticle.rlnAngleTilt <= tiltMax) and (
                     selectedParticle.rlnAnglePsi >= psiMin and selectedParticle.rlnAnglePsi <= psiMax):
                 newParticles.append(selectedParticle)
-        print(str(len(newParticles)) + " particles included in selection.")
+        self.mprint(str(len(newParticles)) + " particles included in selection.")
         return newParticles
 
     def main(self):
@@ -66,7 +64,7 @@ class SelOrientStar:
 
         self.validate(args)
 
-        print("Selecting particles from star file...")
+        self.mprint("Selecting particles from star file...")
 
         md = MetaData(args.i)
 
@@ -92,7 +90,7 @@ class SelOrientStar:
 
         mdOut.write(args.o)
 
-        print("New star file %s created. Have fun!" % args.o)
+        self.mprint("New star file %s created. Have fun!" % args.o)
 
 
 if __name__ == "__main__":

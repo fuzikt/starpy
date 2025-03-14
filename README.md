@@ -3,9 +3,12 @@ Python scripts for easy RELION STAR file manipulation. Base library file metadat
 
 **!!! Scripts are now RELION 3.1+ compatible !!!**
 
+**Now many of the scripts supports STDIN/STDOUT for input/output.**
+
 Backward compatible with RELION <=3.0 format star files! 
 
 ## Table of Contents
+- [General usage](#general-usage)
 - [add_beamtiltclass_star.py](#add_beamtiltclass_starpy)
 - [add_remove_label.py](#add_remove_labelpy)
 - [analyze_orientation_distances_star.py](#analyze_orientation_distances_starpy)
@@ -48,19 +51,44 @@ Backward compatible with RELION <=3.0 format star files!
 - [xflip_particles_star.py](#xflip_particles_starpy)
 - [yflip_particles_star.py](#yflip_particles_starpy)
 
+## General usage
+All scripts are designed to be used in the command line. To show the help of the script use the **--h** parameter.
+
+The input and output files are defined by the **--i** and **--o** parameters. 
+
+In many scripts (see the description below) there is possibility to pass **STDIN** as input and **STDOUT** as output. This makes it possible to chain the result of one script to another using the pipe |.
+
+If the --i parameter is not defined, the script will read from the standard input (STDIN).
+If the --o parameter is not defined, the script will write to the standard output (STDOUT).
+
+Examples 1: Plot the astigmatism calculated by math_epx_star.py of particles from input.star using plot_star.py
+```
+math_exp_star.py --i input.star --exp "abs(rlnDefocusU-rlnDefocusV)" --res_lb rlnResult | plot_star.py --lby rlnResult --hist_bin 20
+```
+
+Example 2: Y-flip the particle from class2, then rotate them by r:15, t:20, p:150, remove preferred orientations and plot the orientations.
+```
+yflip_particles_star.py --i input.star --cls_nr 2 | rotate_particles_star.py --rot 15 --tilt 20 --psi 150 | remove_preferred_orient_hlpx.py | heatmap_orient_star.py --show
+```
+
+Example 3: Select particles from input.star where the difference between rlnAngleRot and rlnAngleTilt is less than 5 and store it in output.star.
+```
+math_exp_star.py --i input.star --exp  "1" --sel_exp "abs(rlnAngleRot-rlnAngleTilt)<5" --res_lb rlnResult  --def_val 0 | select_values_star.py --o output.star --lb rlnResult --op ">" --val 0
+```
+
 ## add_beamtiltclass_star.py
 ! only Relion <=3.0 format star files !
 Add beamtilt class to the particles. Script adds rlnBeamTiltClass extracted from the micrograph name (in FoilHoleXXXX.mrc FEI format).
 ```
-  --i    Input STAR filename.
-  --o    Output STAR filename.
+  --i    Input STAR filename (Default: STDIN).
+  --o    Output STAR filename (Default: STDOUT).
 ```
 
 ## add_remove_label.py
 Adds or removes labels from star file.
 ```
---i         Input STAR filename.
---o         Output STAR filename.
+--i         Input STAR filename (Default: STDIN).
+--o         Output STAR filename (Default: STDOUT).
 --add       Add new label to the star file.
 --rm        Remove label from the star file.
 --lb        Label to be added or removed. Use comma separated label values to add or remove multiple labels. Default: None
@@ -86,17 +114,17 @@ add_remove_label.py --i input.star --o output.star --lb rlnCoordinateX,rlnCoordi
 ## analyze_orientation_distances_star.py
 Calculates the spatial distance and angular distance between corresponding particles in --i1 and --i2. Output contains the particles from --i1 with additional columns for the spatial (rlnSpatDist), angular distances (rlnAngDist), rlnOriginXAngstDiff, rlnOriginYAngstDiff, rlnAngleRotDiff , rlnAngleTiltDiff, and rlnAnglePsiDiff.
 ```
-  --i1    Input1 STAR filename
-  --i2    Input2 STAR filename
-  --o     Output STAR filename
+  --i1    Input1 STAR filename (Default: STDIN).
+  --i2    Input2 STAR filename (Default: STDIN).e
+  --o     Output STAR filename (Default: STDOUT).
 ```
 
 ## assign_column_star.py
 Add label (col_lb) to Input1 and assigns values to it from Input2 where the label (comp_lb) of Input2 matches Input1
 ```        
-  --i1        Input1 STAR filename.
-  --i2        Input2 STAR filename.
-  --o         Output STAR filename.
+  --i1        Input1 STAR filename (Default: STDIN).
+  --i2        Input2 STAR filename (Default: STDIN)..
+  --o         Output STAR filename (Default: STDOUT).
   --data  Data table from star file to be used, Default: data_particles
   --col_lb    Label of the new column assigned to Input1; Default: rlnDefocusU
   --comp_lb   Compare label used for Input1 and Input2 for value assignment. Default:rlnMicrographName
@@ -213,15 +241,15 @@ conda install matplotlib
 ## extract_particles_coords_star.py
 Remove other columns than particle coords from star file.
 ```
-  --i    Input STAR filename with particles.
-  --o    Output STAR filename. 
+  --i    Input STAR filename (Default: STDIN).
+  --o    Output STAR filename (Default: STDOUT). 
 ```
 
 ## filter_astigmatism_star.py
 Limit astigmatism of particles or micrographs in star file.
 ```
-  --i      Input STAR filename with particles.
-  --o      Output STAR filename.
+  --i      Input STAR filename (Default: STDIN).
+  --o      Output STAR filename (Default: STDOUT).
   --astg   Max astigmatism in Angstroms. Default: 1000
   --res    Minimum resolution in Angstroms. Default: 0 (off)
   --data   Data table from star file to be used (Default: data_particles).
@@ -242,7 +270,7 @@ Flip (mirror) X/Y coordinates of particles in particles star file or coordinates
 ## get_absolute_apix.py
 Calculates the absolute apix for the optics groups according to https://www3.mrc-lmb.cam.ac.uk/relion/index.php/Pixel_size_issues
 ```
-  --i         Input STAR filename 
+  --i         Input STAR filename (Default: STDIN). 
 ```
 
 ## heatmap_orient_star.py
@@ -253,7 +281,7 @@ Requires:
 - Numpy
 - healpy
 ```
-  --i               Input STAR filename with particles and orientations.
+  --i               Input STAR filename with particles and orientations (Default: STDIN).
   --o               Output files prefix. Default: heatmap_orient
   --show            Only shows the resulting heatmap. Does not store any output file.
   --format          Output format. Available formats: png, svg, jpg, tif. Default: png
@@ -277,9 +305,9 @@ Modify star file to be compatible with helix refinement
 ## join_star.py
 Join two star files. Joining options: UNION, INTERSECT, EXCEPT. 
 ```
-  --i1    Input1 STAR filename with particles.
-  --i2    Input2 STAR filename with particles.
-  --o     Output STAR filename.
+  --i1    Input1 STAR filename (Default: STDIN).
+  --i2    Input2 STAR filename (Default: STDIN).
+  --o     Output STAR filename (Default: STDOUT).
   --data  Data table from star file to be used, Default: data_particles
   --lb    Label used for intersect/except joining. e.g. rlnAngleTilt, rlnDefocusU...; Default: rlnMicrographName
   --op    Operator used for comparison. Allowed: "union", "intersect", "except"
@@ -312,8 +340,8 @@ Boxes lying outside micrograph boundaries might be discarded.
 ## math_star.py
 Perform basic math operations on star file values.
 ```
-  --i         Input STAR filename with particles.
-  --o         Output STAR filename.
+  --i         Input STAR filename (Default: STDIN).
+  --o         Output STAR filename (Default: STDOUT).
   --data  Data table from star file to be used, Default: data_particles
   --lb        Label used for math operation. e.g. rlnAngleTilt, rlnDefocusU...
   --op        Operator used for comparison. Allowed: "+", "-", "*", "/","^","abs","=","mod","remainder". Use double quotes!!!
@@ -340,11 +368,14 @@ math_star.py --i input.star --o output.star --lb rlnAnlgeRot --op "remainder" --
 ## math_exp_star.py
 Performs complex math operations on star file values defined by user provided expression.
 
+Requires:
+- cexprtk
+
 All the supported math expressions can be found at: http://www.partow.net/programming/exprtk/index.html
 
 ```
-  --i        Input STAR filename with particles.
-  --o        Output STAR filename.
+  --i        Input STAR filename (Default: STDIN).
+  --o        Output STAR filename (Default: STDOUT).
   --data     Data table from star file to be used (Default: data_particles).
   --res_lb   Label used for storing the result (e.g. rlnAngleTilt, rlnDefocusU...). If the label is not present in input file, it will be created. Default: rlnResult
   --exp      Expression to be evaluated. Enclose in double quotes!!! (e.g. "(rlnDefocusU - rlnDefocusV)/2")
@@ -379,8 +410,8 @@ Base library required by all scripts.
 ## micrograph_star_from_particles_star.py
 Create a micrographs star containing unique micrograph names file form input particles star file.
 ```
-  --i    Input STAR filename.
-  --o    Output STAR filename.
+  --i    Input STAR filename (Default: STDIN).
+  --o    Output STAR filename (Default: STDOUT).
 ```
 
 ## particles_star_to_box.py
@@ -402,7 +433,7 @@ coords star files.
 ## plot_star.py
 Plots values of defined label(s) from STAR file.
 ```        
-  --i              Input STAR filename. Multiple files allowed separated by comma or by space (then all must be enclosed in double quotes).
+  --i              Input STAR filename. Multiple files allowed separated by comma or by space (then all must be enclosed in double quotes) (Default: STDIN).
   --data           Data table from star file to be used (Default: data_particles).
   --lbx            Label used for X axis (Default: None). If not defined, X axis is per record in the data table (e.g. per particle)
   --lby            Labels used for plot (Y-axis values). Accepts multiple labels to plot (separated by comma, or by space (then all must be enclosed in double quotes)).
@@ -481,16 +512,16 @@ Converts particle star from RELION 3.1 format to RELION 3.0 format.
 !!! DEPRECATED USE: remove_preferred_orient_hlpx.py, which gives better results !!!
 Remove particles with overrepresented orientations. Average count of particles at each orientation is calculated. Then the count of particles that are n-times SD over the average is modified by retaining the particles with the highest rlnMaxValueProbDistribution.
 ```
-  --i      Input STAR filename with particles and orientations.
-  --o      Output star file. Default: output.star
+  --i      Input STAR filename (Default: STDIN).
+  --o      Output STAR filename (Default: STDOUT).
   --sd     This many times SD above the average count will be representations kept. Default: 3
 ```
 
 ## remove_preferred_orient_hlpx.py
 Remove particles with overrepresented orientations by sorting them into HealPix based orientation bins. Average count of particles per orientation bin is calculated. Then the count of particles that are n-times SD over the average is modified by retaining the particles with the highest rlnMaxValueProbDistribution.
 ```
-  --i           Input STAR filename with particles and orientations.
-  --o           Output star file. Default: output.star")
+  --i           Input STAR filename (Default: STDIN).
+  --o           Output STAR filename (Default: STDOUT).
   --hlpx_order  HealPix sampling order used for sorting particles into orientation bins (2->15deg,3->7.5deg, 4->3.75). Default: 4 (3.75deg)
   --sd          This many times SD above the average count will be representations kept. Default: 3
 ```
@@ -520,8 +551,8 @@ rotate_particles_star.py --i input.star --o output.star --rot 15 --tilt 20 --psi
 Select one orientation per particle from 3D classified symmetry expanded star files according to the greatest value of rlnMaxValueProbDistribution.
 
 ```
-  --i    Input STAR filename with particles.
-  --o    Output STAR filename. 
+  --i    Input STAR filename (Default: STDIN).
+  --o    Output STAR filename (Default: STDOUT). 
 ```
 Example: You created a C5 symmetry expanded star file that was 3D classified into 5 classes. You select the best looking class, which should in theory contain 1/5 of the particles from the symmetry expanded star. Because the classification is not perfect there are multiple redundant (symmetry) copies of some of the particles present in the selected class. To filter out only a single copy (unique) of every particle you can use this script, which will chose the particle with the greatest value of rlnMaxValueProbDistribution.
 ```
@@ -532,8 +563,8 @@ select_maxprob_sym_copy_ptcls.py --i selected_class.star --o selected_class_uniq
 Limit orientations of particles in STAR file. Select particles that are in the defined range of ROT, TILT, PSI angle.
 
 ```
-  --i           Input STAR filename with particles.
-  --o           Output STAR filename.
+  --i           Input STAR filename (Default: STDIN).
+  --o           Output STAR filename (Default: STDOUT).
   --rot_min     Minimum rot angle.
   --rot_max     Minimum rot angle.
   --tilt_min    Minimum tilt angle.
@@ -545,15 +576,15 @@ Limit orientations of particles in STAR file. Select particles that are in the d
 ## select_rand_sym_copy_ptcls.py
 Select random orientation from symmetry expanded star files. One orientation per particle.
 ```
-  --i    Input STAR filename with particles.
-  --o    Output STAR filename. 
+  --i    Input STAR filename (Default: STDIN).
+  --o    Output STAR filename (Default: STDOUT). 
 ```
 
 ## select_values_star.py
 Select particles complying with selection rule on specified label.
 ``` 
-  --i        Input STAR filename with particles.
-  --o        Output STAR filename.
+  --i        Input STAR filename (Default: STDIN).
+  --o        Output STAR filename (Default: STDOUT).
   --data  Data table from star file to be used, Default: data_particles 
   --lb       Label used for selection. e.g. rlnAngleTilt, rlnDefocusU...
   --op       Operator used for comparison. Allowed: "=", "!=", ">=", "<=", "<". Use double quotes!!!
@@ -620,7 +651,7 @@ Split MRC stacks listed in STAR file into separate files, and writes a new STAR 
 ## stats_star.py
 Print basic statistics on numerical labels present in STAR file
 ```
-  --i     Input STAR filename.
+  --i     Input STAR filename (Default: STDIN).
   --lb    Labels used for statistics (Default: ALL). Multiple labels can be used enclosed in double quotes. (e.g. "rlnAngleTilt rlnAngleRot")
   --data  Data table from star file to be used, Default: data_particles
 ```
@@ -652,15 +683,15 @@ Unbin particle coordinate star files.
 ## xflip_particles_star.py
 Performs transformation of euler angles to produce X-flipped reconstruction. The resulting map is the same as if "--invert_hand" is applied on the map in relion_image_handler.
 ```
-  --i       Input STAR filename with particles.
-  --o       Output STAR filename.
+  --i       Input STAR filename (Default: STDIN).
+  --o       Output STAR filename (Default: STDOUT).
   --cls_nr  Comma-separated list of class numbers to be flipped.. (Default: -1 => off) 
 ```
 
 ## yflip_particles_star.py
 Performs transformation of euler angles to produce Y-flipped reconstruction.
 ```
-  --i       Input STAR filename with particles.
-  --o       Output STAR filename.
+  --i       Input STAR filename (Default: STDIN).
+  --o       Output STAR filename (Default: STDOUT).
   --cls_nr  Comma-separated list of class numbers to be flipped.. (Default: -1 => off)
 ```

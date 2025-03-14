@@ -2,8 +2,6 @@
 
 import os
 import sys
-# from time import sleep
-
 from metadata import MetaData
 import argparse
 import math
@@ -16,8 +14,8 @@ class RemovePrefOrientStar:
             description="Remove particles with overrepresented orientations.\n Average count of particles at each orientation is calculated.\n Then the count of particles that are n-times SD over the average is modified\n by retaining the particles with the highest rlnMaxValueProbDistribution.",
             formatter_class=RawTextHelpFormatter)
         add = self.parser.add_argument
-        add('--i', help="Input STAR filename with particles and orientations.")
-        add('--o', type=str, default="output.star", help="Output star file. Default: output.star")
+        add('--i', default="STDIN", help="Input STAR filename (Default: STDIN).")
+        add('--o', default="STDOUT", help="Output STAR filename (Default: STDOUT).")
         add('--sd', type=float, default=3,
             help="This many times SD above the average count will be representations kept. Default: 3")
 
@@ -31,12 +29,15 @@ class RemovePrefOrientStar:
         sys.exit(2)
 
     def validate(self, args):
-        if len(sys.argv) == 1:
-            self.error("No input file given.")
+        if not os.path.exists(args.i) and not args.i == "STDIN":
+            self.error("Input file '%s' not found." % args.i)
 
-        if not os.path.exists(args.i):
-            self.error("Input file '%s' not found."
-                       % args.i)
+        self.args = args
+
+    def mprint(self, message):
+        # muted print if the output is STDOUT
+        if self.args.o != "STDOUT":
+            print(message)
 
     def get_particles(self, md):
 
@@ -95,11 +96,11 @@ class RemovePrefOrientStar:
 
         averageParticleCount = particleSum / n
 
-        print("Max count of particles per orientation %s" % maxCount)
+        self.mprint("Max count of particles per orientation %s" % maxCount)
 
-        print("Min count of particles per orientation %s" % minCount)
+        self.mprint("Min count of particles per orientation %s" % minCount)
 
-        print("Average count of particles per orientation %s" % averageParticleCount)
+        self.mprint("Average count of particles per orientation %s" % averageParticleCount)
 
         sigmaSum = 0.0
 
@@ -109,15 +110,16 @@ class RemovePrefOrientStar:
                     sigmaSum += (heatmap[i][j] - averageParticleCount) ** 2
         particleSdev = math.sqrt(sigmaSum / (n - 1))
 
-        print("SD of the average count %.03f" % particleSdev)
+        self.mprint("SD of the average count %.03f" % particleSdev)
 
         orientationCountTreshold = averageParticleCount + xSD * particleSdev
 
-        print("Including max %s particles per orientation in the final star file." % int(orientationCountTreshold))
+        self.mprint(
+            "Including max %s particles per orientation in the final star file." % int(orientationCountTreshold))
 
         newParticleSet = []
 
-        print("Removing overepresented orientations....")
+        self.mprint("Removing overepresented orientations....")
 
         for i in range(180):
             for j in range(360):
@@ -135,12 +137,14 @@ class RemovePrefOrientStar:
                             self.reduceParticlesCount(particlesForReduction, int(orientationCountTreshold)))
 
             # a simple progress bar
-            sys.stdout.write('\r')
-            progress = int(i / 9) + 1
-            sys.stdout.write("[%-20s] %d%%" % ('=' * progress, 5 * progress))
-            sys.stdout.flush()
-            # sleep(0.25)
-        sys.stdout.write('\r\n')
+            if self.args.o != "STDOUT":
+                sys.stdout.write('\r')
+                progress = int(i / 9) + 1
+                sys.stdout.write("[%-20s] %d%%" % ('=' * progress, 5 * progress))
+                sys.stdout.flush()
+                # sleep(0.25)
+        if self.args.o != "STDOUT":
+            sys.stdout.write('\r\n')
 
         return newParticleSet
 
@@ -150,7 +154,7 @@ class RemovePrefOrientStar:
 
         self.validate(args)
 
-        print("Making orientation heatmap from star file...")
+        self.mprint("Making orientation heatmap from star file...")
 
         md = MetaData(args.i)
 
@@ -173,9 +177,9 @@ class RemovePrefOrientStar:
         mdOut.addData(dataTableName, new_particles)
         mdOut.write(args.o)
 
-        print("File %s was created..." % args.o)
+        self.mprint("File %s was created..." % args.o)
 
-        print("Finished. Have fun!")
+        self.mprint("Finished. Have fun!")
 
 
 if __name__ == "__main__":

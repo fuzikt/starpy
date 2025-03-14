@@ -10,15 +10,15 @@ from lib.vector3 import dot_product, Vector3
 from lib.matrix3 import matrix_from_euler
 
 
-class analyzeSpatialAngularDistanceStar:
+class AnalyzeSpatialAngularDistanceStar:
     def define_parser(self):
         self.parser = argparse.ArgumentParser(
             description="Calculates the spatial distance and angular distance between corresponding particles in --i1 and --i2. Output contains the particles from --i1 with additional columns for the spatial (rlnSpatDist), angular distances (rlnAngDist), rlnOriginXAngstDiff, rlnOriginYAngstDiff, rlnAngleRotDiff , rlnAngleTiltDiff, and rlnAnglePsiDiff.",
             formatter_class=RawTextHelpFormatter)
         add = self.parser.add_argument
-        add('--i1', help="Input1 STAR filename.")
-        add('--i2', help="Input2 STAR filename.")
-        add('--o', help="Output STAR filename.")
+        add('--i1', default="STDIN", help="Input1 STAR filename (Default: STDIN).")
+        add('--i2', default="STDIN", help="Input2 STAR filename (Default: STDIN).")
+        add('--o', default="STDOUT",  help="Output STAR filename (Default: STDOUT).")
 
     def usage(self):
         self.parser.print_help()
@@ -30,15 +30,18 @@ class analyzeSpatialAngularDistanceStar:
         sys.exit(2)
 
     def validate(self, args):
-        if len(sys.argv) == 1:
-            self.error("No input file given.")
+        if not os.path.exists(args.i1) and not args.i1 == "STDIN":
+            self.error("Input1 file '%s' not found." % args.i1)
 
-        if not os.path.exists(args.i1):
-            self.error("Input1 file '%s' not found." % args.i)
+        if not os.path.exists(args.i2) and not args.i2 == "STDIN":
+            self.error("Input2 file '%s' not found." % args.i2)
 
-        if not os.path.exists(args.i2):
-            self.error("Input2 file '%s' not found." % args.i)
+        self.args = args
 
+    def mprint(self, message):
+        # muted print if the output is STDOUT
+        if self.args.o != "STDOUT":
+            print(message)
     def get_particles(self, md, dataTableName):
         particles = []
         for particle in getattr(md, dataTableName):
@@ -105,11 +108,13 @@ class analyzeSpatialAngularDistanceStar:
 
             i += 1
             # a simple progress bar
-            sys.stdout.write('\r')
-            progress = int(i / progress_step)
-            sys.stdout.write("[%-20s] %d%%" % ('=' * progress, 5 * progress))
-            sys.stdout.flush()
-        sys.stdout.write('\n')
+            if self.args.o != "STDOUT":
+                sys.stdout.write('\r')
+                progress = int(i / progress_step)
+                sys.stdout.write("[%-20s] %d%%" % ('=' * progress, 5 * progress))
+                sys.stdout.flush()
+        if self.args.o != "STDOUT":
+            sys.stdout.write('\n')
 
         return particles1
 
@@ -118,13 +123,13 @@ class analyzeSpatialAngularDistanceStar:
         args = self.parser.parse_args()
         self.validate(args)
 
-        print(f"Reading in input star file {args.i1}")
+        self.mprint(f"Reading in input star file {args.i1}")
         md1 = MetaData(args.i1)
 
-        print(f"Reading in input star file {args.i2}")
+        self.mprint(f"Reading in input star file {args.i2}")
         md2 = MetaData(args.i2)
 
-        print("Analyzing orientational distances...")
+        self.mprint("Analyzing orientational distances...")
 
         dataTableName = "data_particles"
 
@@ -152,14 +157,14 @@ class analyzeSpatialAngularDistanceStar:
 
         mdOut.addData(dataTableName, self.getSpatialAngularDistances(particles1, particles2))
 
-        print("%s particles were processed..." % str((len(particles1))))
+        self.mprint("%s particles were processed..." % str((len(particles1))))
 
         mdOut.write(args.o)
 
-        print("New star file %s created. Have fun!" % args.o)
-        print(
+        self.mprint("New star file %s created. Have fun!" % args.o)
+        self.mprint(
             f"To plot the histograms of changes, use the following command:\n plot_star.py --i {args.o} --lby rlnOriginXAngstDiff,rlnOriginYAngstDiff,rlnAngleRotDiff,rlnAngleTiltDiff,rlnAnglePsiDiff,rlnAngDist,rlnSpatDist --hist_bin 50 --multiplotY 4,2")
 
 
 if __name__ == "__main__":
-    analyzeSpatialAngularDistanceStar().main()
+    AnalyzeSpatialAngularDistanceStar().main()

@@ -155,8 +155,8 @@ class RotateParticlesStar:
             description="Perform rotation of particles according to given euler angles. \n Example: rotate_particles_star.py --i input.star --o output.star --rot 15 --tilt 20 --psi 150",
             formatter_class=RawTextHelpFormatter)
         add = self.parser.add_argument
-        add('--i', help="Input STAR filename with particles.")
-        add('--o', help="Output STAR filename.")
+        add('--i', default="STDIN", help="Input STAR filename (Default: STDIN).")
+        add('--o', default="STDOUT", help="Output STAR filename (Default: STDOUT).")
         add('--rot', type=str, default="0",
             help="Rotattion Euler angle. Default 0")
         add('--tilt', type=str, default="0",
@@ -182,10 +182,7 @@ class RotateParticlesStar:
         sys.exit(2)
 
     def validate(self, args):
-        if len(sys.argv) == 1:
-            self.error("No input file given.")
-
-        if not os.path.exists(args.i):
+        if not os.path.exists(args.i) and not args.i == "STDIN":
             self.error("Input file '%s' not found."
                        % args.i)
         # Convert comma-separated string to list of integers
@@ -231,6 +228,13 @@ class RotateParticlesStar:
         except ValueError:
             self.error("Attribute '%s' requires FLOAT value for operation." % args.z)
 
+        self.args = args
+
+    def mprint(self, message):
+        # muted print if the output is STDOUT
+        if self.args.o != "STDOUT":
+            print(message)
+
     def get_particles(self, md):
         particles = []
         for particle in md:
@@ -272,8 +276,8 @@ class RotateParticlesStar:
                 rotatedParticleCounter += 1
 
             newParticles.append(particle)
-        print("Processed " + str(len(newParticles)) + " particles.")
-        print("Rotated " + str(rotatedParticleCounter) + " particles.")
+        self.mprint("Processed " + str(len(newParticles)) + " particles.")
+        self.mprint("Rotated " + str(rotatedParticleCounter) + " particles.")
 
         return newParticles
 
@@ -282,7 +286,7 @@ class RotateParticlesStar:
         args = self.parser.parse_args()
         self.validate(args)
 
-        print("Performing rotation of particles from star file...")
+        self.mprint("Performing rotation of particles from star file...")
 
         md = MetaData(args.i)
 
@@ -290,7 +294,9 @@ class RotateParticlesStar:
 
         particles = self.get_particles(md)
 
-        new_particles.extend(self.rotateParticles(particles, self.rotValue, self.tiltValue, self.psiValue, self.xValue, self.yValue, self.zValue, md.version, self.classNumbers))
+        new_particles.extend(
+            self.rotateParticles(particles, self.rotValue, self.tiltValue, self.psiValue, self.xValue, self.yValue,
+                                 self.zValue, md.version, self.classNumbers))
 
         if md.version == "3.1":
             mdOut = md.clone()
@@ -306,7 +312,7 @@ class RotateParticlesStar:
 
         mdOut.write(args.o)
 
-        print("New star file %s created. Have fun!" % args.o)
+        self.mprint("New star file %s created. Have fun!" % args.o)
 
 
 if __name__ == "__main__":

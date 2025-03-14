@@ -14,9 +14,9 @@ class AssignLabelStar:
             description="Add label (col_lb) to Input1 and assigns values to it from Input2 where the label (comp_lb) of Input2 matches Input1",
             formatter_class=RawTextHelpFormatter)
         add = self.parser.add_argument
-        add('--i1', help="Input1 STAR filename.")
-        add('--i2', help="Input2 STAR filename.")
-        add('--o', help="Output STAR filename.")
+        add('--i1', default="STDIN", help="Input1 STAR filename (Default: STDIN).")
+        add('--i2', default="STDIN", help="Input2 STAR filename (Default: STDIN).")
+        add('--o', default="STDOUT", help="Output STAR filename (Default: STDOUT).")
         add('--data', type=str, default="data_particles",
             help="Data table from star file to be used (Default: data_particles).")
         add('--col_lb', type=str, default="rlnDefocusU",
@@ -34,20 +34,27 @@ class AssignLabelStar:
         sys.exit(2)
 
     def validate(self, args):
-        if len(sys.argv) == 1:
-            self.error("No input file given.")
+        if not os.path.exists(args.i1) and not args.i1 == "STDIN":
+            self.error("Input1 file '%s' not found." % args.i1)
 
-        if not os.path.exists(args.i1):
-            self.error("Input1 file '%s' not found." % args.i)
+        if not os.path.exists(args.i2) and not args.i2 == "STDIN":
+            self.error("Input2 file '%s' not found." % args.i2)
+
+        if args.i1 == args.i2:
+            self.error("Input1 and Input2 files are the same.")
 
         if args.col_lb not in LABELS:
             self.error("Label %s not recognized as RELION label." % args.lb)
+
         if args.comp_lb not in LABELS:
             self.error("Label %s not recognized as RELION label." % args.lb)
 
-        if not os.path.exists(args.i2):
-            self.error("Input2 file '%s' not found." % args.i)
+        self.args = args
 
+    def mprint(self, message):
+        # muted print if the output is STDOUT
+        if self.args.o != "STDOUT":
+            print(message)
     def get_particles(self, md, dataTableName):
         particles = []
         for particle in getattr(md, dataTableName):
@@ -73,7 +80,7 @@ class AssignLabelStar:
         self.validate(args)
         start_total = time.time()
 
-        print("Reading particles from star file...")
+        self.mprint("Reading particles from star file...")
 
         md1 = MetaData(args.i1)
         md2 = MetaData(args.i2)
@@ -98,7 +105,7 @@ class AssignLabelStar:
         particles1 = self.get_particles(md1, dataTableName)
         particles2 = self.get_particles(md2, dataTableName)
 
-        print(
+        self.mprint(
             "Assigning values for Input1 label %s where the %s of Input2 matches Input1" % (args.col_lb, args.comp_lb))
 
         if md1.version == "3.1":
@@ -115,11 +122,11 @@ class AssignLabelStar:
 
         mdOut.addData(dataTableName, self.assign_column(particles1, particles2, args.col_lb, args.comp_lb))
 
-        print("%s particles were processed..." % str((len(particles1))))
+        self.mprint("%s particles were processed..." % str((len(particles1))))
 
         mdOut.write(args.o)
-        print(f"Total execution time: {time.time() - start_total:.2f} seconds")
-        print("New star file %s created. Have fun!" % args.o)
+        self.mprint(f"Total execution time: {time.time() - start_total:.2f} seconds")
+        self.mprint("New star file %s created. Have fun!" % args.o)
 
 
 if __name__ == "__main__":

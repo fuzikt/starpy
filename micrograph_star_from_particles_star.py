@@ -14,8 +14,8 @@ class CreateMicrographStarFile:
             description="Create a micrographs star containing unique micrograph names file form input particles star file.",
             formatter_class=RawTextHelpFormatter)
         add = self.parser.add_argument
-        add('--i', help="Input STAR filename.")
-        add('--o', help="Output STAR filename.")
+        add('--i', default="STDIN", help="Input STAR filename (Default: STDIN).")
+        add('--o', default="STDOUT", help="Output STAR filename (Default: STDOUT).")
 
     def usage(self):
         self.parser.print_help()
@@ -27,11 +27,15 @@ class CreateMicrographStarFile:
         sys.exit(2)
 
     def validate(self, args):
-        if len(sys.argv) == 1:
-            self.error("No input file given.")
-
-        if not os.path.exists(args.i):
+        if not os.path.exists(args.i) and not args.i == "STDIN":
             self.error("Input1 file '%s' not found." % args.i)
+
+        self.args = args
+
+    def mprint(self, message):
+        # muted print if the output is STDOUT
+        if self.args.o != "STDOUT":
+            print(message)
 
     def get_particles(self, md, dataTableName):
         particles = []
@@ -54,7 +58,7 @@ class CreateMicrographStarFile:
         args = self.parser.parse_args()
         self.validate(args)
 
-        print("Selecting unique micrographs from particles star file...")
+        self.mprint("Selecting unique micrographs from particles star file...")
 
         md = MetaData(args.i)
 
@@ -84,11 +88,11 @@ class CreateMicrographStarFile:
 
         mdOut.addData("data_micrographs", uniqueMicrographs)
 
-        print("%s micrographs were processed..." % str((len(uniqueMicrographs))))
+        self.mprint("%s micrographs were processed..." % str((len(uniqueMicrographs))))
 
         mdOut.write(args.o)
 
-        print("New star file %s created. Have fun!" % args.o)
+        self.mprint("New star file %s created. Have fun!" % args.o)
 
 
 if __name__ == "__main__":

@@ -15,8 +15,8 @@ class MathStar:
             description="Perform basic math operations on star file values. \n Example1: Add 15 deg to rlnAngleTilt. \n math_star.py --i input.star --o output.star --lb rlnAngleTilt --op \"+\" --val 15 \n\n Example2: Multiply rlnOriginX by 2\n math_star.py --i input.star --o output.star --lb rlnOriginX --op \"*\" --val 2\n\n Example3: Compute remainder of rlnAngleRot where rlnGroupNumber is 2.\n math_star.py --i input.star --o output.star --lb rlnAnlgeRot --op \"remainder\" --sellb rlnGroupNumber --selval 2",
             formatter_class=RawTextHelpFormatter)
         add = self.parser.add_argument
-        add('--i', help="Input STAR filename with particles.")
-        add('--o', help="Output STAR filename.")
+        add('--i', default="STDIN", help="Input STAR filename (Default: STDIN).")
+        add('--o', default="STDOUT", help="Output STAR filename (Default: STDOUT).")
         add('--data', type=str, default="data_particles",
             help="Data table from star file to be used (Default: data_particles).")
         add('--lb', type=str, default="rlnMicrographName",
@@ -48,10 +48,7 @@ class MathStar:
     def validate(self, args):
         rangeSel = False
 
-        if len(sys.argv) == 1:
-            self.error("No input file given.")
-
-        if not os.path.exists(args.i):
+        if not os.path.exists(args.i) and not args.i == "STDIN":
             self.error("Input file '%s' not found."
                        % args.i)
 
@@ -139,6 +136,12 @@ class MathStar:
                     self.error("Attribute '%s' requires STR value for comparison." % args.sellb)
         return compValue, selValue, rangeHi, rangeLo, rangeSel
 
+        self.args = args
+
+    def mprint(self, message):
+        # muted print if the output is STDOUT
+        if self.args.o != "STDOUT":
+            print(message)
     def get_particles(self, md, dataTableName):
         particles = []
         for particle in getattr(md, dataTableName):
@@ -216,7 +219,7 @@ class MathStar:
                 mathCounter += 1
                 doMathOnParticle(selectedParticle, atr, value)
 
-        print("%s particles out of %s were affected by math operation." % (mathCounter, str(len(newParticles))))
+        self.mprint("%s particles out of %s were affected by math operation." % (mathCounter, str(len(newParticles))))
 
         return newParticles
 
@@ -226,12 +229,12 @@ class MathStar:
         compValue, selValue, rangeHi, rangeLo, rangeSel = self.validate(args)
 
         if args.sellb == "None":
-            print("Performing math on all particles from star file...")
+            self.mprint("Performing math on all particles from star file...")
         else:
             if rangeSel:
-                print("Performing math on particles where %s is in range <%s, %s>." % (args.sellb, rangeLo, rangeHi))
+                self.mprint("Performing math on particles where %s is in range <%s, %s>." % (args.sellb, rangeLo, rangeHi))
             else:
-                print("Performing math on particles where %s is %s %s." % (args.sellb, args.selop, selValue))
+                self.mprint("Performing math on particles where %s is %s %s." % (args.sellb, args.selop, selValue))
 
         md = MetaData(args.i)
 
@@ -265,7 +268,7 @@ class MathStar:
         mdOut.addData(dataTableName, new_particles)
         mdOut.write(args.o)
 
-        print("New star file %s created. Have fun!" % args.o)
+        self.mprint("New star file %s created. Have fun!" % args.o)
 
 
 if __name__ == "__main__":

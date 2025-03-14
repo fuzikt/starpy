@@ -14,8 +14,7 @@ class StatsStar:
             description="Print basic statistics on numerical labels present in STAR file",
             formatter_class=RawTextHelpFormatter)
         add = self.parser.add_argument
-        add('--i', help="Input STAR filename.")
-        add('--o', help="Output STAR filename.")
+        add('--i', default="STDIN", help="Input STAR filename (Default: STDIN).")
         add('--lb', type=str, default="ALL",
             help="Labels used for statistics (Default: ALL). Multiple labels can be used enclosed in double quotes. (e.g. \"rlnAngleTilt rlnAngleRot\")")
         add('--data', type=str, default="data_particles",
@@ -31,10 +30,7 @@ class StatsStar:
         sys.exit(2)
 
     def validate(self, args):
-        if len(sys.argv) == 1:
-            self.error("No input file given.")
-
-        if not os.path.exists(args.i):
+        if not os.path.exists(args.i) and not args.i == "STDIN":
             self.error("Input file '%s' not found."
                        % args.i)
 
@@ -60,11 +56,13 @@ class StatsStar:
                 if (LABELS[iLabel] == float) or (LABELS[iLabel] == int):
                     labelValues = [getattr(x, iLabel) for x in records]
                     if LABELS[iLabel] == float:
-                        labelStats.append(['%s' % labelbNr, iLabel, '%.2f' % (min(labelValues),), '%.2f' % (max(labelValues),),
-                                           '%.2f' % (average(labelValues),)])
+                        labelStats.append(
+                            ['%s' % labelbNr, iLabel, '%.2f' % (min(labelValues),), '%.2f' % (max(labelValues),),
+                             '%.2f' % (average(labelValues),)])
                     if LABELS[iLabel] == int:
-                        labelStats.append(['%s' % labelbNr, iLabel, '%.d' % (min(labelValues)), '%.d' % (max(labelValues)),
-                                           '%.d' % (average(labelValues))])
+                        labelStats.append(
+                            ['%s' % labelbNr, iLabel, '%.d' % (min(labelValues)), '%.d' % (max(labelValues)),
+                             '%.d' % (average(labelValues))])
                 else:
                     # non numerical label
                     nonNumLabel += 1

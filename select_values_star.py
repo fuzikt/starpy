@@ -16,8 +16,8 @@ class SelValueStar:
             description="Filter lines from star file upon comparison with given value. \n Example1: Select lines from input.star where source micrograph does not equals to mic123456789.mrc\n select_values_star.py --i input.star --o output.star --lb rlnMicrographName --op \"!=\" --val mic123456789.mrc \n\n Example2: Select lines from input.star where tilt angles are less than 15 deg.\n select_values_star.py --i input.star --o output.star --lb rlnAngleTilt --op \"<\" --val 15",
             formatter_class=RawTextHelpFormatter)
         add = self.parser.add_argument
-        add('--i', help="Input STAR filename with particles.")
-        add('--o', help="Output STAR filename.")
+        add('--i', default="STDIN", help="Input STAR filename (Default: STDIN).")
+        add('--o', default="STDOUT", help="Output STAR filename (Default: STDOUT).")
         add('--data', type=str, default="data_particles",
             help="Data table from star file to be used (Default: data_particles).")
         add('--lb', type=str, default="rlnMicrographName",
@@ -45,10 +45,7 @@ class SelValueStar:
         sys.exit(2)
 
     def validate(self, args):
-        if len(sys.argv) == 1:
-            self.error("No input file given.")
-
-        if not os.path.exists(args.i):
+        if not os.path.exists(args.i) and not args.i == "STDIN":
             self.error("Input file '%s' not found."
                        % args.i)
 
@@ -116,6 +113,13 @@ class SelValueStar:
 
         return compValue, rangeHi, rangeLo, rangeSel, prctl_l, prctl_h
 
+        self.args = args
+
+    def mprint(self, message):
+        # muted print if the output is STDOUT
+        if self.args.o != "STDOUT":
+            print(message)
+
     def get_particles(self, md, dataTableName):
         particles = []
         for particle in getattr(md, dataTableName):
@@ -162,10 +166,10 @@ class SelValueStar:
 
             if prctl_l > -1:
                 op_func = ops["<="]
-                print(f"Selecting below {prctl}-th percentile of data. {atr} values less or equal {value}.")
+                self.mprint(f"Selecting below {prctl}-th percentile of data. {atr} values less or equal {value}.")
             else:
                 op_func = ops[">="]
-                print(f"Selecting above {prctl}-th percentile of data. {atr} values more or equal {value}.")
+                self.mprint(f"Selecting above {prctl}-th percentile of data. {atr} values more or equal {value}.")
         else:
             op_func = ops[op_char]
 
@@ -180,7 +184,7 @@ class SelValueStar:
                 if op_func(getattr(p, atr), value)
             ]
 
-        print(f"{len(newParticles)} particles included in selection.")
+        self.mprint(f"{len(newParticles)} particles included in selection.")
         return newParticles
 
 
@@ -190,9 +194,9 @@ class SelValueStar:
         compValue, rangeHi, rangeLo, rangeSel, prctl_l, prctl_h = self.validate(args)
 
         if rangeSel:
-            print("Selecting particles where %s is in range <%s, %s>." % (args.lb, rangeLo, rangeHi))
+            self.mprint("Selecting particles where %s is in range <%s, %s>." % (args.lb, rangeLo, rangeHi))
         elif args.prctl_l == "-1" and args.prctl_h == "-1":
-            print("Selecting particles where %s is %s %s." % (args.lb, args.op, compValue))
+            self.mprint("Selecting particles where %s is %s %s." % (args.lb, args.op, compValue))
         start_total = time.time()
         md = MetaData(args.i)
 
@@ -217,8 +221,8 @@ class SelValueStar:
         mdOut.addData(dataTableName, new_particles)
 
         mdOut.write(args.o)
-        print(f"Total execution time: {time.time() - start_total:.2f} seconds")
-        print("New star file %s created. Have fun!" % args.o)
+        self.mprint(f"Total execution time: {time.time() - start_total:.2f} seconds")
+        self.mprint("New star file %s created. Have fun!" % args.o)
 
 
 if __name__ == "__main__":

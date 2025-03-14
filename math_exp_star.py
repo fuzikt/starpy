@@ -15,8 +15,8 @@ class MathExpStar:
             description="Performs complex math operations on star file values defined by user provided expression. \n Example1: Add 15 deg to rlnAngleTilt. \n math_exp_star.py --i input.star --o output.star --lb_res rlnAngleTilt --exp  \"rlnAngleTilt+15\" \n\n Example2: Multiply rlnOriginX by 2 if rlnOriginX+rlnOriginY is less than 50\n math_exp_star.py --i input.star --o output.star --lb_res rlnOriginX --exp \"rlnOriginX*2\" --sel_exp \"(rlnOriginX+rlnOriginY)<50\" \n\n Example3: Compute cosine of rlnAngleRot and store it under label rlnCosAngleRot.\n math_exp_star.py --i input.star --o output.star --lb_res rlnCosAngleRot --exp \"cos(deg2rad(rlnAngleRot))\" ",
             formatter_class=RawTextHelpFormatter)
         add = self.parser.add_argument
-        add('--i', help="Input STAR filename with particles.")
-        add('--o', help="Output STAR filename.")
+        add('--i', default="STDIN", help="Input STAR filename (Default: STDIN).")
+        add('--o', default="STDOUT", help="Output STAR filename (Default: STDOUT).")
         add('--data', type=str, default="data_particles",
             help="Data table from star file to be used (Default: data_particles).")
         add('--res_lb', type=str, default="rlnResult",
@@ -25,7 +25,7 @@ class MathExpStar:
             help="Expression to be evaluated. Enclose in double quotes!!! (e.g. \"(rlnDefocusU - rlnDefocusV)/2\")")
         add('--sel_exp', type=str, default="",
             help="Expression used for selection of particles on which the --exp will be evaluated. Enclose in double quotes!!!  (e.g.  \"(rlnDefocusU-1500)<20000\"), Default empty => all particles")
-        add('--def_val', type=float, default=0,help="Default value of non-calculated results when --rel_lb is not present in --i. Default: 0.0")
+        add('--def_val', type=float, default=0.0,help="Default value of non-calculated results when --res_lb is not present in --i. (Default: 0.0)")
 
     def usage(self):
         self.parser.print_help()
@@ -40,13 +40,7 @@ class MathExpStar:
         if len(sys.argv) == 1:
             self.error("No input file given.")
 
-        if not args.i:
-            self.error("Input file (--i) not specified.")
-
-        if not args.o:
-            self.error("Output file (--o) not specified.")
-
-        if not os.path.exists(args.i):
+        if not os.path.exists(args.i) and not args.i == "STDIN":
             self.error(f"Input file '{args.i}' not found.")
 
         if not args.exp:
@@ -55,6 +49,12 @@ class MathExpStar:
         if args.res_lb and not args.res_lb.startswith('rln'):
             self.error("Result label must start with 'rln'")
 
+        self.args = args
+
+    def mprint(self, message):
+        # muted print if the output is STDOUT
+        if self.args.o != "STDOUT":
+            print(message)
     def get_particles(self, md, dataTableName):
         particles = []
         for particle in getattr(md, dataTableName):
@@ -140,7 +140,7 @@ class MathExpStar:
                 if not hasattr(particle, res_lb):
                     setattr(particle, res_lb, defalut_value)
 
-        print(f"{counter} particles fulfilled the selection criterion.")
+        self.mprint(f"{counter} particles fulfilled the selection criterion.")
         return particles
 
 
@@ -173,7 +173,7 @@ class MathExpStar:
 
         particles = self.get_particles(md, dataTableName)
 
-        print(f"Processing {len(particles)} particles...")
+        self.mprint(f"Processing {len(particles)} particles...")
 
         self.mathParticles(particles, args.res_lb, args.exp, args.sel_exp, expression_vars, selection_vars, args.def_val)
         if args.res_lb not in ilabels:
@@ -182,7 +182,7 @@ class MathExpStar:
         md.addLabels(dataTableName, ilabels)
         md.write(args.o)
 
-        print("New star file %s created. Have fun!" % args.o)
+        self.mprint("New star file %s created. Have fun!" % args.o)
 
 
 if __name__ == "__main__":

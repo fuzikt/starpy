@@ -11,12 +11,12 @@ class SelAstgStar:
         self.parser = argparse.ArgumentParser(
             description="Limit astigmatism of particles or micrographs in star file.")
         add = self.parser.add_argument
-        add('--i', help="Input STAR filename with particles.")
-        add('--o', help="Output STAR filename.")
+        add('--i', default="STDIN", help="Input STAR filename (Default: STDIN).")
+        add('--o', default="STDOUT", help="Output STAR filename (Default: STDOUT).")
         add('--astg', type=float, default=1000,
-            help="Max astigmatism in Angstroms. Default: 1000")
+            help="Max astigmatism in Angstroms. (Default: 1000)")
         add('--res', type=float, default=0,
-            help="Minimum resolution in Angstroms. Default: 0 (off)")
+            help="Minimum resolution in Angstroms. (Default: 0 (off)")
         add('--data', type=str, default="data_particles",
             help="Data table from star file to be used (Default: data_particles).")
 
@@ -30,12 +30,15 @@ class SelAstgStar:
         sys.exit(2)
 
     def validate(self, args):
-        if len(sys.argv) == 1:
-            self.error("No input file given.")
+        if not os.path.exists(args.i) and not args.i == "STDIN":
+            self.error("Input file '%s' not found." % args.i)
 
-        if not os.path.exists(args.i):
-            self.error("Input file '%s' not found."
-                       % args.i)
+        self.args = args
+
+    def mprint(self, message):
+        # muted print if the output is STDOUT
+        if self.args.o != "STDOUT":
+            print(message)
 
     def get_particles(self, md, dataTableName):
         particles = []
@@ -53,7 +56,7 @@ class SelAstgStar:
             else:
                 if (abs(selectedParticle.rlnDefocusU-selectedParticle.rlnDefocusV) <= astg) and (selectedParticle.rlnFinalResolution <= res):
                     newParticles.append(selectedParticle)
-        print(str(len(newParticles))+" particles included in selection.")
+        self.mprint(str(len(newParticles))+" particles included in selection.")
         return newParticles
 
     def main(self):
@@ -62,7 +65,7 @@ class SelAstgStar:
 
         self.validate(args)
         
-        print("Selecting particles/micrographs from star file...")
+        self.mprint("Selecting particles/micrographs from star file...")
 
         md = MetaData(args.i)
 
@@ -77,7 +80,7 @@ class SelAstgStar:
         if ("rlnDefocusU" not in ilabels) or ("rlnDefocusV" not in ilabels):
             self.error("No labels rlnDefocusU or rlnDefocusV found in Input file.")
         if ("rlnFinalResolution" not in ilabels) and (args.res > 0):
-            print("No label rlnFinalResolution found in input file. Switching off resolution filtering...")
+            self.mprint("No label rlnFinalResolution found in input file. Switching off resolution filtering...")
             args.res = 0
 
         new_particles = []
@@ -98,7 +101,7 @@ class SelAstgStar:
         mdOut.addData(dataTableName, new_particles)
         mdOut.write(args.o)
 
-        print("New star file %s created. Have fun!" % args.o)
+        self.mprint("New star file %s created. Have fun!" % args.o)
 
 
 if __name__ == "__main__":

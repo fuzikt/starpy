@@ -15,7 +15,7 @@ class HeatmapStar:
         self.parser = argparse.ArgumentParser(
             description="Makes a heatmap of particle orientations.")
         add = self.parser.add_argument
-        add('--i', help="Input STAR filename with particles and orientations.")
+        add('--i', default="STDIN", help="Input STAR filename with particles and orientations (Default: STDIN).")
         add('--o', type=str, default="heatmap_orient", help="Output files prefix. Default: heatmap_orient")
         add('--show', action='store_true',
             help="Only shows the resulting heatmap. Does not store any output file.")
@@ -53,7 +53,7 @@ class HeatmapStar:
         if len(sys.argv) == 1:
             self.error("No input file given.")
 
-        if not os.path.exists(args.i):
+        if not os.path.exists(args.i) and not args.i == "STDIN":
             self.error("Input file '%s' not found."
                        % args.i)
 
