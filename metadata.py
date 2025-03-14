@@ -646,6 +646,7 @@ LABELS = {
     'rlnAnglePsiDiff': float,  # Difference in the third Euler angle (psi) between 2 particles from analyze_orientation_distances_star.py
     'rlnSpatDist': float,  # Spatial distances between 2 particles from analyze_orientation_distances_star.py
     'rlnAngDist': float,  # Angular distances between 2 particles from analyze_orientation_distances_star.py
+    'rlnResult': float,  # General result label to store float values
 }
 
 
@@ -785,7 +786,7 @@ class MetaData:
             self.comments.insert(0, "# " + ' '.join(sys.argv) + "\n")
 
         # write comments in the beginning of the file
-        self.comments = set(self.comments)
+        self.comments = list(dict.fromkeys(self.comments))  # removes duplicates while preserving order
         for comment in self.comments:
             output_file.write(comment + "\n")
 
@@ -795,7 +796,6 @@ class MetaData:
                 line_format = ""
                 if self.version == "3.1":
                     if "_loop" not in attribute:
-                        #output_file.write("\n# version 30001\n\n%s\n\n" % attribute)
                         output_file.write("\n\n%s\n\n" % attribute)
                     if getattr(self, attribute + "_loop"):
                         output_file.write("loop_\n")
