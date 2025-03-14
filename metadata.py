@@ -722,7 +722,10 @@ class MetaData:
         found_loop = False
         non_loop_values = []
 
-        f = open(input_star)
+        if input_star == "STDIN":
+            f = sys.stdin
+        else:
+            f = open(input_star)
 
         def setItemValues(currentTableRead, values):
             # Iterate in pairs (zipping) over labels and values in the row
@@ -826,9 +829,12 @@ class MetaData:
                         output_file.write(line_format % item.__dict__)
 
     def write(self, output_star):
-        output_file = open(output_star, 'w')
-        self._write(output_file)
-        output_file.close()
+        if output_star == "STDOUT":
+            self._write(sys.stdout)
+        else:
+            output_file = open(output_star, 'w')
+            self._write(output_file)
+            output_file.close()
 
     def printStar(self):
         self._write(sys.stdout)
