@@ -111,9 +111,10 @@ class SelValueStar:
         except ValueError:
             self.error("Percentile requires integer value to be used")
 
+        self.args = args
+
         return compValue, rangeHi, rangeLo, rangeSel, prctl_l, prctl_h
 
-        self.args = args
 
     def mprint(self, message):
         # muted print if the output is STDOUT
