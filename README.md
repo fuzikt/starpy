@@ -51,6 +51,27 @@ Backward compatible with RELION <=3.0 format star files!
 - [xflip_particles_star.py](#xflip_particles_starpy)
 - [yflip_particles_star.py](#yflip_particles_starpy)
 
+## Install
+To install the scripts, clone the repository and add the path to the scripts to your PATH variable.
+
+Some of the script need external libraries listed in requirements.txt. Install them ideally into separate virtual environment:
+```
+# Clone the repository
+git clone https://github.com/fuzikt/starpy.git
+
+# Change to the directory
+cd starpy
+
+# Create a virtual environment
+python -m venv starpy_env
+
+# Activate the virtual environment
+source starpy_env/bin/activate
+
+# Install requirements from the requirements.txt file
+pip install -r requirements.txt
+```
+
 ## General usage
 All scripts are designed to be used in the command line. To show the help of the script use the **--h** parameter.
 
