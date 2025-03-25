@@ -283,6 +283,7 @@ Requires:
 ```
   --i               Input STAR filename with particles and orientations (Default: STDIN).
   --o               Output files prefix. Default: heatmap_orient
+  --sym             Symmetry used form symmetry expansion of the input star file. Default: C1
   --show            Only shows the resulting heatmap. Does not store any output file.
   --format          Output format. Available formats: png, svg, jpg, tif. Default: png
   --cmap            Color map used for the heatmap. Matplotlib colormap names accepted. Recommended: jet, inferno, viridis, turbo. (Default: turbo)")

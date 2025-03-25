@@ -8,6 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import healpy as hp
 from healpy.newvisufunc import projview
+from lib.symmetries import Symmetry
 
 
 class HeatmapStar:
@@ -17,6 +18,7 @@ class HeatmapStar:
         add = self.parser.add_argument
         add('--i', default="STDIN", help="Input STAR filename with particles and orientations (Default: STDIN).")
         add('--o', type=str, default="heatmap_orient", help="Output files prefix. Default: heatmap_orient")
+        add('--sym', type=str, default="C1", help="Symmetry used form symmetry expansion of the input star file. Default: C1")
         add('--show', action='store_true',
             help="Only shows the resulting heatmap. Does not store any output file.")
         add('--format', type=str, default="png",
@@ -91,6 +93,12 @@ class HeatmapStar:
         md = MetaData(args.i)
 
         particles = self.get_particles(md)
+        print(f"Found {len(particles)} in star file.")
+        if args.sym != "C1":
+            print(f"Using symmetry {args.sym} for symmetrization.")
+            particleSym = Symmetry(args.sym)
+            particles = particleSym.sym_expand_particles(particles)
+            print(f"{len(particles)} after symmetrization.")
 
         if args.vmin == -1:
             minVal = None
