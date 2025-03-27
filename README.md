@@ -40,6 +40,7 @@ Backward compatible with RELION <=3.0 format star files!
 - [remove_preferred_orient_hlpx.py](#remove_preferred_orient_hlpxpy)
 - [rename_foilhole_star.py](#rename_foilhole_starpy)
 - [rotate_particles_star.py](#rotate_particles_starpy)
+- [scf_star.py](#scf_starpy)
 - [select_maxprob_sym_copy_ptcls.py](#select_maxprob_sym_copy_ptclspy)
 - [select_orientations_star.py](#select_orientations_starpy)
 - [select_rand_sym_copy_ptcls.py](#select_rand_sym_copy_ptclspy)
@@ -567,6 +568,18 @@ Performs rotation of particles according to given Euler angles.
 Example:
 ```
 rotate_particles_star.py --i input.star --o output.star --rot 15 --tilt 20 --psi 150
+```
+
+## scf_star.py
+Calculates the SCF* (Sampling Compensation Factor) for particle orientation distribution in STAR file.
+
+Described in: Baldwin, P.R. and D. Lyumkis, Non-uniformity of projection distributions attenuates resolution in Cryo-EM.Prog Biophys Mol Biol, 2020. 150: p. 160-183.
+```
+  --i                 Input STAR filename (Default: STDIN).
+  --o                 Output STAR filename (Default: STDOUT).
+  --sym               Symmetry applied to the input particles (Default: C1).
+  --tilt_angle        Tilt angle (cannot be used together with --sym).
+  --samples           The number of random particle orientations from input to use (Default 0 => all particles).
 ```
 
 ## select_maxprob_sym_copy_ptcls.py
