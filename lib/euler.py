@@ -50,6 +50,31 @@ def euler_from_matrix(matrix):
             psi = atan2(matrix.m[1][0], -matrix.m[0][0])
     return rot, tilt, psi
 
+def euler_from_matrix_np(matrix):
+    """converts a matrix to Eulers - as in Relion euler.cpp"""
+    FLT_EPSILON = 1.19209e-07
+    sign = lambda x: x and (1, -1)[x < 0]
+
+    abs_sb = sqrt(matrix[0,2] * matrix[0,2] + matrix[1,2] * matrix[1,2])
+    if (abs_sb > 16 * FLT_EPSILON):
+        psi = atan2(matrix[1,2], -matrix[0,2])
+        rot = atan2(matrix[2,1], matrix[2,0])
+        if (abs(sin(psi)) < FLT_EPSILON):
+            sign_sb = sign(-matrix[0,2] / cos(psi))
+        else:
+            sign_sb = sign(matrix[1,2]) if (sin(psi) > 0) else -sign(matrix[1,2])
+        tilt = atan2(sign_sb * abs_sb, matrix[2,2])
+    else:
+        if (sign(matrix[2,2]) > 0):
+            rot = 0
+            tilt = 0
+            psi = atan2(-matrix[1,0], matrix[0,0])
+        else:
+            rot = 0
+            tilt = pi
+            psi = atan2(matrix[1,0], -matrix[0,0])
+    return rot, tilt, psi
+
 
 def euler_from_vector(vector):
     """converts a view vector to Eulers that describe a rotation taking the reference vector [0,0,1] on the vector"""

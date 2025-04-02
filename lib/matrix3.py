@@ -26,6 +26,7 @@
 import os
 import sys
 from math import *
+import numpy as np
 
 
 class Matrix3:
@@ -109,6 +110,22 @@ def matrix_from_euler(rot, tilt, psi):
     return Matrix3(a)
 
 
+def matrix_from_euler_np(rot, tilt, psi):
+    """Create a rotation matrix from three Euler angles in ZYZ convention using NumPy"""
+    matrix = np.zeros((3, 3))
+
+    matrix[0, 0] = cos(psi) * cos(tilt) * cos(rot) - sin(psi) * sin(rot)
+    matrix[0, 1] = cos(psi) * cos(tilt) * sin(rot) + sin(psi) * cos(rot)
+    matrix[0, 2] = -cos(psi) * sin(tilt)
+    matrix[1, 0] = -sin(psi) * cos(tilt) * cos(rot) - cos(psi) * sin(rot)
+    matrix[1, 1] = -sin(psi) * cos(tilt) * sin(rot) + cos(psi) * cos(rot)
+    matrix[1, 2] = sin(psi) * sin(tilt)
+    matrix[2, 0] = sin(tilt) * cos(rot)
+    matrix[2, 1] = sin(tilt) * sin(rot)
+    matrix[2, 2] = cos(tilt)
+
+    return matrix
+
 def matrix_from_euler_zxz(rot, tilt, psi):
     """create a rotation matrix from three Euler anges in ZXZ convention"""
     a = [0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -124,6 +141,23 @@ def matrix_from_euler_zxz(rot, tilt, psi):
     a[8] = cos(tilt)
 
     return Matrix3(a)
+
+
+def matrix_from_euler_zxz_np(rot, tilt, psi):
+    """Create a rotation matrix from three Euler angles in ZXZ convention using NumPy"""
+    matrix = np.zeros((3, 3))
+
+    matrix[0, 0] = cos(psi) * cos(rot) - sin(psi) * cos(tilt) * sin(rot)
+    matrix[0, 1] = -cos(psi) * sin(rot) - sin(psi) * cos(tilt) * cos(rot)
+    matrix[0, 2] = sin(psi) * sin(tilt)
+    matrix[1, 0] = sin(psi) * cos(rot) + cos(psi) * cos(tilt) * sin(rot)
+    matrix[1, 1] = -sin(psi) * sin(rot) + cos(psi) * cos(tilt) * cos(rot)
+    matrix[1, 2] = -cos(psi) * sin(tilt)
+    matrix[2, 0] = sin(tilt) * sin(rot)
+    matrix[2, 1] = sin(tilt) * cos(rot)
+    matrix[2, 2] = cos(tilt)
+
+    return matrix
 
 
 def matrix_from_euler_zyx(rot, tilt, psi):
@@ -143,6 +177,22 @@ def matrix_from_euler_zyx(rot, tilt, psi):
     return Matrix3(a)
 
 
+def matrix_from_euler_zyx_np(rot, tilt, psi):
+    """Create a rotation matrix from three Euler angles in ZYX convention using NumPy"""
+    matrix = np.zeros((3, 3))
+
+    matrix[0, 0] = cos(rot) * cos(tilt)
+    matrix[0, 1] = cos(rot) * sin(tilt) * sin(psi) - sin(rot) * cos(psi)
+    matrix[0, 2] = cos(rot) * sin(tilt) * cos(psi) + sin(rot) * sin(psi)
+    matrix[1, 0] = sin(rot) * cos(tilt)
+    matrix[1, 1] = sin(rot) * sin(tilt) * sin(psi) + cos(rot) * cos(psi)
+    matrix[1, 2] = sin(rot) * sin(tilt) * cos(psi) - cos(rot) * sin(psi)
+    matrix[2, 0] = -sin(tilt)
+    matrix[2, 1] = cos(tilt) * sin(psi)
+    matrix[2, 2] = cos(tilt) * cos(psi)
+
+    return matrix
+
 def matrix_from_euler_xyz(rot, tilt, psi):
     #   """create a rotation matrix from three Euler anges in XYZ convention"""
     a = [0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -159,6 +209,22 @@ def matrix_from_euler_xyz(rot, tilt, psi):
 
     return Matrix3(a)
 
+
+def matrix_from_euler_xyz_np(rot, tilt, psi):
+    """Create a rotation matrix from three Euler angles in XYZ convention using NumPy"""
+    matrix = np.zeros((3, 3))
+
+    matrix[0, 0] = cos(tilt) * cos(psi)
+    matrix[0, 1] = -cos(tilt) * sin(psi)
+    matrix[0, 2] = sin(tilt)
+    matrix[1, 0] = cos(rot) * sin(psi) + sin(rot) * sin(tilt) * cos(psi)
+    matrix[1, 1] = cos(rot) * cos(psi) - sin(rot) * sin(tilt) * sin(psi)
+    matrix[1, 2] = -sin(rot) * cos(tilt)
+    matrix[2, 0] = sin(rot) * sin(psi) - cos(rot) * sin(tilt) * cos(psi)
+    matrix[2, 1] = sin(rot) * cos(psi) + cos(rot) * sin(tilt) * sin(psi)
+    matrix[2, 2] = cos(rot) * cos(tilt)
+
+    return matrix
 
 def matrix_multiply(m1, m2):
     a = [0, 0, 0, 0, 0, 0, 0, 0, 0]
