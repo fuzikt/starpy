@@ -2,8 +2,8 @@ import copy
 
 import numpy as np
 from math import pi, sin, cos, radians, degrees
-from .matrix3 import matrix_from_euler, Matrix3
-from .euler import euler_from_matrix
+from .matrix3 import matrix_from_euler_np
+from .euler import euler_from_matrix_np
 
 class Symmetry():
     def __init__(self, groupName):
@@ -29,28 +29,23 @@ class Symmetry():
 
     def sym_expand_particle(self, particle):
         """Apply symmetry operations to a particle and return the transformed particles."""
-        particle_rot_matrix = np.array(
-            matrix_from_euler(
+        particle_rot_matrix = matrix_from_euler_np(
                 radians(particle.rlnAngleRot),
                 radians(particle.rlnAngleTilt),
                 radians(particle.rlnAnglePsi)
-            ).m
-        ).reshape(3, 3)
+            )
 
         # Prepare memory for sym_particles with exact size to avoid resizing
         sym_particles = [None] * len(self.sym_matrices)
 
         # Use enumeration to avoid append operations
         for i, matrix in enumerate(self.sym_matrices):
-            particle_sym_copy = copy.deepcopy(particle)
+            particle_sym_copy = copy.copy(particle)
 
-            # Direct matrix multiplication without intermediate conversions
-            symcopy_matrix = Matrix3(np.matmul(particle_rot_matrix, matrix).reshape(9).tolist())
+            symcopy_matrix = np.matmul(particle_rot_matrix, matrix)
 
-            # Get Euler angles directly from numpy array without conversion to Matrix3
-            rot, tilt, psi = euler_from_matrix(symcopy_matrix)
+            rot, tilt, psi = euler_from_matrix_np(symcopy_matrix)
 
-            # Assign all angles at once
             particle_sym_copy.rlnAngleRot = degrees(rot)
             particle_sym_copy.rlnAngleTilt = degrees(tilt)
             particle_sym_copy.rlnAnglePsi = degrees(psi)
