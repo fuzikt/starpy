@@ -134,9 +134,10 @@ class MathStar:
                             "Cannot do range comparison for label '%s'. It requires STR value for comparison." % args.lb)
                 except ValueError:
                     self.error("Attribute '%s' requires STR value for comparison." % args.sellb)
-        return compValue, selValue, rangeHi, rangeLo, rangeSel
 
         self.args = args
+
+        return compValue, selValue, rangeHi, rangeLo, rangeSel
 
     def mprint(self, message):
         # muted print if the output is STDOUT
