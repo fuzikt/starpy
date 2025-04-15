@@ -20,6 +20,7 @@
 # **************************************************************************
 
 import sys
+import ast
 
 try:
     # Python 2
@@ -710,7 +711,21 @@ class MetaData:
 
     def _setItemValue(self, item, label, value):
         if label.type == int:
+            # this is a workaround for starfile module storing ints as floats
             setattr(item, label.name, label.type(float(value)))
+        elif label.type == bool:
+            # Convert string/numeric 0/1 to proper boolean values
+            if value in ('0', 0):
+                setattr(item, label.name, False)
+            elif value in ('1', 1):
+                setattr(item, label.name, True)
+        elif label.type == str:
+            #try to dynamically evaluate the type (as str is the default for unknown types)
+            try:
+                setattr(item, label.name, ast.literal_eval(value))
+                label.type = type(ast.literal_eval(value))
+            except:
+                setattr(item, label.name, label.type(value))
         else:
             setattr(item, label.name, label.type(value))
 
@@ -811,12 +826,16 @@ class MetaData:
                             line_format += "%%(%s)f \t" % l.name
                         elif t is int:
                             line_format += "%%(%s)d \t" % l.name
+                        elif t is bool:
+                            line_format += "%%(%s)d \t" % l.name
                         else:
                             line_format += "%%(%s)s \t" % l.name
                     else:
                         if t is float:
                             line_format = "_%-35s%15f\n"
                         elif t is int:
+                            line_format = "_%-35s%15d\n"
+                        elif t is bool:
                             line_format = "_%-35s%15d\n"
                         else:
                             line_format = "_%-35s%15s\n"
