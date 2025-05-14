@@ -208,7 +208,6 @@ class xFlipParticlesStar:
                 particle.rlnAngleRot = degrees(rotNew)
                 particle.rlnAngleTilt = degrees(tiltNew)
                 particle.rlnAnglePsi = degrees(psiNew) - 180
-                particle.rlnOriginYAngst = -particle.rlnOriginYAngst
                 flippedParticleCounter += 1
 
             newParticles.append(particle)
