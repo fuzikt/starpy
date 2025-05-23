@@ -679,6 +679,15 @@ class Item:
     def clone(self):
         return copy.deepcopy(self)
 
+    def __getitem__(self, key):
+        """
+        Used for formatting with %(key)s in format strings.
+        Handles special formatting for lists.
+        """
+        value = getattr(self, key)
+        if isinstance(value, list):
+            return "[" + ",".join(map(str, value)) + "]"
+        return value
 
 class MetaData:
     """ Class to parse Relion star files
@@ -828,6 +837,8 @@ class MetaData:
                             line_format += "%%(%s)d \t" % l.name
                         elif t is bool:
                             line_format += "%%(%s)d \t" % l.name
+                        elif t is list:
+                            line_format += "%%(%s)s \t" % l.name
                         else:
                             line_format += "%%(%s)s \t" % l.name
                     else:
@@ -845,7 +856,7 @@ class MetaData:
                     line_format += '\n'
 
                     for item in getattr(self, attribute):
-                        output_file.write(line_format % item.__dict__)
+                        output_file.write(line_format % item)
 
     def write(self, output_star):
         if output_star == "STDOUT":
