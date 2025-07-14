@@ -34,6 +34,7 @@ Backward compatible with RELION <=3.0 format star files!
 - [particles_star_to_box.py](#particles_star_to_boxpy)
 - [particles_star_to_coords_star.py](#particles_star_to_coords_starpy)
 - [plot_star.py](#plot_starpy)
+- [print_symmetry_matrices.py](#print_symmetry_matricespy)
 - [regular_box_pattern_around_center_coordinate.py](#regular_box_pattern_around_center_coordinatepy)
 - [rel31_to_rel30_star.py](#rel31_to_rel30_starpy)
 - [remove_preferred_orient.py](#remove_preferred_orientpy)
@@ -83,9 +84,9 @@ In many scripts (see the description below) there is possibility to pass **STDIN
 If the --i parameter is not defined, the script will read from the standard input (STDIN).
 If the --o parameter is not defined, the script will write to the standard output (STDOUT).
 
-Examples 1: Plot the astigmatism calculated by math_epx_star.py of particles from input.star using plot_star.py
+Example 1: Plot the astigmatism calculated by math_exp_star.py of particles from input.star using plot_star.py
 ```
-math_exp_star.py --i input.star --exp "abs(rlnDefocusU-rlnDefocusV)" --res_lb rlnResult | plot_star.py --lby rlnResult --hist_bin 20
+math_exp_star.py --i input.star --exp "abs(rlnDefocusU-rlnDefocusV)" --res_lb rlnResult | plot_star.py --lby rlnResult --hist_bin 20 --show
 ```
 
 Example 2: Y-flip the particle from class2, then rotate them by r:15, t:20, p:150, remove preferred orientations and plot the orientations.
@@ -513,6 +514,19 @@ Example 9: Plot FSC from all iterations of an auto-refine run
 plot_star.py --i "$(ls Refine3D/job003/run_it*_half1_model.star)" --lby rlnGoldStandardFsc --lbx rlnResolution --data data_model_class_1
 ```
 
+## print_symmetry_matrices.py
+Prints out symmetry matrices in desired format.
+```
+    --sym       Symmetry type (Default: C1).")
+    --o         Output filename (Default: STDOUT - print to screen).
+    --biomt     Print symmetry matrices in REMARK 350 BIOMT format.
+    --mtrix     Print symmetry matrices in PDB MTRIX format.
+    --text      Print symmetry matrices in pure text format.
+    --x         X coordinate for symmetry center in Angstroms (Default: 0.0).
+    --y         Y coordinate for symmetry center in Angstroms (Default: 0.0).
+    --z         Z coordinate for symmetry center in Angstroms (Default: 0.0).
+```
+
 ## regular_box_pattern_around_center_coordinate.py
 Creates a regular pattern of small boxes around the center coordinate of the particle.
 ```
@@ -555,9 +569,9 @@ Deprecated - need to be rewritten
 ## rotate_particles_star.py
 Performs rotation of particles according to given Euler angles.
 ```
-  --i       Input STAR filename with particles.
-  --o       Output STAR filename.
-  --rot     Rotattion Euler angle. Default 0
+  --i       Input STAR filename with particles. (Default: STDIN).
+  --o       Output STAR filename. (Default: STDOUT).
+  --rot     Rotation Euler angle. Default 0
   --tilt    Tilt Euler angle. Default 0
   --psi     Psi Euler angle. Default 0
   --x       Shift along X axis. Default 0
