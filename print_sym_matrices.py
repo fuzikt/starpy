@@ -71,7 +71,8 @@ class printSymMatrices:
         return "\n".join(self.matrixToMtrix(matrix, idx + 1) for idx, matrix in enumerate(matrices))
 
     def matrixToText(self, matrix, serial):
-        return f"Matrix: {serial}\n" \
+        #return f"Matrix: {serial}\n" \
+        return f"\n" \
                f"{matrix[0][0]:10.6f} {matrix[0][1]:10.6f} {matrix[0][2]:10.6f} {matrix[0][3]:12.6f}\n" \
                f"{matrix[1][0]:10.6f} {matrix[1][1]:10.6f} {matrix[1][2]:10.6f} {matrix[1][3]:12.6f}\n" \
                f"{matrix[2][0]:10.6f} {matrix[2][1]:10.6f} {matrix[2][2]:10.6f} {matrix[2][3]:12.6f}"
