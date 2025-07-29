@@ -55,7 +55,7 @@ class AbsoluteApixStar:
         opticsGroupNr = 0
 
         for optic_group in md.data_optics:
-            z40 = float(optic_group.rlnEvenZernike.split(",")[6])
+            z40 = float(optic_group.rlnEvenZernike[6])
             csTrue = optic_group.rlnSphericalAberration
             nomPixSize = optic_group.rlnImagePixelSize
 
