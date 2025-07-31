@@ -728,6 +728,8 @@ class MetaData:
                 setattr(item, label.name, False)
             elif value in ('1', 1):
                 setattr(item, label.name, True)
+        elif label.type == list:
+            setattr(item, label.name, ast.literal_eval(value))
         elif label.type == str:
             #try to dynamically evaluate the type (as str is the default for unknown types)
             try:
