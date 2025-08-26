@@ -115,7 +115,7 @@ Adds or removes labels from star file.
 --add       Add new label to the star file.
 --rm        Remove label from the star file.
 --lb        Label to be added or removed. Use comma separated label values to add or remove multiple labels. Default: None
---val       Value filled for added labels. Use comma separated values if adding multiple labels. Default: 0
+--val       Value filled for added labels. Use comma separated values if adding multiple labels. To copy values from existing label into the new one use the label name as value (e.g. rlnCoordinateX). Default: 0
 --data      Data table from star file to be used (Default: data_particles).
 ```
 
@@ -133,6 +133,13 @@ Example 3: Add rlnCoordinateX,rlnCoordinateY with default values 10,20 respectiv
 ``` 
 add_remove_label.py --i input.star --o output.star --lb rlnCoordinateX,rlnCoordinateY --add --val 10,20
 ```
+
+Example 4: Add rlnCoordinateZ and rlnAngleRot with values equal rlnCoordinateX and 20.2 respectively
+``` 
+add_remove_label.py --i input.star --o output.star --lb rlnCoordinateZ,rlnAngleRot --add --val rlnCoordinateX,20.2
+```
+
+
 
 ## analyze_orientation_distances_star.py
 Calculates the spatial distance and angular distance between corresponding particles in --i1 and --i2. Output contains the particles from --i1 with additional columns for the spatial (rlnSpatDist), angular distances (rlnAngDist), rlnOriginXAngstDiff, rlnOriginYAngstDiff, rlnAngleRotDiff , rlnAngleTiltDiff, and rlnAnglePsiDiff.
