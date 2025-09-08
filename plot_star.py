@@ -101,6 +101,9 @@ class PlotStar:
         else:
             inputFiles = [str(args.i)]
 
+        plt.rcParams['pdf.fonttype'] = 42
+        plt.rcParams['ps.fonttype'] = 42
+
         multiplotY = [int(item) for item in args.multiplotY.split(",")]
         multiplotFile = [int(item) for item in args.multiplotFile.split(",")]
 
