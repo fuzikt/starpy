@@ -48,6 +48,7 @@ Backward compatible with RELION <=3.0 format star files!
 - [select_values_star.py](#select_values_starpy)
 - [split_particles_to_micrographs.py](#split_particles_to_micrographspy)
 - [split_stacks.py](#split_stackspy)
+- [star_to_csv.py](#star_to_csvpy)
 - [stats_star.py](#stats_starpy)
 - [unbin_coordinates.py](#unbin_coordinatespy)
 - [xflip_particles_star.py](#xflip_particles_starpy)
@@ -702,6 +703,16 @@ Split MRC stacks listed in STAR file into separate files, and writes a new STAR 
   --i        Input STAR filename.
   --o_dir    Output folder.
   --o_pref   Output image prefix.
+```
+
+## star_to_csv.py
+Converts STAR file values to CSV file
+```            
+  --i       Input STAR filename (Default: STDIN).
+  --o       Output CSV filename (Default: STDOUT).
+  --lb      Labels exported in the CSV file (Default: ALL). Multiple labels can be used enclosed in double quotes. (e.g. \"rlnAngleTilt rlnAngleRot\")
+  --data    Data table from star file to be used (Default: data_particles).
+  --delim   Delimiter used in the CSV file (Default: \",\"). For space separated use \" \".
 ```
 
 ## stats_star.py
