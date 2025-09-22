@@ -103,6 +103,8 @@ class PlotStar:
 
         plt.rcParams['pdf.fonttype'] = 42
         plt.rcParams['ps.fonttype'] = 42
+        plt.rcParams['svg.fonttype'] = 'none'  # Export text as editable text, not paths
+        plt.rcParams['font.family'] = 'DejaVu Sans'  # Use a standard font
 
         multiplotY = [int(item) for item in args.multiplotY.split(",")]
         multiplotFile = [int(item) for item in args.multiplotFile.split(",")]
