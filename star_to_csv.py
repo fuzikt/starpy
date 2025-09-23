@@ -46,7 +46,7 @@ class StarToCsv:
     def generateCSVlines(self, records, iLabels, delimiter):
         header = delimiter.join(iLabels)
         lines = []
-        lines.append("#" + header)
+        lines.append(header)
         for record in records:
             line = []
             for iLabel in iLabels:
