@@ -82,7 +82,7 @@ class AddRemoveLabel:
                     self.error(
                         f"Label {lb} already exists in the star file. Please choose another label name or use --rm to remove it first.")
 
-            for particle in md:
+            for particle in getattr(md,dataTable):
                 for lb, val in zip(lbs, vals):
                     if val.startswith("rln"):
                         if hasattr(particle, val):
