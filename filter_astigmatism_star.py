@@ -46,17 +46,18 @@ class SelAstgStar:
             particles.append(particle)
         return particles
 
-    def selParticles(self, particles, astg, res):
+    def selParticles(self, particles, astg, res, resLabel):
         newParticles = []
         while len(particles) > 0:
             selectedParticle = particles.pop(0)
             if res == 0:
-                if abs(selectedParticle.rlnDefocusU-selectedParticle.rlnDefocusV) <= astg:
+                if abs(selectedParticle.rlnDefocusU - selectedParticle.rlnDefocusV) <= astg:
                     newParticles.append(selectedParticle)
             else:
-                if (abs(selectedParticle.rlnDefocusU-selectedParticle.rlnDefocusV) <= astg) and (selectedParticle.rlnFinalResolution <= res):
+                if (abs(selectedParticle.rlnDefocusU - selectedParticle.rlnDefocusV) <= astg) and (
+                        getattr(selectedParticle, resLabel) <= res):
                     newParticles.append(selectedParticle)
-        self.mprint(str(len(newParticles))+" particles included in selection.")
+        self.mprint(str(len(newParticles)) + " particles included in selection.")
         return newParticles
 
     def main(self):
@@ -64,7 +65,7 @@ class SelAstgStar:
         args = self.parser.parse_args()
 
         self.validate(args)
-        
+
         self.mprint("Selecting particles/micrographs from star file...")
 
         md = MetaData(args.i)
@@ -79,15 +80,23 @@ class SelAstgStar:
 
         if ("rlnDefocusU" not in ilabels) or ("rlnDefocusV" not in ilabels):
             self.error("No labels rlnDefocusU or rlnDefocusV found in Input file.")
-        if ("rlnFinalResolution" not in ilabels) and (args.res > 0):
-            self.mprint("No label rlnFinalResolution found in input file. Switching off resolution filtering...")
-            args.res = 0
+
+        resLabel = "rlnCtfMaxResolution"
+
+        if args.res > 0:
+            if ("rlnFinalResolution" not in ilabels) and ("rlnCtfMaxResolution" not in ilabels):
+                self.mprint("No label rlnFinalResolution found in input file. Switching off resolution filtering...")
+                args.res = 0
+            elif ("rlnFinalResolution" in ilabels):
+                resLabel = "rlnFinalResolution"
+            else:
+                resLabel = "rlnCtfMaxResolution"
 
         new_particles = []
 
         particles = self.get_particles(md, dataTableName)
 
-        new_particles.extend(self.selParticles(particles, args.astg, args.res,))
+        new_particles.extend(self.selParticles(particles, args.astg, args.res, resLabel))
 
         if md.version == "3.1":
             mdOut = md.clone()
@@ -105,5 +114,4 @@ class SelAstgStar:
 
 
 if __name__ == "__main__":
-
     SelAstgStar().main()
