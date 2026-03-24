@@ -44,9 +44,6 @@ class JoinStar:
         if args.lb not in LABELS:
             self.error("Label %s not recognized as RELION label." % args.lb)
 
-        if not os.path.exists(args.i2):
-            self.error("Input2 file '%s' not found." % args.i)
-
         self.args = args
 
     def mprint(self, message):
